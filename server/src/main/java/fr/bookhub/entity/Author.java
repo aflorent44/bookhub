@@ -7,31 +7,26 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "users")
+@Table(name = "authors")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class User {
+public class Author {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+
     private String lastName;
     private String firstName;
-    private String pseudo;
-    private Boolean showRealName = false;
-    private String phoneNumber;
-
-    @Column(unique = true)
-    private String email;
-
-    @Column(nullable = false)
-    private String userPassword;
+    private LocalDate birthDate;
+    private String city;
 
     @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
+    @JoinColumn(name = "country_code")
+    private Country country;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
