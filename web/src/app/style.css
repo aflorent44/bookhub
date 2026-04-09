@@ -1,0 +1,39 @@
+:root {
+  /* COLORS */
+  --bg-green: #96A695; /* Background vert pour les pages */
+  --bg-pink: #F9AEA8; /* Background rose pour les formulaires */
+  --bg-off-white: #F2F0E4; /* Background blanc cassé pour les listes / tableaux */
+  --bg-white: #fff;
+  --txt-primary: #1B4353; /* Texte principal */
+  --txt-yellow: #FF8708; /* Texte secondaire */
+  --txt-green: #CBB664; /* Texte tertiaire */
+  --btn-red: #FF6B6B; /* Bouton principal */
+  --btn-green: #96A695; /* Bouton secondaire */
+  --btn-yellow: #FFC632; /* Bouton tertiaire */
+
+  /* FONT SIZES */
+  --font-size-s: 0.65rem;
+  --font-size-sm: 0.75rem;
+  --font-size-m: 1rem; /* Taille de la police de base */
+  --font-size-l: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-xxl: 2rem;
+  --font-size-h2: 3rem; /* Sous titre */
+  --font-size-h1: 4rem; /* Titre */
+
+  /* SPACING */
+  --space-xs: 0.25rem; /* 4px */
+  --space-s: 0.5rem; /* 8px */
+  --space-m: 1rem; /* 16px */
+  --space-l: 1.5rem; /* 24px */
+  --space-xl: 2rem; /* 32px */
+  --space-xxl: 3rem; /* 48px */
+  --space-huge: 5rem; /* 80px */
+
+  /* RADIUSES */
+  --radius-s: 0.25rem; /* Pour les petits éléments (checkbox, badges) */
+  --radius-m: 0.5rem; /* Pour les boutons et petites cartes */
+  --radius-l: 1rem; /* Pour les grandes cartes et conteneurs */
+  --radius-xl: 1.5rem; /* Pour un look très "arrondi/moderne" */
+  --radius-full: 9999px; /* Pour les boutons pilules ou avatars circulaires */
+}
