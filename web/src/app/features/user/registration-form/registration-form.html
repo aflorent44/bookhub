@@ -1,0 +1,144 @@
+<p-card header="S'inscrire" class="register-card">
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="p-fluid">
+    <div class="form-grid">
+      <div class="field">
+        <p-inputgroup>
+          <p-inputgroup-addon>
+            <i class="pi pi-user"></i>
+          </p-inputgroup-addon>
+          <p-floatlabel variant="on">
+            <input pInputText id="firstname" type="text" formControlName="firstname" />
+            <label for="firstname">Prénom</label>
+          </p-floatlabel>
+        </p-inputgroup>
+        @if (isInvalid('firstname')) {
+          <small class="error">
+            Le prénom est obligatoire et doit contenir au moins 2 caractères.
+          </small>
+        }
+      </div>
+
+      <div class="field">
+        <p-inputgroup>
+          <p-inputgroup-addon>
+            <i class="pi pi-user"></i>
+          </p-inputgroup-addon>
+          <p-floatlabel variant="on">
+            <input pInputText id="lastname" type="text" formControlName="lastname" />
+            <label for="lastname">Nom</label>
+          </p-floatlabel>
+        </p-inputgroup>
+        @if (isInvalid('lastname')) {
+          <small class="error">
+            Le nom est obligatoire et doit contenir au moins 2 caractères.
+          </small>
+        }
+      </div>
+    </div>
+
+    <div class="field">
+      <p-inputgroup>
+        <p-inputgroup-addon>
+          <i class="pi pi-at"></i>
+        </p-inputgroup-addon>
+        <p-floatlabel variant="on">
+          <input pInputText id="username" type="text" formControlName="username" />
+          <label for="username">Pseudo</label>
+        </p-floatlabel>
+      </p-inputgroup>
+      @if (isInvalid('username')) {
+        <small class="error">
+          Le pseudo est obligatoire et doit contenir entre 3 et 30 caractères.
+        </small>
+      }
+    </div>
+
+    <div class="field">
+      <p-inputgroup>
+        <p-inputgroup-addon>
+          <i class="pi pi-envelope"></i>
+        </p-inputgroup-addon>
+        <p-floatlabel variant="on">
+          <input pInputText id="email" type="email" formControlName="email" />
+          <label for="email">Email</label>
+        </p-floatlabel>
+      </p-inputgroup>
+      @if (isInvalid('email')) {
+        <small class="error">
+          Veuillez saisir une adresse email valide.
+        </small>
+      }
+    </div>
+
+    <div class="field">
+      <p-inputgroup>
+        <p-inputgroup-addon>
+          <i class="pi pi-lock"></i>
+        </p-inputgroup-addon>
+        <p-floatlabel variant="on">
+          <p-password
+            inputId="password"
+            formControlName="password"
+            [feedback]="true"
+            [toggleMask]="true"
+            [fluid]="true"
+            promptLabel="Saisir un mot de passe"
+            weakLabel="Faible"
+            mediumLabel="Moyen"
+            strongLabel="Fort">
+          </p-password>
+          <label for="password">Mot de passe</label>
+        </p-floatlabel>
+      </p-inputgroup>
+      @if (isInvalid('password')) {
+        <small class="error">
+          12 caractères minimum, avec majuscule, minuscule, chiffre et caractère spécial.
+        </small>
+      }
+    </div>
+
+    <div class="field">
+      <p-inputgroup>
+        <p-inputgroup-addon>
+          <i class="pi pi-lock"></i>
+        </p-inputgroup-addon>
+        <p-floatlabel variant="on">
+          <p-password
+            inputId="confirmPassword"
+            formControlName="confirmPassword"
+            [feedback]="false"
+            [toggleMask]="true"
+            [fluid]="true">
+          </p-password>
+          <label for="confirmPassword">Confirmation du mot de passe</label>
+        </p-floatlabel>
+      </p-inputgroup>
+      @if (registerForm.hasError('passwordMismatch') && (form.confirmPassword.touched || submitted)) {
+        <small class="error">
+          Les mots de passe ne correspondent pas.
+        </small>
+      }
+    </div>
+
+    <div class="actions">
+      <button
+        pButton
+        class="button-cancel"
+        type="button"
+        label="Annuler"
+        icon="pi pi-times"
+        severity="secondary"
+        (click)="onReset()">
+      </button>
+
+      <button
+        pButton
+        class="btn-submit"
+        type="submit"
+        label="Valider"
+        icon="pi pi-check"
+        [disabled]="registerForm.invalid">
+      </button>
+    </div>
+  </form>
+</p-card>
