@@ -9220,6 +9220,7 @@
 .idea/
 .project
 .classpath
+.xml
 .c9/
 *.launch
 .settings/
