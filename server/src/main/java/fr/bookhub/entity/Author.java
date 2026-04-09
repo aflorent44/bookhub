@@ -4,10 +4,10 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "authors")
-@Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 public class Author {
 
@@ -15,103 +15,36 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Getter @Setter
     private String lastName;
+
+    @Getter @Setter
     private String firstName;
+
+    @Getter @Setter
     private LocalDate birthDate;
+
+    @Getter @Setter
     private String city;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public Country getCountry() {
-        return country;
-    }
-
-    public void setCountry(Country country) {
-        this.country = country;
-    }
-
-    public LocalDate getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDate createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDate getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDate updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public User getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(User updatedBy) {
-        this.updatedBy = updatedBy;
-    }
 
     @ManyToOne
     @JoinColumn(name = "country_code")
+    @Getter @Setter
     private Country country;
 
-    private LocalDate createdAt;
-    private LocalDate updatedAt;
+    @Getter @Setter
+    private LocalDateTime createdAt;
+
+    @Getter @Setter
+    private LocalDateTime updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "created_by")
+    @Getter @Setter
     private User createdBy;
 
     @ManyToOne
     @JoinColumn(name = "updated_by")
+    @Getter @Setter
     private User updatedBy;
 }

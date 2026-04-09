@@ -7,115 +7,45 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "reviews")
-@Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 public class Review {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter @Setter
     private Integer id;
 
     @ManyToOne
+    @Getter @Setter
     private Book book;
 
     @ManyToOne
+    @Getter @Setter
     private User user;
 
+    @Getter @Setter
     private Integer rating;
 
     @Lob
+    @Getter @Setter
     private String comment;
 
+    @Getter @Setter
     private Boolean isHidden = false;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    public void setBook(Book book) {
-        this.book = book;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Integer getRating() {
-        return rating;
-    }
-
-    public void setRating(Integer rating) {
-        this.rating = rating;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public Boolean getHidden() {
-        return isHidden;
-    }
-
-    public void setHidden(Boolean hidden) {
-        isHidden = hidden;
-    }
-
-    public User getHiddenBy() {
-        return hiddenBy;
-    }
-
-    public void setHiddenBy(User hiddenBy) {
-        this.hiddenBy = hiddenBy;
-    }
-
-    public LocalDate getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDate createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDate getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDate updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public User getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(User updatedBy) {
-        this.updatedBy = updatedBy;
-    }
 
     @ManyToOne
     @JoinColumn(name = "hidden_by")
+    @Getter @Setter
     private User hiddenBy;
 
+    @Getter @Setter
     private LocalDate createdAt;
+
+    @Getter @Setter
     private LocalDate updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "updated_by")
+    @Getter @Setter
     private User updatedBy;
 }

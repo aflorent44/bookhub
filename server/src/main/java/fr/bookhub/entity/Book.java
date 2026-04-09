@@ -3,162 +3,77 @@ package fr.bookhub.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "books")
-@Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter @Setter
     private Integer id;
 
+    @Getter @Setter
     private String title;
+
+    @Getter @Setter
     private String firstPageUrl;
+
+    @Getter @Setter
     private Integer year;
 
     @Column(unique = true)
+    @Getter @Setter
     private String isbn;
 
+    @Getter @Setter
     private Integer quantity = 1;
 
     @ManyToOne
     @JoinColumn(name = "country_code")
+    @Getter @Setter
     private Country country;
 
     @Lob
+    @Getter @Setter
     private String description;
 
     @ManyToOne
     @JoinColumn(name = "author_id")
+    @Getter @Setter
     private Author author;
 
     @ManyToOne
     @JoinColumn(name = "publisher_id")
+    @Getter @Setter
     private Publisher publisher;
 
-    public Integer getId() {
-        return id;
-    }
+    @ManyToMany
+    @JoinTable(
+            name = "books_genres",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id")
+    )
+    @Getter @Setter
+    private Set<Genre> genres = new HashSet<>();
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    @Getter @Setter
+    private LocalDateTime createdAt;
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getFirstPageUrl() {
-        return firstPageUrl;
-    }
-
-    public void setFirstPageUrl(String firstPageUrl) {
-        this.firstPageUrl = firstPageUrl;
-    }
-
-    public Integer getYear() {
-        return year;
-    }
-
-    public void setYear(Integer year) {
-        this.year = year;
-    }
-
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    public Country getCountry() {
-        return country;
-    }
-
-    public void setCountry(Country country) {
-        this.country = country;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Author getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(Author author) {
-        this.author = author;
-    }
-
-    public Publisher getPublisher() {
-        return publisher;
-    }
-
-    public void setPublisher(Publisher publisher) {
-        this.publisher = publisher;
-    }
-
-    public LocalDate getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDate createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDate getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDate updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public User getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(User updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
-    private LocalDate createdAt;
-    private LocalDate updatedAt;
+    @Getter @Setter
+    private LocalDateTime updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "created_by")
+    @Getter @Setter
     private User createdBy;
 
     @ManyToOne
     @JoinColumn(name = "updated_by")
+    @Getter @Setter
     private User updatedBy;
 }

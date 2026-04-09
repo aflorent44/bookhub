@@ -5,39 +5,17 @@ import lombok.*;
 
 @Entity
 @Table(name = "countries")
-@Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 public class Country {
 
     @Id
     @Column(length = 3)
+    @Getter @Setter
     private String code;
 
+    @Getter @Setter
     private String name;
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getNationality() {
-        return nationality;
-    }
-
-    public void setNationality(String nationality) {
-        this.nationality = nationality;
-    }
-
+    @Getter @Setter
     private String nationality;
 }

@@ -1,95 +1,55 @@
 package fr.bookhub.entity;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.awt.print.Book;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import fr.bookhub.entity.Book;
 
 @Entity
+@Table(name = "loans")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Loan {
-    private Long id;
-    private LocalDate debut_date;
-    private LocalDate end_date;
-    private LocalDate return_date;
-    private boolean isLate;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter @Getter
+    private Integer id;
+
+    @Setter @Getter
+    private LocalDateTime debut_date;
+
+    @Getter @Setter
+    private LocalDateTime end_date;
+
+    @Getter @Setter
+    private LocalDateTime return_date;
+
+    @Getter @Setter
     private Status status;
 
+    @Getter @Setter
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToOne
+    @Getter @Setter
     private Book book;
 
-    public Loan() {}
-    public Loan(Long id, LocalDate debut_date, LocalDate end_date, LocalDate return_date, boolean isLate, Status status, User user, Book book) {
-        this.id = id;
-        this.debut_date = debut_date;
-        this.end_date = end_date;
-        this.return_date = return_date;
-        this.isLate = isLate;
-        this.status = status;
-        this.user = user;
-        this.book = book;
-    }
+    @Getter @Setter
+    private LocalDateTime created_at;
 
-    public Long getId() {
-        return id;
-    }
+    @Getter @Setter
+    private LocalDateTime updated_at;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public LocalDate getDebut_date() {
-        return debut_date;
-    }
-
-    public void setDebut_date(LocalDate debut_date) {
-        this.debut_date = debut_date;
-    }
-
-    public LocalDate getEnd_date() {
-        return end_date;
-    }
-
-    public void setEnd_date(LocalDate end_date) {
-        this.end_date = end_date;
-    }
-
-    public LocalDate getReturn_date() {
-        return return_date;
-    }
-
-    public void setReturn_date(LocalDate return_date) {
-        this.return_date = return_date;
-    }
-
-    public boolean isLate() {
-        return isLate;
-    }
-
-    public void setLate(boolean late) {
-        isLate = late;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    public void setBook(Book book) {
-        this.book = book;
-    }
+    @ManyToOne
+    @JoinColumn(name = "updated_by")
+    @Getter @Setter
+    private User updated_by;
 }

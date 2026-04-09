@@ -1,32 +1,28 @@
 package fr.bookhub.entity;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
+@Table(name = "genres")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Genre {
-    private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter @Setter
+    private Integer id;
+
+    @Getter @Setter
     private String label;
 
-    public Genre() {
-    }
-    public Genre(Long id, String label) {
-        this.id = id;
-        this.label = label;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
+    @Getter @Setter
+    @ManyToMany(mappedBy = "genres")
+    private Set<Book> books = new HashSet<>();
 }
