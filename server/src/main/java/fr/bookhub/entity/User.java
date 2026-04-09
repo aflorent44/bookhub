@@ -29,9 +29,9 @@ public class User {
     @Column(nullable = false)
     private String userPassword;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role = Role.USER;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

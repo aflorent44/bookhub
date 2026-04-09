@@ -13,7 +13,6 @@ public class Country {
 
     @Id
     @Column(length = 3)
-
     private String code;
     private String name;
     private String nationality;
