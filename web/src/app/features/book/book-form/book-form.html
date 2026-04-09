@@ -1,0 +1,100 @@
+<div class="card flex flex-column gap-4" style="max-width: 500px; margin: 2rem auto;">
+
+  <h2>Ajouter un livre</h2>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
+
+    <p-floatlabel>
+      <label for="isbn">ISBN (13 chiffres)</label>
+      <input id="isbn" type="text" pInputText formControlName="isbn" maxlength="13"/>
+      @if (form.get('isbn')?.invalid && form.get('isbn')?.touched) {
+        <small class="feedback error">ISBN requis (13 chiffres)</small>
+      }
+    </p-floatlabel>
+
+    @if (loading()) {
+      <small>Recherche en cours...</small>
+    }
+    @if (error()) {
+      <small style="color: red;">{{ error() }}</small>
+    }
+
+    <p-floatlabel>
+      <label for="title">Titre</label>
+      <input id="title" type="text" pInputText formControlName="title"/>
+      @if (form.get('title')?.invalid && form.get('title')?.touched) {
+        <small class="feedback error">Titre requis</small>
+      }
+    </p-floatlabel>
+
+    <p-floatlabel>
+      <label for="authorFirstName">Prénom de l'auteur</label>
+      <input id="authorFirstName" type="text" pInputText formControlName="authorFirstName"/>
+      @if (form.get('authorFirstName')?.invalid && form.get('authorFirstName')?.touched) {
+        <small class="feedback error">Prénom requis</small>
+      }
+    </p-floatlabel>
+
+    <p-floatlabel>
+      <input id="authorLastName" type="text" pInputText formControlName="authorLastName"/>
+      <label for="authorLastName">Nom de l'auteur</label>
+    </p-floatlabel>
+
+    <p-floatlabel>
+      <input id="publisher" type="text" pInputText formControlName="publisher"/>
+      <label for="publisher">Éditeur</label>
+    </p-floatlabel>
+
+    <p-floatlabel>
+      <input id="year" type="number" pInputText formControlName="year"/>
+      <label for="year">Année de publication</label>
+    </p-floatlabel>
+
+    <p-floatlabel>
+      <p-multiselect
+        inputId="genres"
+        [options]="availableGenres()"
+        formControlName="genres"
+        optionLabel="label"
+        placeholder="Sélectionner des genres"
+        display="chip"
+        class="w-full"
+      />
+      <label for="genres">Genres</label>
+    </p-floatlabel>
+
+    <p-floatlabel>
+  <textarea id="synopsis" pTextarea rows="5"
+            formControlName="synopsis"
+            style="width: 100%; resize: vertical;">
+  </textarea>
+      <label for="synopsis">Synopsis</label>
+    </p-floatlabel>
+
+    <p-floatlabel>
+      <input id="language" type="text" pInputText formControlName="language"/>
+      <label for="language">Langue</label>
+    </p-floatlabel>
+
+    <p-floatlabel>
+      <input id="quantity" type="number" pInputText formControlName="quantity"/>
+      <label for="quantity">Quantité</label>
+    </p-floatlabel>
+
+    <div class="form-actions">
+      <p-button
+        label="Annuler"
+        icon="pi pi-times"
+        severity="secondary"
+        (click)="resetForm()"
+      ></p-button>
+      <p-button
+        label="Enregistrer"
+        icon="pi pi-save"
+        (click)="onSubmit()"
+      ></p-button>
+    </div>
+
+  </form>
+
+</div>
