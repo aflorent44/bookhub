@@ -1,4 +1,46 @@
 package fr.bookhub.entity;
 
-public class User {
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDate;
+
+@Entity
+@Table(name = "users")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Users {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    private String lastName;
+    private String firstName;
+    private String pseudo;
+    private Boolean showRealName = false;
+    private String phoneNumber;
+
+    @Column(unique = true)
+    private String email;
+
+    @Column(nullable = false)
+    private String userPassword;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Roles role;
+
+    private LocalDate createdAt;
+    private LocalDate updatedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "created_by")
+    private Users createdBy;
+
+    @ManyToOne
+    @JoinColumn(name = "updated_by")
+    private Users updatedBy;
 }
