@@ -5,17 +5,16 @@ import lombok.*;
 
 @Entity
 @Table(name = "countries")
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class Country {
 
     @Id
     @Column(length = 3)
-    @Getter @Setter
+
     private String code;
-
-    @Getter @Setter
     private String name;
-
-    @Getter @Setter
     private String nationality;
 }

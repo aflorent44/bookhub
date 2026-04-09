@@ -10,13 +10,12 @@ import lombok.Setter;
 @Table(name = "publishers")
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class Publisher {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter @Setter
     private Integer id;
-
-    @Getter @Setter
     private String name;
 }

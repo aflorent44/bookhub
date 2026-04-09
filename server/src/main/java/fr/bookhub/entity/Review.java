@@ -3,49 +3,41 @@ package fr.bookhub.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "reviews")
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class Review {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter @Setter
     private Integer id;
 
     @ManyToOne
-    @Getter @Setter
     private Book book;
 
     @ManyToOne
-    @Getter @Setter
     private User user;
-
-    @Getter @Setter
     private Integer rating;
 
     @Lob
-    @Getter @Setter
     private String comment;
 
-    @Getter @Setter
     private Boolean isHidden = false;
 
     @ManyToOne
     @JoinColumn(name = "hidden_by")
-    @Getter @Setter
     private User hiddenBy;
 
-    @Getter @Setter
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
-    @Getter @Setter
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "updated_by")
-    @Getter @Setter
     private User updatedBy;
 }

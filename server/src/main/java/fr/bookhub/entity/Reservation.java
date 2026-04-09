@@ -3,37 +3,30 @@ package fr.bookhub.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "reservations")
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class Reservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter @Setter
     private Integer id;
 
     @ManyToOne
-    @Getter @Setter
     private User user;
 
     @ManyToOne
-    @Getter @Setter
     private Book book;
-
-    @Getter @Setter
     private Status status;
-
-    @Getter @Setter
-    private LocalDate createdAt;
-
-    @Getter @Setter
-    private LocalDate updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "updated_by")
-    @Getter @Setter
     private User updatedBy;
 }

@@ -13,16 +13,14 @@ import java.util.Set;
 @Table(name = "genres")
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class Genre {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter @Setter
     private Integer id;
-
-    @Getter @Setter
     private String label;
 
-    @Getter @Setter
     @ManyToMany(mappedBy = "genres")
     private Set<Book> books = new HashSet<>();
 }
