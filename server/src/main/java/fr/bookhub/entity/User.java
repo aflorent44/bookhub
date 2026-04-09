@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Users {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,16 +31,16 @@ public class Users {
 
     @ManyToOne
     @JoinColumn(name = "role_id")
-    private Roles role;
+    private Role role;
 
     private LocalDate createdAt;
     private LocalDate updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "created_by")
-    private Users createdBy;
+    private User createdBy;
 
     @ManyToOne
     @JoinColumn(name = "updated_by")
-    private Users updatedBy;
+    private User updatedBy;
 }

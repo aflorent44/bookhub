@@ -1,5 +1,7 @@
 package fr.bookhub.entity;
 
-public enum Roles {
-
+public enum Role {
+    USER,
+    ADMIN,
+    LIBRARIAN
 }
