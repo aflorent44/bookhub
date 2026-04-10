@@ -5,11 +5,11 @@ import { ButtonModule } from 'primeng/button';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { HttpClient } from '@angular/common/http';
-import { Book } from '../../../core/types/book';
-import { Author } from '../../../core/types/author';
-import { Genre } from '../../../core/types/genre';
+import { Book } from '@core/types/book';
+import { Author } from '@core/types/author';
+import { Genre } from '@core/types/genre';
 import {Textarea} from 'primeng/textarea';
-import { environment} from '../../../../environments/environment.development';
+import { environment} from '@environments/environment.development';
 
 @Component({
   selector: 'app-book-form',

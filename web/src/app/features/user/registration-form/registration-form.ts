@@ -9,7 +9,7 @@ import {InputGroupModule} from 'primeng/inputgroup';
 import {InputGroupAddonModule} from 'primeng/inputgroupaddon';
 import {InputTextModule} from 'primeng/inputtext';
 import {PasswordModule} from 'primeng/password';
-import {RegisterForm} from "../../../core/type/register-form";
+import {RegisterForm} from "@core/type/register-form";
 
 @Component({
   selector: 'app-registration-form',

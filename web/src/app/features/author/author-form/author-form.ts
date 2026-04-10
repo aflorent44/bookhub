@@ -5,8 +5,8 @@ import { ButtonModule } from 'primeng/button';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import {SelectModule} from 'primeng/select';
 import { HttpClient } from '@angular/common/http';
-import { Author } from '../../../core/types/author';
-import { Country } from '../../../core/types/country';
+import { Author } from '@core/types/author';
+import { Country } from '@core/types/country';
 
 @Component({
   selector: 'app-author-form',
