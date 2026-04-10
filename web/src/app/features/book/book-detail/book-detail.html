@@ -1,0 +1,59 @@
+@if (book) {
+  <div class="p-4">
+    <p-card>
+      <ng-template #content>
+        <div class="flex gap-4">
+
+          <!-- Couverture -->
+          <div class="flex-none">
+            <img
+              [src]="book.first_page_url"
+              alt="Couverture de {{ book.title }}"
+              style="width: 200px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); object-fit: cover;"
+            />
+          </div>
+
+          <!-- Infos -->
+          <div class="flex flex-column gap-3 flex-1">
+            <div>
+              <h1 class="m-0">{{ book.title }}</h1>
+              <p class="text-color-secondary mt-1">
+                {{ book.author.firstName }} {{ book.author.lastName }} — {{ book.author.country.nationality }}
+              </p>
+            </div>
+
+            <p-divider />
+
+            <div class="flex flex-column gap-2">
+              <p><strong>ISBN :</strong> {{ book.isbn }}</p>
+              <p><strong>Année de parution :</strong> {{ book.year }}</p>
+              <p><strong>Éditeur :</strong> {{ book.publisher.name }}</p>
+              <p><strong>Quantité :</strong> {{ book.quantity }}</p>
+              <p><strong>Description :</strong> {{ book.description }}</p>
+              <p>
+                <strong>Genres : </strong>
+                @for (genre of book.genres; track genre.id) {
+                  <p-tag [value]="genre.label" severity="secondary" styleClass="mr-1" />
+                }
+              </p>
+            </div>
+
+            <p-divider />
+
+            <div class="flex flex-column gap-1">
+              <p class="text-color-secondary text-sm m-0">
+                Ajouté le {{ book.createdAt | date: 'dd/MM/yyyy à HH:mm:ss' }} par {{ book.createdBy }}
+              </p>
+              <p class="text-color-secondary text-sm m-0">
+                Mis à jour le {{ book.updatedAt | date: 'dd/MM/yyyy à HH:mm:ss' }} par {{ book.updatedBy }}
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </ng-template>
+    </p-card>
+  </div>
+} @else {
+  <p-progressSpinner />
+}
