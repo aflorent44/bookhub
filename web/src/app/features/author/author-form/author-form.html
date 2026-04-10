@@ -1,0 +1,67 @@
+<div class="author-form-wrapper">
+  <h2>Ajouter un auteur</h2>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+    <div class="field-row">
+      <div class="field">
+        <p-floatlabel>
+          <input id="firstName" type="text" pInputText formControlName="firstName"/>
+          <label for="firstName">Prénom</label>
+        </p-floatlabel>
+        @if (form.get('firstName')?.invalid && form.get('firstName')?.touched) {
+          <small class="feedback error">Prénom requis</small>
+        }
+      </div>
+
+      <div class="field">
+        <p-floatlabel>
+          <input id="lastName" type="text" pInputText formControlName="lastName"/>
+          <label for="lastName">Nom</label>
+        </p-floatlabel>
+        @if (form.get('lastName')?.invalid && form.get('lastName')?.touched) {
+          <small class="feedback error">Nom requis</small>
+        }
+      </div>
+    </div>
+
+    @if (loading()) {
+      <small class="feedback loading">Chargement des pays...</small>
+    }
+    @if (error()) {
+      <small class="feedback error">{{ error() }}</small>
+    }
+
+    <div class="field">
+      <label for="countryId" class="field-label">Pays</label>
+      <p-select
+        inputId="countryId"
+        [options]="availableCountries()"
+        formControlName="countryId"
+        optionLabel="name"
+        optionValue="id"
+        placeholder="Sélectionner un pays"
+        class="w-full"
+      />
+      @if (form.get('countryId')?.invalid && form.get('countryId')?.touched) {
+        <small class="feedback error">Pays requis</small>
+      }
+    </div>
+
+    <div class="form-actions">
+      <p-button
+        label="Annuler"
+        icon="pi pi-times"
+        type="button"
+        (onClick)="resetForm()"
+      />
+      <p-button
+        label="Enregistrer"
+        icon="pi pi-save"
+        type="submit"
+        [disabled]="form.invalid"
+      />
+    </div>
+
+  </form>
+</div>

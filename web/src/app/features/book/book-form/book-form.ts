@@ -9,6 +9,7 @@ import { Book } from '../../../core/types/book';
 import { Author } from '../../../core/types/author';
 import { Genre } from '../../../core/types/genre';
 import {Textarea} from 'primeng/textarea';
+import { environment} from '../../../../environments/environment.development';
 
 @Component({
   selector: 'app-book-form',
@@ -68,7 +69,7 @@ export class BookForm implements OnInit {
     this.loading.set(true);
     this.error.set('');
 
-    const url = `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`;
+    const url = `${environment.googleBooksApiUrl}?q=isbn:${isbn}`;
 
     this.http.get<any>(url).subscribe({
       next: (data) => {

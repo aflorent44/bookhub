@@ -9,4 +9,6 @@ export const routes: Routes = [
     title: 'Inscription - Bookhub'
   },
 
+  { path: 'author', loadComponent: () => import('./features/author/author-form/author-form').then(m => m.AuthorForm), title: 'Ajouter un auteur' },
+
 ];
