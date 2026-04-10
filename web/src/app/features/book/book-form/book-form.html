@@ -1,100 +1,124 @@
-<div class="card flex flex-column gap-4" style="max-width: 500px; margin: 2rem auto;">
-
+<div class="book-form-wrapper">
   <h2>Ajouter un livre</h2>
 
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
-    <p-floatlabel>
-      <label for="isbn">ISBN (13 chiffres)</label>
-      <input id="isbn" type="text" pInputText formControlName="isbn" maxlength="13"/>
+    <div class="field">
+      <p-floatlabel>
+        <input id="isbn" type="text" pInputText formControlName="isbn" maxlength="13"/>
+        <label for="isbn">ISBN (13 chiffres)</label>
+      </p-floatlabel>
       @if (form.get('isbn')?.invalid && form.get('isbn')?.touched) {
         <small class="feedback error">ISBN requis (13 chiffres)</small>
       }
-    </p-floatlabel>
+    </div>
 
     @if (loading()) {
-      <small>Recherche en cours...</small>
+      <small class="feedback loading">Recherche en cours...</small>
     }
     @if (error()) {
-      <small style="color: red;">{{ error() }}</small>
+      <small class="feedback error">{{ error() }}</small>
     }
 
-    <p-floatlabel>
-      <label for="title">Titre</label>
-      <input id="title" type="text" pInputText formControlName="title"/>
+    <div class="field">
+      <p-floatlabel>
+        <input id="title" type="text" pInputText formControlName="title"/>
+        <label for="title">Titre</label>
+      </p-floatlabel>
       @if (form.get('title')?.invalid && form.get('title')?.touched) {
         <small class="feedback error">Titre requis</small>
       }
-    </p-floatlabel>
+    </div>
 
-    <p-floatlabel>
-      <label for="authorFirstName">Prénom de l'auteur</label>
-      <input id="authorFirstName" type="text" pInputText formControlName="authorFirstName"/>
-      @if (form.get('authorFirstName')?.invalid && form.get('authorFirstName')?.touched) {
-        <small class="feedback error">Prénom requis</small>
-      }
-    </p-floatlabel>
+    <div class="field-row">
+      <div class="field">
+        <p-floatlabel>
+          <input id="authorFirstName" type="text" pInputText formControlName="authorFirstName"/>
+          <label for="authorFirstName">Prénom de l'auteur</label>
+        </p-floatlabel>
+        @if (form.get('authorFirstName')?.invalid && form.get('authorFirstName')?.touched) {
+          <small class="feedback error">Prénom requis</small>
+        }
+      </div>
 
-    <p-floatlabel>
-      <input id="authorLastName" type="text" pInputText formControlName="authorLastName"/>
-      <label for="authorLastName">Nom de l'auteur</label>
-    </p-floatlabel>
+      <div class="field">
+        <p-floatlabel>
+          <input id="authorLastName" type="text" pInputText formControlName="authorLastName"/>
+          <label for="authorLastName">Nom de l'auteur</label>
+        </p-floatlabel>
+      </div>
+    </div>
 
-    <p-floatlabel>
-      <input id="publisher" type="text" pInputText formControlName="publisher"/>
-      <label for="publisher">Éditeur</label>
-    </p-floatlabel>
+    <div class="field-row">
+      <div class="field">
+        <p-floatlabel>
+          <input id="publisher" type="text" pInputText formControlName="publisher"/>
+          <label for="publisher">Éditeur</label>
+        </p-floatlabel>
+      </div>
 
-    <p-floatlabel>
-      <input id="year" type="number" pInputText formControlName="year"/>
-      <label for="year">Année de publication</label>
-    </p-floatlabel>
+      <div class="field">
+        <p-floatlabel>
+          <input id="year" type="number" pInputText formControlName="year"/>
+          <label for="year">Année de publication</label>
+        </p-floatlabel>
+      </div>
+    </div>
 
-    <p-floatlabel>
-      <p-multiselect
-        inputId="genres"
-        [options]="availableGenres()"
-        formControlName="genres"
-        optionLabel="label"
-        placeholder="Sélectionner des genres"
-        display="chip"
-        class="w-full"
-      />
-      <label for="genres">Genres</label>
-    </p-floatlabel>
+    <div class="field">
+      <p-floatlabel>
+        <p-multiselect
+          inputId="genres"
+          [options]="availableGenres()"
+          formControlName="genres"
+          optionLabel="label"
+          placeholder="Sélectionner des genres"
+          display="chip"
+          class="w-full"
+        />
+        <label for="genres">Genres</label>
+      </p-floatlabel>
+    </div>
 
-    <p-floatlabel>
-  <textarea id="synopsis" pTextarea rows="5"
-            formControlName="synopsis"
-            style="width: 100%; resize: vertical;">
-  </textarea>
-      <label for="synopsis">Synopsis</label>
-    </p-floatlabel>
+    <div class="field">
+      <p-floatlabel>
+        <textarea id="synopsis" pTextarea rows="5"
+                  formControlName="synopsis">
+        </textarea>
+        <label for="synopsis">Synopsis</label>
+      </p-floatlabel>
+    </div>
 
-    <p-floatlabel>
-      <input id="language" type="text" pInputText formControlName="language"/>
-      <label for="language">Langue</label>
-    </p-floatlabel>
+    <div class="field-row">
+      <div class="field">
+        <p-floatlabel>
+          <input id="language" type="text" pInputText formControlName="language"/>
+          <label for="language">Langue</label>
+        </p-floatlabel>
+      </div>
 
-    <p-floatlabel>
-      <input id="quantity" type="number" pInputText formControlName="quantity"/>
-      <label for="quantity">Quantité</label>
-    </p-floatlabel>
+      <div class="field">
+        <p-floatlabel>
+          <input id="quantity" type="number" pInputText formControlName="quantity"/>
+          <label for="quantity">Quantité</label>
+        </p-floatlabel>
+      </div>
+    </div>
 
     <div class="form-actions">
       <p-button
         label="Annuler"
         icon="pi pi-times"
-        severity="secondary"
-        (click)="resetForm()"
-      ></p-button>
+        type="button"
+        (onClick)="resetForm()"
+      />
       <p-button
         label="Enregistrer"
         icon="pi pi-save"
-        (click)="onSubmit()"
-      ></p-button>
+        type="submit"
+        [disabled]="form.invalid"
+      />
     </div>
 
   </form>
-
 </div>
