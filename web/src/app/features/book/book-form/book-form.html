@@ -5,7 +5,7 @@
 
     <div class="field">
       <p-floatlabel>
-        <input id="isbn" type="text" pInputText formControlName="isbn" maxlength="13"/>
+        <input id="isbn" type="text" pInputText formControlName="isbn"/>
         <label for="isbn">ISBN (13 chiffres)</label>
       </p-floatlabel>
       @if (form.get('isbn')?.invalid && form.get('isbn')?.touched) {

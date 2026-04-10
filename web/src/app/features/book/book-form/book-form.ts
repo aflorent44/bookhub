@@ -8,11 +8,12 @@ import { HttpClient } from '@angular/common/http';
 import { Book } from '../../../core/types/book';
 import { Author } from '../../../core/types/author';
 import { Genre } from '../../../core/types/genre';
+import {Textarea} from 'primeng/textarea';
 
 @Component({
   selector: 'app-book-form',
   standalone: true,
-  imports: [ReactiveFormsModule, InputTextModule, ButtonModule, FloatLabelModule, MultiSelectModule],
+  imports: [ReactiveFormsModule, InputTextModule, ButtonModule, FloatLabelModule, MultiSelectModule, Textarea],
   templateUrl: './book-form.html',
   styleUrl: './book-form.scss',
 })
@@ -125,7 +126,9 @@ export class BookForm implements OnInit {
   }
 
   onSubmit() {
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      return;
+    }
 
     const author: Partial<Author> = {
       firstName: this.form.value.authorFirstName,
