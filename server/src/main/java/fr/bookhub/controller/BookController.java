@@ -1,13 +1,8 @@
 package fr.bookhub.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.bookhub.service.BookService;
+import fr.bookhub.service.*;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import fr.bookhub.entity.Book;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,12 +12,22 @@ public class BookController {
 
     private final BookService bookService;
 
+    // Catalogue : Liste de tous les livres
     @GetMapping("/api/books")
-    public String getJSONBooksList() throws JsonProcessingException {
-        System.out.println("getJSONBooksList");
-        List<Book> books = bookService.getBooks();
-        ObjectMapper mapper = new ObjectMapper();
-
-        return mapper.writeValueAsString(books);
+    public ServiceResponse<?> getCatalog() {
+        return bookService.getBooks();
     }
+
+    // Détail d'un livre :
+    @GetMapping("/api/books/{id}")
+    public ServiceResponse<?> getBookDetails(@PathVariable int id) {
+        return bookService.getBookById(id);
+    }
+
+    // Ajout d'un livre :
+    @PostMapping("/api/books")
+    public ServiceResponse addBook(@RequestBody BookCreateRequest bookRequest) {
+        return bookService.createBook(bookRequest);
+    }
+
 }

@@ -1,5 +1,6 @@
 package fr.bookhub.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,11 +19,8 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-
     private String lastName;
     private String firstName;
-    private LocalDate birthDate;
-    private String city;
 
     @ManyToOne
     @JoinColumn(name = "country_code")
