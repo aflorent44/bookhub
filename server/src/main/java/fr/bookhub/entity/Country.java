@@ -12,9 +12,9 @@ import lombok.*;
 public class Country {
 
     @Id
-    @Column(length = 3)
-
+    @Column(columnDefinition = "char(3)")
     private String code;
+
     private String name;
     private String nationality;
 }

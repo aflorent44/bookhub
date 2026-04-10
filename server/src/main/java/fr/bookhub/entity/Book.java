@@ -18,12 +18,17 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     private String title;
+
+    @Column(name = "first_page_url")
     private String firstPageUrl;
+
     private Integer year;
 
     @Column(unique = true)
     private String isbn;
+
     private Integer quantity = 1;
 
     @ManyToOne
@@ -48,7 +53,11 @@ public class Book {
             inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
     private Set<Genre> genres = new HashSet<>();
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @ManyToOne
