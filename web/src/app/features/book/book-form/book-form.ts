@@ -5,9 +5,9 @@ import { ButtonModule } from 'primeng/button';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { HttpClient } from '@angular/common/http';
-import { Book } from '../../../core/types/book';
-import { Author } from '../../../core/types/author';
-import { Genre } from '../../../core/types/genre';
+import { Book } from '../../../core/type/book';
+import { Author } from '../../../core/type/author';
+import { Genre } from '../../../core/type/genre';
 import {Textarea} from 'primeng/textarea';
 
 @Component({
@@ -49,7 +49,7 @@ export class BookForm implements OnInit {
       publisher:       [''],
       year:            [null],
       genres:          [[]],
-      synopsis:        [''],
+      description:        [''],
       language:        [''],
       quantity:        [1, [Validators.required, Validators.min(1)]],
     });
@@ -96,7 +96,7 @@ export class BookForm implements OnInit {
           publisher:       info.publisher ?? '',
           year:            info.publishedDate ? new Date(info.publishedDate).getFullYear() : null,
           genres:          matched ? [matched] : [],
-          synopsis:        info.description ?? '',
+          description:        info.description ?? '',
           language:        info.language ?? '',
         });
 
@@ -118,7 +118,7 @@ export class BookForm implements OnInit {
       publisher:       '',
       year:            null,
       genres:          [],
-      synopsis:        '',
+      description:     '',
       language:        '',
       quantity:        1,
     });
@@ -142,7 +142,7 @@ export class BookForm implements OnInit {
       publisher: this.form.value.publisher,
       year:      this.form.value.year,
       genres:    this.form.value.genres,
-      synopsis:  this.form.value.synopsis,
+      description:  this.form.value.description,
       language:  this.form.value.language,
       quantity:  this.form.value.quantity,
     };
