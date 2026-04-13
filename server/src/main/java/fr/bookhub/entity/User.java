@@ -1,6 +1,9 @@
 package fr.bookhub.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -17,13 +20,17 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @NotEmpty
     private String lastName;
+    @NotEmpty
     private String firstName;
     private String pseudo;
     private Boolean showRealName = false;
+    @Size(min = 10, max = 10)
     private String phoneNumber;
 
     @Column(unique = true)
+    @Email
     private String email;
 
     @Column(nullable = false)

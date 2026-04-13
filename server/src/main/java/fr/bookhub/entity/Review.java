@@ -1,6 +1,7 @@
 package fr.bookhub.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -18,9 +19,11 @@ public class Review {
     private Integer id;
 
     @ManyToOne
+    @NotNull
     private Book book;
 
     @ManyToOne
+    @NotNull
     private User user;
     private Integer rating;
 

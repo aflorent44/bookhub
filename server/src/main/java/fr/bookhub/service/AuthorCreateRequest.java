@@ -13,5 +13,5 @@ import lombok.Setter;
 public class AuthorCreateRequest {
     private String firstName;
     private String lastName;
-    private Country country;
+    private String country;
 }
