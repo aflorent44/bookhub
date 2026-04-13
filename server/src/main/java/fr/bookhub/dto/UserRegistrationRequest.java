@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 
 public record UserRegistrationRequest(
 
-        @NotBlank(message = "Le est obligatoire.")
+        @NotBlank(message = "Le nom est obligatoire.")
         @Size(min = 2, max = 50, message = "Le nom doit contenir entre 2 et 50 caractères.")
         String lastname,
 
