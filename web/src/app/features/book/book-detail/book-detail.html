@@ -1,0 +1,78 @@
+@if (book) {
+  <div class="book-detail-wrapper">
+    <p-card>
+      <ng-template #content>
+        <div class="book-detail-layout">
+
+          <!-- Couverture -->
+          <div class="book-cover">
+            <img
+              [src]="book.first_page_url"
+              alt="Couverture de {{ book.title }}"
+            />
+          </div>
+
+          <!-- Infos -->
+          <div class="book-info">
+
+            <div class="book-header">
+              <h1>{{ book.title }}</h1>
+              <p class="book-author">
+                {{ book.author.firstName }} {{ book.author.lastName }}
+                <span class="book-nationality"><em> {{ book.author.country.nationality }} </em></span>
+              </p>
+            </div>
+
+            <p-divider />
+
+            <div class="book-meta">
+              <div class="book-meta-row">
+                <span class="meta-label">ISBN</span>
+                <span>{{ book.isbn }}</span>
+              </div>
+              <div class="book-meta-row">
+                <span class="meta-label">Année de parution</span>
+                <span>{{ book.year }}</span>
+              </div>
+              <div class="book-meta-row">
+                <span class="meta-label">Éditeur</span>
+                <span>{{ book.publisher.name }}</span>
+              </div>
+              <div class="book-meta-row">
+                <span class="meta-label">Quantité</span>
+                <span>{{ book.quantity }}</span>
+              </div>
+              <div class="book-meta-row">
+                <span class="meta-label">Genres</span>
+                <span class="book-genres">
+                  @for (genre of book.genres; track genre.id) {
+                    <span class="badge">{{ genre.label }}</span>
+                  }
+                </span>
+              </div>
+            </div>
+
+            <p-divider />
+
+            <div class="book-description">
+              <p class="meta-label">Description</p>
+              <p>{{ book.description }}</p>
+            </div>
+
+            <p-divider />
+
+            <div class="book-footer">
+              <p>Ajouté le {{ book.createdAt | date: 'dd/MM/yyyy à HH:mm' }} par {{ book.createdBy }}</p>
+              <p>Mis à jour le {{ book.updatedAt | date: 'dd/MM/yyyy à HH:mm' }} par {{ book.updatedBy }}</p>
+            </div>
+
+          </div>
+        </div>
+      </ng-template>
+    </p-card>
+  </div>
+} @else {
+  <div class="book-detail-spinner">
+    <p-progressSpinner />
+  </div>
+}

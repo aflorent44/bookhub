@@ -9220,8 +9220,9 @@
 .idea/
 .project
 .classpath
-.xml
+*.xml
 .c9/
 *.launch
 .settings/
 *.sublime-workspace
+package-lock.json
