@@ -14,15 +14,15 @@ public class AuthorService {
 
     private final AuthorRepository authorRepository;
 
-    public ServiceResponse<Author> createAuthor(String firstName, String lastName, Country country) {
-        if (firstName.isEmpty()) return new ServiceResponse<>("3001", "First name is empty");
-        if (lastName.isEmpty()) return new ServiceResponse<>("3002", "Last name is empty");
-        if (country == null) return new ServiceResponse<>("3003", "Country is empty");
+    public ServiceResponse<Author> createAuthor(AuthorCreateRequest req) {
+        if (req.getFirstName().isEmpty()) return new ServiceResponse<>("3001", "First name is empty");
+        if (req.getLastName().isEmpty()) return new ServiceResponse<>("3002", "Last name is empty");
+        if (req.getCountry() == null) return new ServiceResponse<>("3003", "Country is empty");
 
         Author author = new Author();
-        author.setFirstName(firstName);
-        author.setLastName(lastName);
-        author.setCountry(country);
+        author.setFirstName(req.getFirstName());
+        author.setLastName(req.getLastName());
+        author.setCountry(req.getCountry());
         author.setCreatedAt(LocalDateTime.now());
         author.setUpdatedAt(LocalDateTime.now());
 
