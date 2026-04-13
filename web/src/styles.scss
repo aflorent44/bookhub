@@ -7,7 +7,9 @@
   --bg-pink: #F9AEA8;       /* Background rose pour les formulaires */
   --bg-off-white: #F2F0E4;  /* Background blanc cassé pour les listes / tableaux */
   --bg-white: #ffffff;
+  --zone-border: #e2e1e5;
   --txt-primary: #1B4353;   /* Texte principal */
+  --txt-primary-hover: #3A5C64;   /* Texte principal hover */
   --txt-yellow: #FF8708;    /* Texte secondaire */
   --txt-green: #CBB664;     /* Texte tertiaire */
   --btn-red: #FF6B6B;       /* Bouton principal */
@@ -93,4 +95,233 @@ h1, h2, h3, h4, .p-card-title {
     border-color: var(--txt-yellow) !important; // Un petit rappel de ton orange au focus
     box-shadow: 0 0 0 2px var(--bg-off-white);
   }
+}
+
+.book-form-wrapper {
+  max-width: 560px;
+  margin: var(--space-xl) auto;
+  background-color: var(--bg-pink);
+  border-radius: var(--radius-l);
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-l);
+
+  h2 {
+    font-family: var(--font-titles);
+    font-size: var(--font-size-xxl);
+    color: var(--txt-primary);
+    margin: 0 0 var(--space-s);
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-l);
+  }
+
+  // Deux champs côte à côte
+  .field-row {
+    display: flex;
+    gap: var(--space-m);
+
+    .field {
+      flex: 1;
+    }
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+
+    // Inputs et textarea pleine largeur
+    input.p-inputtext,
+    textarea.p-inputtext {
+      width: 100%;
+      background-color: var(--bg-white);
+      border-radius: var(--radius-m);
+      font-family: var(--font-body);
+      font-size: var(--font-size-m);
+      color: var(--txt-primary);
+      resize: vertical;
+    }
+
+    // Multiselect pleine largeur
+    .p-multiselect {
+      width: 100%;
+      background-color: var(--bg-white);
+      border-radius: var(--radius-m);
+    }
+  }
+
+  .feedback {
+    font-family: var(--font-body);
+    font-size: var(--font-size-sm);
+
+    &.error   { color: var(--btn-red); }
+    &.loading { color: var(--txt-green); }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-s);
+    margin-top: var(--space-s);
+
+    .p-button {
+      font-family: var(--font-body);
+      font-size: var(--font-size-m);
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius-m);
+      padding: var(--space-s) var(--space-l);
+      cursor: pointer;
+      transition: background-color 0.2s, color 0.2s;
+
+      &:first-child {
+        background-color: var(--bg-off-white);
+        color: var(--txt-primary);
+
+        &:hover {
+          background-color: var(--btn-red);
+          color: var(--bg-white);
+        }
+      }
+
+      &:last-child {
+        background-color: var(--btn-yellow);
+        color: var(--txt-primary);
+
+        &:hover {
+          background-color: var(--btn-green);
+          color: var(--bg-white);
+        }
+      }
+    }
+  }
+}
+
+.badge {
+  display: inline-block;
+  padding: var(--space-xs) var(--space-s);
+  margin: var(--space-xs);
+  border-radius: var(--radius-s);
+  background-color: var(--bg-pink);
+  font-size: var(--font-size-m);
+}
+
+.book-detail-wrapper {
+  max-width: 900px;
+  margin: var(--space-xl) auto;
+  padding: 0 var(--space-m);
+
+  .p-card {
+    border-radius: var(--radius-l);
+    background-color: var(--bg-off-white);
+  }
+}
+
+.book-detail-layout {
+  display: flex;
+  gap: var(--space-xl);
+  align-items: flex-start;
+}
+
+.book-cover {
+  flex-shrink: 0;
+
+  img {
+    width: 180px;
+    border-radius: var(--radius-m);
+    box-shadow: 0 var(--space-xs) var(--space-m) rgba(0, 0, 0, 0.2);
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.book-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+}
+
+.book-header {
+  h1 {
+    font-family: var(--font-titles);
+    font-size: var(--font-size-xxl);
+    color: var(--txt-primary);
+    margin: 0 0 var(--space-xs);
+  }
+
+  .book-author {
+    font-size: var(--font-size-l);
+    font-weight: 600;
+    color: var(--txt-primary);
+    margin: 0;
+  }
+
+  .book-nationality {
+    font-weight: 300;
+    color: var(--txt-yellow);
+  }
+}
+
+.book-meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+}
+
+.book-meta-row {
+  display: flex;
+  gap: var(--space-m);
+  align-items: baseline;
+
+  .meta-label {
+    font-weight: 600;
+    color: var(--txt-primary);
+    min-width: 160px;
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+}
+
+.book-genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.book-description {
+  .meta-label {
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--space-xs);
+  }
+
+  p {
+    margin: 0;
+    line-height: 1.7;
+    color: var(--txt-primary);
+  }
+}
+
+.book-footer {
+  p {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--txt-yellow);
+  }
+}
+
+.book-detail-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
 }

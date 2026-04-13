@@ -14,7 +14,6 @@ public class Country {
     @Id
     @Column(columnDefinition = "char(3)")
     private String code;
-
     private String name;
     private String nationality;
 }
