@@ -103,7 +103,8 @@ public class BookService {
                 authorRepository.findByLastName(req.getAuthorLastName())
                         .orElseGet(() -> {
                             ServiceResponse<Author> authorResponse =
-                                    authorService.createAuthor(req.getAuthorFirstName(), req.getAuthorLastName(), book.getCountry());
+                                    authorService.createAuthor(
+                                            new AuthorCreateRequest(req.getAuthorFirstName(), req.getAuthorLastName(), book.getCountry()));
 
                             if (!"3001".equals(authorResponse.getCode()) || authorResponse.getData() == null) {
                                 throw new RuntimeException("Author creation failed");
