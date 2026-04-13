@@ -1,0 +1,33 @@
+<nav class="navbar">
+    <div class="logo">BookHub</div>
+
+    <ul class="nav-links">
+        <li><a href="#">Bibliothèque</a></li>
+        @if (isLoggedIn) {
+        <li><a href="#">Mon profil</a></li>
+        }
+
+        <!--<app-fillin title="Titre 1" tooltip="a" placeholder="contenu"></app-fillin>-->
+        
+        <!-- barre de recherche, composant ? -->
+        <li class="search-item">
+            <span class="search-box">
+                <i class="pi pi-search"></i>
+                <input type="text" placeholder="Rechercher..." />
+                <!--<input type="text" [(ngModel)]="search" placeholder="Rechercher..." />-->
+            </span>
+        </li>
+        <li>
+            @if (isLoggedIn) {
+            <a href="#" class="logout">
+                <i class="pi pi-sign-out" (click)="logout()"></i>
+            </a>
+            } @else {
+            <div class="auth-buttons">
+                <button class="login-btn" (click)="login()">Connexion</button>
+                <button class="signup-btn">Inscription</button>
+            </div>
+            }
+        </li>
+    </ul>
+</nav>
