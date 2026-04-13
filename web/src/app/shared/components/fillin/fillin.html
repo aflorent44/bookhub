@@ -1,0 +1,17 @@
+<div class="fillin-container">
+  <label class="fillin-title">
+    {{ title }}
+  </label>
+
+  <input
+    class="fillin-zone"
+    type="text"
+    [value]="value"
+    [placeholder]="placeholder"
+    (input)="updateValue($event)"
+    (blur)="markTouched()"
+    [pTooltip]="tooltip"
+    tooltipPosition="top"
+  />
+
+</div>
