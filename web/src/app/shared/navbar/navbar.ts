@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-import { Fillin } from '../components/fillin/fillin';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-navbar',
-  imports: [Fillin, FormsModule,
+  imports: [FormsModule,
     ReactiveFormsModule],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss',
