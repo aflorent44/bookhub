@@ -19,13 +19,20 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+   @Column(name = "last_name")
     private String lastName;
+
+    @Column(name = "first_name")
     private String firstName;
 
     @ManyToOne
     @JoinColumn(name = "country_code")
     private Country country;
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @ManyToOne

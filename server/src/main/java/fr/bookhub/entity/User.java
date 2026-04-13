@@ -17,22 +17,36 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
+
+    @Column(name = "first_name",  nullable = false, length = 50)
     private String firstName;
+
+    @Column(nullable = false, length = 30)
     private String pseudo;
+
+    @Column(name = "show_real_name", nullable = false)
     private Boolean showRealName = false;
+
+    @Column(name = "phone_number", length = 20)
     private String phoneNumber;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false, length = 100)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "user_password")
     private String userPassword;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role = Role.USER;
+    @Column(nullable = false, length = 20)
+    private Role role;
+
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @ManyToOne

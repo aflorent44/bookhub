@@ -1,0 +1,57 @@
+package fr.bookhub.service;
+
+import fr.bookhub.dto.UserRegistrationRequest;
+import fr.bookhub.entity.Role;
+import fr.bookhub.entity.User;
+import fr.bookhub.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+
+@Service
+@RequiredArgsConstructor
+public class UserServiceImpl implements UserService {
+
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Override
+    @Transactional
+    public User registerUser(UserRegistrationRequest requestUser) {
+        if (userRepository.existsByEmail(requestUser.email())) {
+            throw new RuntimeException("Cet email est déjà utilisé.");
+        }
+
+        if (userRepository.existsByPseudo(requestUser.username())) {
+            throw new RuntimeException("Ce pseudo est déjà utilisé.");
+        }
+
+        User user = new User();
+        user.setLastName(requestUser.lastname().trim());
+        user.setFirstName(requestUser.firstname().trim());
+        user.setPseudo(requestUser.username().trim());
+        user.setEmail(requestUser.email().trim().toLowerCase());
+        user.setUserPassword(passwordEncoder.encode(requestUser.password()));
+
+        user.setRole(Role.USER);
+        user.setShowRealName(false);
+
+        user.setCreatedAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
+
+        return userRepository.save(user);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByPseudo(username);
+    }
+}
