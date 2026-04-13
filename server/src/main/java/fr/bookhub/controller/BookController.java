@@ -6,11 +6,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @AllArgsConstructor
 public class BookController {
 
     private final BookService bookService;
+    private final GenreService genreService;
 
     // Catalogue : Liste de tous les livres
     @GetMapping("/api/books")
@@ -29,5 +31,12 @@ public class BookController {
     public ServiceResponse addBook(@RequestBody BookCreateRequest bookRequest) {
         return bookService.createBook(bookRequest);
     }
+
+    // Récupération des genres
+    @GetMapping("/api/genres")
+    public ServiceResponse<List<GenreDTO>> getGenres() {
+        return genreService.getGenres();
+    }
+
 
 }

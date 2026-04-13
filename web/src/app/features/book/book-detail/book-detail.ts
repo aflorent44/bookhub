@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, inject, OnInit, signal} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Book } from '../../../core/type/book';
@@ -15,17 +15,21 @@ import {ProgressSpinnerModule} from 'primeng/progressspinner';
   templateUrl: './book-detail.html',
 })
 export class BookDetail implements OnInit {
-  book: Book | null = null;
+  book = signal<Book | null>(null);
 
-  constructor(
-    private route: ActivatedRoute,
-    private bookService: BookService
-  ) {}
+  private route = inject(ActivatedRoute);
+  private bookService = inject(BookService);
 
   ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id') ?? '';
-    this.bookService.getBookById(id).subscribe(data => {
-      this.book = data;
+    const id = Number(this.route.snapshot.paramMap.get('id') ?? '');
+    this.bookService.getBookById(id).subscribe({
+      next: (book) => {
+        console.log('Book récupéré :', book);
+        this.book.set(book);
+      },
+      error: (err) => {
+        console.error('Erreur :', err);
+      }
     });
   }
 }
