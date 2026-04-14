@@ -1,6 +1,7 @@
 package fr.bookhub.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -18,23 +19,29 @@ public class Review {
     private Integer id;
 
     @ManyToOne
+    @NotNull
     private Book book;
 
     @ManyToOne
+    @NotNull
     private User user;
+
     private Integer rating;
 
     @Lob
     private String comment;
 
+    @Column(name = "is_hidden")
     private Boolean isHidden = false;
 
     @ManyToOne
     @JoinColumn(name = "hidden_by")
     private User hiddenBy;
 
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @ManyToOne

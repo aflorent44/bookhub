@@ -10,6 +10,9 @@ import {InputGroupAddonModule} from 'primeng/inputgroupaddon';
 import {InputTextModule} from 'primeng/inputtext';
 import {PasswordModule} from 'primeng/password';
 import {RegisterForm} from "../../../core/type/register-form";
+import {RegisterRequest} from '../../../core/type/register-request';
+import {AuthService} from '../../../core/service/auth-service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-registration-form',
@@ -29,6 +32,8 @@ import {RegisterForm} from "../../../core/type/register-form";
 export class RegistrationForm {
 
   private formBuilder = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
   submitted = false;
   loading = false;
@@ -47,7 +52,7 @@ export class RegistrationForm {
     confirmPassword: this.formBuilder.nonNullable.control('', Validators.required),
   }, {
     validators: this.passwordMatchValidator.bind(this)
-  }) ;
+  });
 
   get form() {
     return this.registerForm.controls;
@@ -73,16 +78,27 @@ export class RegistrationForm {
     this.loading = true;
 
     const payload = this.registerForm.getRawValue();
-    delete (payload as any).confirmPassword;
 
-    console.log(payload);
+    const request: RegisterRequest = {
+      firstname: payload.firstname,
+      lastname: payload.lastname,
+      username: payload.username,
+      email: payload.email,
+      password: payload.password,
+    };
 
-    setTimeout(() => {
-      this.loading = false;
-      this.registerForm.reset();
-      this.submitted = false;
-    }, 1500);
-  };
+    this.authService.register(request)
+      .subscribe({
+        next: (user) => {
+          this.loading = false;
+          this.router.navigate(['/auth/login']);
+        },
+        error: (error) => {
+          this.loading = false;
+          console.error(error);
+        }
+      });
+  }
 
   onReset(): void {
     this.registerForm.reset();

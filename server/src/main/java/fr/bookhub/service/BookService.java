@@ -3,7 +3,14 @@ package fr.bookhub.service;
 import fr.bookhub.entity.*;
 import fr.bookhub.repository.*;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import fr.bookhub.service.filter.BookSearchFilter;
+import fr.bookhub.service.specification.BookSpecification;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -75,12 +82,12 @@ public class BookService {
 
         // 4. relations
         Country country = (req.getCountryName() != null)
-                ? countryRepository.findByName(req.getCountryName())
+                ? countryRepository.findByNameIgnoreCase(req.getCountryName())
                 .orElseGet(() ->
-                        countryRepository.findById("USA")
+                        countryRepository.findByCode("USA")
                                 .orElseThrow(() -> new RuntimeException("Default country USA not found"))
                 )
-                : countryRepository.findById("USA")
+                : countryRepository.findByCode("USA")
                 .orElseThrow(() -> new RuntimeException("Default country USA not found"));
 
         book.setCountry(country);
@@ -103,7 +110,8 @@ public class BookService {
                 authorRepository.findByLastName(req.getAuthorLastName())
                         .orElseGet(() -> {
                             ServiceResponse<Author> authorResponse =
-                                    authorService.createAuthor(req.getAuthorFirstName(), req.getAuthorLastName(), book.getCountry());
+                                    authorService.createAuthor(
+                                            new AuthorCreateRequest(req.getAuthorFirstName(), req.getAuthorLastName(), book.getCountry().getName()));
 
                             if (!"3001".equals(authorResponse.getCode()) || authorResponse.getData() == null) {
                                 throw new RuntimeException("Author creation failed");
@@ -150,5 +158,104 @@ public class BookService {
         }
 
         return new ServiceResponse<>("1020", "All required fields are present");
+    }
+
+    // Recherche avancée avec filtre(s) :
+    public ServiceResponse<Page<BookResponse>> search(BookSearchFilter filter) {
+
+        // 1. Build specification
+        Specification<Book> spec = buildSpecification(filter);
+
+        // 2. Pagination + tri
+        Pageable pageable = buildPageable(filter);
+
+        // 3. Query DB
+        Page<Book> booksPage = bookRepository.findAll(spec, pageable);
+
+        // 4. Mapping
+        Page<BookResponse> responsePage = booksPage.map(bookMapper::toResponse);
+
+        // 5. Result
+        if (responsePage.isEmpty()) {
+            return new ServiceResponse<>("5001", "No result for this search");
+        }
+
+        return new ServiceResponse<>("5000", "Books found", responsePage);
+    }
+
+    private Specification<Book> buildSpecification(BookSearchFilter filter) {
+
+        Specification<Book> spec = Specification.unrestricted();
+
+        if (filter.getKeyword() != null && !filter.getKeyword().isBlank()) {
+            spec = spec.and(BookSpecification.keyword(filter.getKeyword()));
+        }
+
+        if (filter.getTitle() != null && !filter.getTitle().isBlank()) {
+            spec = spec.and(BookSpecification.title(filter.getTitle()));
+        }
+
+        if (filter.getYear() != null) {
+            spec = spec.and(BookSpecification.year(filter.getYear()));
+        }
+
+        if (filter.getIsbn() != null && !filter.getIsbn().isBlank()) {
+            spec = spec.and(BookSpecification.isbn(filter.getIsbn()));
+        }
+
+        if (filter.getAuthorFirstName() != null || filter.getAuthorLastName() != null) {
+            spec = spec.and(BookSpecification.author(
+                    filter.getAuthorFirstName(),
+                    filter.getAuthorLastName()
+            ));
+        }
+
+        if (filter.getGenre() != null && !filter.getGenre().isBlank()) {
+            spec = spec.and(BookSpecification.genre(filter.getGenre()));
+        }
+
+        if (filter.getPublisher() != null && !filter.getPublisher().isBlank()) {
+            spec = spec.and(BookSpecification.publisher(filter.getPublisher()));
+        }
+
+        if (filter.getCountryName() != null || filter.getCountryNationality() != null) {
+            spec = spec.and(BookSpecification.country(
+                    filter.getCountryName(),
+                    filter.getCountryNationality()
+            ));
+        }
+
+        return spec;
+    }
+
+    private Pageable buildPageable(BookSearchFilter filter) {
+
+        String sortBy = (filter.getSortBy() == null || filter.getSortBy().isBlank())
+                ? "title"
+                : filter.getSortBy();
+
+        Sort.Direction direction =
+                "desc".equalsIgnoreCase(filter.getSortDirection())
+                        ? Sort.Direction.DESC
+                        : Sort.Direction.ASC;
+
+        int page = Math.max(filter.getPage(), 0);
+        int size = filter.getSize() < 1 ? 21 : filter.getSize();
+
+        return PageRequest.of(
+                page,
+                size,
+                Sort.by(direction, sortBy)
+        );
+    }
+
+    public ServiceResponse<?> delete(int id) {
+        Book book = bookRepository.findById(id).orElse(null);
+
+        if (book == null) {
+            return new ServiceResponse<>("6001", "Book not found");
+        }
+
+        return new ServiceResponse<>("6000", "Book successfully deleted", book);
     }
 }
