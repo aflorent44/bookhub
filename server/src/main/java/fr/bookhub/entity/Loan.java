@@ -1,5 +1,6 @@
 package fr.bookhub.entity;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -51,5 +52,6 @@ public class Loan {
 
     @ManyToOne
     @JoinColumn(name = "updated_by")
+    @Nullable
     private User updatedBy;
 }
