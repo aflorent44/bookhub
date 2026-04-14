@@ -1,0 +1,65 @@
+<p-card header="Se connecter" class="login-card">
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="p-fluid">
+
+    <div class="field">
+      <p-inputgroup>
+        <p-inputgroup-addon>
+          <i class="pi pi-envelope"></i>
+        </p-inputgroup-addon>
+        <p-floatlabel variant="on">
+          <input pInputText id="email" type="email" formControlName="email" />
+          <label for="email">Email</label>
+        </p-floatlabel>
+      </p-inputgroup>
+      @if (isInvalid('email')) {
+        <small class="error">
+          Veuillez saisir une adresse email valide.
+        </small>
+      }
+    </div>
+
+    <div class="field">
+      <p-inputgroup>
+        <p-inputgroup-addon>
+          <i class="pi pi-lock"></i>
+        </p-inputgroup-addon>
+        <p-floatlabel variant="on">
+          <p-password
+            inputId="password"
+            formControlName="password"
+            [feedback]="false"
+            [toggleMask]="true"
+            [fluid]="true">
+          </p-password>
+          <label for="password">Mot de passe</label>
+        </p-floatlabel>
+      </p-inputgroup>
+      @if (isInvalid('password')) {
+        <small class="error">
+          Le mot de passe est obligatoire.
+        </small>
+      }
+    </div>
+
+    <div>
+    <button
+      pButton
+      class="btn-cancel"
+      type="button"
+      label="Annuler"
+      icon="pi pi-times"
+      severity="secondary"
+      (click)="onReset()">
+    </button>
+
+      <button
+        pButton
+        class="btn-submit"
+        type="submit"
+        label="Connexion"
+        icon="pi pi-sign-in"
+        [disabled]="loginForm.invalid">
+      </button>
+    </div>
+  </form>
+</p-card>

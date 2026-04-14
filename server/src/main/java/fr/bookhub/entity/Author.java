@@ -1,10 +1,10 @@
 package fr.bookhub.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -19,13 +19,21 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+   @Column(name = "last_name")
     private String lastName;
+
+    @Column(name = "first_name")
     private String firstName;
 
     @ManyToOne
     @JoinColumn(name = "country_code")
+    @NotNull
     private Country country;
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @ManyToOne

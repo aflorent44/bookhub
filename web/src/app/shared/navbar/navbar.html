@@ -1,31 +1,38 @@
 <nav class="navbar">
-    <div class="logo">BookHub</div>
+  <div class="logo">BookHub</div>
 
-    <ul class="nav-links">
-        <li><a href="#">Bibliothèque</a></li>
-        @if (isLoggedIn) {
-        <li><a href="#">Mon profil</a></li>
-        }
-        
-        <!-- barre de recherche, composant ? -->
-        <li class="search-item">
-            <span class="search-box">
-                <i class="pi pi-search"></i>
-                <input type="text" placeholder="Rechercher..." />
-                <!--<input type="text" [(ngModel)]="search" placeholder="Rechercher..." />-->
-            </span>
-        </li>
-        <li>
-            @if (isLoggedIn) {
-            <a href="#" class="logout">
-                <i class="pi pi-sign-out" (click)="logout()"></i>
-            </a>
-            } @else {
-            <div class="auth-buttons">
-                <button class="login-btn" (click)="login()">Connexion</button>
-                <button class="signup-btn">Inscription</button>
-            </div>
-            }
-        </li>
-    </ul>
+  <ul class="nav-links">
+    <li><a routerLink="/library">Bibliothèque</a></li>
+
+    @if (isLoggedIn) {
+      <li><a routerLink="/profile">Mon profil</a></li>
+    }
+
+    <li class="search-item">
+      <span class="search-box">
+        <i class="pi pi-search"></i>
+        <input type="text" placeholder="Rechercher..." />
+      </span>
+    </li>
+
+    <li>
+      @if (isLoggedIn) {
+        <a class="logout" (click)="logout()">
+          <i class="pi pi-sign-out"></i>
+        </a>
+      } @else {
+        <div class="auth-buttons">
+          <button class="login-btn" routerLink="/login">
+            <i class="pi pi-sign-in"></i>
+            Connexion
+          </button>
+
+          <button class="signup-btn" routerLink="/register">
+            <i class="pi pi-user-plus"></i>
+            Inscription
+          </button>
+        </div>
+      }
+    </li>
+  </ul>
 </nav>
