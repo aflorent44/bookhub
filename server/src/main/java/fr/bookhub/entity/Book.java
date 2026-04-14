@@ -23,13 +23,16 @@ public class Book {
     private Integer id;
     @NotEmpty
     private String title;
+
+    @Column(name = "first_page_url")
     private String firstPageUrl;
-    @Size(min = 4, max = 4)
+
     private Integer year;
 
     @Column(unique = true)
     @Size(min = 13, max = 13)
     private String isbn;
+
     private Integer quantity = 1;
 
     @ManyToOne
@@ -57,7 +60,11 @@ public class Book {
     )
     @NotNull
     private Set<Genre> genres = new HashSet<>();
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @ManyToOne

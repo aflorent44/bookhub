@@ -13,7 +13,7 @@ import lombok.*;
 public class Country {
 
     @Id
-    @Column(name = "code", columnDefinition = "CHAR(3)")
+    @Column(columnDefinition = "char(3)")
     private String code;
     @NotEmpty
     private String name;

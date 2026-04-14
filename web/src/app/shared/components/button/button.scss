@@ -1,0 +1,25 @@
+.custom-button {
+    height: 40px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 20px;
+    color: var(--bg-white);
+    cursor: pointer;
+    font-size: var(--font-size-m);
+    font-family: var(--font-body);
+    transition: 0.25s ease;
+    position: relative;
+  
+//ombre juste en bas
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+  
+    &:hover {
+      transform: scale(1.08);
+      box-shadow: 0 10px 18px rgba(0, 0, 0, 0.14);
+    }
+  
+    &:active {
+      transform: scale(0.98);
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
+    }
+  }

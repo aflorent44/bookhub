@@ -1,0 +1,145 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--bg-off-white);
+    padding: var(--space-s) var(--space-l);
+    color: var(--txt-primary);
+  }
+
+  .navbar {
+    height: 60px;
+  }
+
+  .logo {
+    font-size: var(--font-size-l);
+    font-weight: 700;
+    font-family: var(--font-titles);
+  }
+  
+.nav-links {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-l);
+  margin: 0;
+  padding: 0;
+}
+.nav-links li a {
+    text-decoration: none;
+    color: var(--txt-primary);
+    font-weight: 500;
+    //font-size: var(--font-size-sm);
+    font-size: var(--font-size-m);
+    transition: transform 0.25s ease, color 0.25s ease;
+  }
+  
+  .nav-links li  a:hover {
+    transform: scale(1.08);
+    color: var(--txt-primary-hover);
+  }
+
+  .nav-links li {
+    display: flex;
+    align-items: center;
+  }
+
+  .logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    background-color: var(--btn-yellow);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .logout i {
+    color: var(--txt-primary);
+    font-size: 1rem;
+  }
+
+
+  .search-item {
+    display: flex;
+    align-items: center;
+  }
+  
+
+  // Truc de recherche
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    background-color: var(--bg-white);
+    padding: 6px 10px;
+    border-radius: var(--radius-full);
+  
+    border: 1px solid var(--zone-border);
+    transition: border 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .search-box i {
+    color: var(--txt-primary);
+    font-size: 0.9rem;
+  }
+  
+  .search-box input {
+    border: none;
+    outline: none;
+    font-size: var(--font-size-sm);
+    font-family: var(--font-body);
+    background: transparent;
+    width: 160px;
+  }
+  
+  /* focus effect */
+  .search-box:focus-within {
+    border: 1px solid var(--txt-primary);
+    //box-shadow: 0 0 0 1px var(--txt-primary); box shadow ?
+  }
+
+
+  /* Conteneur des boutons */
+.auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: var(--space-s);
+  }
+  
+  /* Style commun */
+  .auth-buttons button {
+    font-family: var(--font-body);
+    font-size: var(--font-size-sm);
+    padding: 6px 12px;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+  }
+  
+  /* 🔵 Bouton Connexion */
+  .login-btn {
+    background-color: var(--btn-red);
+    color: var(--bg-white);
+    border: none;
+  }
+  
+  .login-btn:hover {
+    background-color: var(--bg-green);
+    //color: var(--bg-green);
+  }
+  
+  /* ⚪ Bouton Inscription */
+  .signup-btn {
+    color: var(--txt-primary);
+    background-color: var(--btn-yellow);
+    border: none;
+  }
+  
+  .signup-btn:hover {
+    background-color: var(--bg-green);
+    color: var(--bg-white);
+  }

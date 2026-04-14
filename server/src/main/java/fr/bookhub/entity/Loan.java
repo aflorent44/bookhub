@@ -23,12 +23,18 @@ public class Loan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @NotNull
+
+    @Column(name = "start_date")
     private LocalDateTime debutDate;
-    @NotNull
+
+    @Column(name = "end_date")
     private LocalDateTime endDate;
+
+    @Column(name = "return_date")
     private LocalDateTime returnDate;
-    @NotNull
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
     private Status status;
 
     @ManyToOne
@@ -39,7 +45,11 @@ public class Loan {
     @ManyToOne
     @NotNull
     private Book book;
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @ManyToOne
