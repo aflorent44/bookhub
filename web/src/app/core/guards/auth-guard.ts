@@ -10,6 +10,19 @@ export const authGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  router.navigate(['/api/auth/login']);
+  router.navigate(['/login']);
   return false;
 };
+
+export const publicGuard: CanActivateFn = (route, state) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  if (authService.currentUser$() || authService.getToken()) {
+    router.navigate(['/books']);
+    return false;
+  }
+
+  return true;
+};
+

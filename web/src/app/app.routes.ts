@@ -1,20 +1,14 @@
-import { Routes } from '@angular/router';
+import { authGuard, publicGuard } from './core/guards/auth-guard';
+import {Routes} from '@angular/router';
 
 export const routes: Routes = [
-  { path: 'books', loadComponent: () => import('./features/book/book-form/book-form').then(m => m.BookForm), title: 'Ajouter un livre' },
+  // Routes publiques (redirige si déjà connecté)
+  { path: 'login', canActivate: [publicGuard], loadComponent: () => import('./features/user/login-form/login-form').then(m => m.LoginForm) },
+  { path: 'register', canActivate: [publicGuard], loadComponent: () => import('./features/user/registration-form/registration-form').then(m => m.RegistrationForm) },
 
-  { path: 'books/:id', loadComponent: () => import('./features/book/book-detail/book-detail').then(m => m.BookDetail), title: 'Afficher un livre' },
-
-  { path: 'register',
-     loadComponent: () => import('./features/user/registration-form/registration-form')
-      .then(m => m.RegistrationForm),
-    title: 'Inscription - Bookhub'
-  },
-
-  { path: 'login', loadComponent: () => import('./features/user/login-form/login-form')
-      .then(m => m.LoginForm),
-  title: 'Connexion - Bookhub'
-  },
+  // Routes protégées
+  { path: 'books', canActivate: [authGuard], loadComponent: () => import('./features/book/book-form/book-form').then(m => m.BookForm) },
+  { path: 'books/:id', canActivate: [authGuard], loadComponent: () => import('./features/book/book-detail/book-detail').then(m => m.BookDetail) },
 
   { path: '', redirectTo: 'login', pathMatch: 'full' }
 ];
