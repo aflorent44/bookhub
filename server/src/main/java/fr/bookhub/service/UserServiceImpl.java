@@ -1,5 +1,6 @@
 package fr.bookhub.service;
 
+import fr.bookhub.dto.UpdateProfileRequest;
 import fr.bookhub.dto.UserRegistrationRequest;
 import fr.bookhub.dto.UserResponse;
 import fr.bookhub.entity.Role;
@@ -74,6 +75,7 @@ public class UserServiceImpl implements UserService {
                 user.getLastName(),
                 user.getPseudo(),
                 user.getEmail(),
+                user.getPhoneNumber(),
                 user.getRole().name(),
                 user.getCreatedAt()
         );
@@ -83,5 +85,25 @@ public class UserServiceImpl implements UserService {
     public void deleteAccount(String email) {
         User user = findByEmail(email);
         userRepository.delete(user);
+    }
+
+    @Override
+    public void updateProfile(String email, UpdateProfileRequest request) {
+        User user = findByEmail(email);
+
+        if (request.firstName() != null) {
+            user.setFirstName(request.firstName().trim());
+        }
+
+        if (request.lastName() != null) {
+            user.setLastName(request.lastName().trim());
+        }
+
+        if (request.phoneNumber() != null) {
+            user.setPhoneNumber(request.phoneNumber().trim());
+        }
+
+        user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);
     }
 }

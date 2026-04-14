@@ -8,7 +8,8 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-
+import { ProfileForm } from '../../../core/type/profile-form';
+import { PasswordForm } from '../../../core/type/password-form';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
@@ -59,8 +60,8 @@ export class Profile implements OnInit {
   savingProfile = signal(false);
   savingPassword = signal(false);
 
-  profileForm!: FormGroup;
-  passwordForm!: FormGroup;
+  profileForm!: FormGroup<ProfileForm>;
+  passwordForm!: FormGroup<PasswordForm>;
 
   ngOnInit(): void {
     this.initForms();
@@ -69,23 +70,20 @@ export class Profile implements OnInit {
 
   private initForms(): void {
     this.profileForm = this.fb.group({
-      firstName: ['', [Validators.required, Validators.minLength(2)]],
-      lastName: ['', [Validators.required, Validators.minLength(2)]],
-      phone: ['', [Validators.pattern(/^(\+33|0)[1-9](\d{8})$/)]],
+      firstName: this.fb.nonNullable.control('', [Validators.required, Validators.minLength(2)]),
+      lastName: this.fb.nonNullable.control('', [Validators.required, Validators.minLength(2)]),
+      phoneNumber: this.fb.nonNullable.control('', [Validators.pattern(/^(\+33|0)[1-9](\d{8})$/)]),
     });
 
     this.passwordForm = this.fb.group(
       {
-        currentPassword: ['', Validators.required],
-        newPassword: [
-          '',
-          [
-            Validators.required,
-            Validators.minLength(8),
-            Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/),
-          ],
-        ],
-        confirmPassword: ['', Validators.required],
+        currentPassword: this.fb.nonNullable.control('', Validators.required),
+        newPassword: this.fb.nonNullable.control('', [
+          Validators.required,
+          Validators.minLength(8),
+          Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/),
+        ]),
+        confirmPassword: this.fb.nonNullable.control('', Validators.required),
       },
       { validators: passwordMatchValidator },
     );
@@ -99,7 +97,7 @@ export class Profile implements OnInit {
         this.profileForm.patchValue({
           firstName: user.firstname,
           lastName: user.lastname,
-          email: user.email ?? '',
+          phoneNumber: user.phoneNumber ?? '',
         });
         this.loading.set(false);
       },
@@ -116,42 +114,37 @@ export class Profile implements OnInit {
       this.profileForm.markAllAsTouched();
       return;
     }
+
     this.savingProfile.set(true);
-    // this.profileService.updateProfile(this.profileForm.value).subscribe({
-    //   next: (updated) => {
-    //     this.user.set(updated);
-    //     this.savingProfile.set(false);
-    //     this.showSuccess('Profil mis à jour avec succès !');
-    //   },
-    //   error: () => {
-    //     this.savingProfile.set(false);
-    //     this.showError('Erreur lors de la mise à jour du profil.');
-    //   },
-    // });
+
+    const payload = this.profileForm.getRawValue();
+
+    this.profileService.updateProfile(payload).subscribe({
+      next: (updated) => {
+        this.user.set(updated);
+        this.profileForm.patchValue({
+          firstName: updated.firstname,
+          lastName: updated.lastname,
+          phoneNumber: updated.phoneNumber ?? '',
+        });
+        this.savingProfile.set(false);
+        this.showSuccess('Profil mis à jour avec succès !');
+      },
+      error: () => {
+        this.savingProfile.set(false);
+        this.showError('Erreur lors de la mise à jour du profil.');
+      },
+    });
   }
 
-  //TODO
   changePassword(): void {
     if (this.passwordForm.invalid) {
       this.passwordForm.markAllAsTouched();
       return;
     }
-    // this.savingPassword.set(true);
-    // this.profileService.changePassword(this.passwordForm.value).subscribe({
-    //   next: () => {
-    //     this.savingPassword.set(false);
-    //     this.passwordForm.reset();
-    //     this.showSuccess('Mot de passe modifié avec succès !');
-    //   },
-    //   error: (err) => {
-    //     this.savingPassword.set(false);
-    //     const msg =
-    //       err.status === 400
-    //         ? 'Mot de passe actuel incorrect.'
-    //         : 'Erreur lors du changement de mot de passe.';
-    //     this.showError(msg);
-    //   },
-    // });
+
+    const payload = this.passwordForm.getRawValue();
+    console.log(payload);
   }
 
   confirmDeleteAccount(): void {
@@ -171,8 +164,6 @@ export class Profile implements OnInit {
               detail: 'Votre compte a été supprimé avec succès.',
               life: 5000,
             });
-            // TODO: Rediriger vers login + logout
-            // inject(Router).navigate(['/login']);
           },
           error: () => this.showError('Impossible de supprimer le compte.'),
         });
@@ -213,5 +204,14 @@ export class Profile implements OnInit {
 
   private showError(msg: string): void {
     this.messageService.add({ severity: 'error', summary: 'Erreur', detail: msg, life: 4000 });
+  }
+
+  resetProfileForm(): void {
+    const user = this.user();
+    this.profileForm.reset({
+      firstName: user?.firstname ?? '',
+      lastName: user?.lastname ?? '',
+      phoneNumber: user?.phoneNumber ?? '',
+    });
   }
 }

@@ -1,15 +1,13 @@
 package fr.bookhub.controller;
 
+import fr.bookhub.dto.UpdateProfileRequest;
 import fr.bookhub.dto.UserResponse;
 import fr.bookhub.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -20,6 +18,12 @@ public class UserController {
 
     @GetMapping("me")
     public ResponseEntity<UserResponse> getProfile(@AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(userService.getProfile(userDetails.getUsername()));
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<UserResponse> updateProfile(@AuthenticationPrincipal UserDetails userDetails, @RequestBody UpdateProfileRequest request) {
+        userService.updateProfile(userDetails.getUsername(), request);
         return ResponseEntity.ok(userService.getProfile(userDetails.getUsername()));
     }
 

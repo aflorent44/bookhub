@@ -1,5 +1,6 @@
 package fr.bookhub.service;
 
+import fr.bookhub.dto.UpdateProfileRequest;
 import fr.bookhub.dto.UserRegistrationRequest;
 import fr.bookhub.dto.UserResponse;
 import fr.bookhub.entity.User;
@@ -17,4 +18,6 @@ public interface UserService {
     UserResponse getProfile(String email);
 
     void deleteAccount(String email);
+
+    void updateProfile(String email, UpdateProfileRequest request);
 }

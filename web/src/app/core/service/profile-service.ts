@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UserResponse } from '../type/user-response';
+import { UpdateProfileRequest } from '../type/update-profile-request';
 
 @Injectable({
   providedIn: 'root',
@@ -14,10 +15,9 @@ export class ProfileService {
     return this.http.get<UserResponse>(`${this.apiUrl}/me`);
   }
 
-  // TODO : UPDATE
-  // updateProfile(request: UpdateProfileRequest): Observable<User> {
-  //   return this.http.put<User>(`${this.apiUrl}/me`, request);
-  // }
+  updateProfile(request: UpdateProfileRequest): Observable<UserResponse> {
+    return this.http.put<UserResponse>(`${this.apiUrl}/me`, request);
+  }
 
   // TODO : change password
   // changePassword(request: ChangePasswordRequest): Observable<void> {

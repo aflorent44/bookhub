@@ -1,24 +1,20 @@
-<p-toast position="top-right" />
-<p-confirmDialog />
+<p-toast position="top-right"/>
+<p-confirmDialog/>
 
-<!-- LOADING STATE -->
 @if (loading()) {
   <div class="profile-spinner">
-    <p-progressSpinner strokeWidth="3" animationDuration=".8s" />
+    <p-progressSpinner strokeWidth="3" animationDuration=".8s"/>
   </div>
 }
 
-<!-- MAIN CONTENT -->
 @if (!loading() && user()) {
   <div class="profile-page">
-
     <aside class="profile-sidebar">
-
-      <!-- Avatar -->
       <div class="profile-avatar-card">
         <div class="avatar-circle">
           <span class="avatar-initials">{{ getInitials(user()!) }}</span>
         </div>
+
         <div class="profile-identity">
           <h2 class="profile-fullname">{{ user()!.firstname }} {{ user()!.lastname }}</h2>
           <p class="profile-email">{{ user()!.email }}</p>
@@ -42,72 +38,16 @@
         </div>
       </div>
 
-      <!-- Stats emprunts -->
-<!--      @if (loanSummary()) {-->
-<!--        <div class="stats-card">-->
-<!--          <h3 class="stats-title">Mon activité</h3>-->
-
-<!--          <div class="stat-item">-->
-<!--            <div class="stat-icon stat-icon&#45;&#45;blue">-->
-<!--              <i class="pi pi-book"></i>-->
-<!--            </div>-->
-<!--            <div class="stat-info">-->
-<!--              <span class="stat-value">{{ loanSummary()!.activeLoans }}</span>-->
-<!--              <span class="stat-label">Emprunts en cours</span>-->
-<!--            </div>-->
-<!--          </div>-->
-
-<!--          <div class="stat-item">-->
-<!--            <div class="stat-icon stat-icon&#45;&#45;yellow">-->
-<!--              <i class="pi pi-history"></i>-->
-<!--            </div>-->
-<!--            <div class="stat-info">-->
-<!--              <span class="stat-value">{{ loanSummary()!.totalLoans }}</span>-->
-<!--              <span class="stat-label">Total emprunts</span>-->
-<!--            </div>-->
-<!--          </div>-->
-
-<!--          <div class="stat-item" [class.stat-item&#45;&#45;alert]="loanSummary()!.lateLoans > 0">-->
-<!--            <div class="stat-icon" [class.stat-icon&#45;&#45;red]="loanSummary()!.lateLoans > 0"-->
-<!--                 [class.stat-icon&#45;&#45;green]="loanSummary()!.lateLoans === 0">-->
-<!--              <i class="pi" [class.pi-exclamation-circle]="loanSummary()!.lateLoans > 0"-->
-<!--                 [class.pi-check-circle]="loanSummary()!.lateLoans === 0"></i>-->
-<!--            </div>-->
-<!--            <div class="stat-info">-->
-<!--              <span class="stat-value">{{ loanSummary()!.lateLoans }}</span>-->
-<!--              <span class="stat-label">En retard</span>-->
-<!--            </div>-->
-<!--          </div>-->
-
-<!--          <div class="stat-item">-->
-<!--            <div class="stat-icon stat-icon&#45;&#45;green">-->
-<!--              <i class="pi pi-bookmark"></i>-->
-<!--            </div>-->
-<!--            <div class="stat-info">-->
-<!--              <span class="stat-value">{{ loanSummary()!.reservations }}</span>-->
-<!--              <span class="stat-label">Réservations</span>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      }-->
-
-      <!-- Danger zone -->
       <div class="danger-zone">
-        <button
-          class="btn-delete-account"
-          (click)="confirmDeleteAccount()"
-        >
+        <button class="btn-delete-account" type="button" (click)="confirmDeleteAccount()">
           <i class="pi pi-trash"></i>
           Supprimer mon compte
         </button>
         <p class="danger-note">Conformément au RGPD, toutes vos données seront effacées.</p>
       </div>
-
     </aside>
 
     <main class="profile-main">
-
-      <!-- ── Modifier le profil ── -->
       <section class="profile-section">
         <div class="section-header">
           <div class="section-icon">
@@ -120,7 +60,6 @@
         </div>
 
         <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="profile-form">
-
           <div class="field-row">
             <div class="field">
               <p-floatlabel>
@@ -152,6 +91,9 @@
               </p-floatlabel>
               @if (hasError(profileForm, 'lastName', 'required')) {
                 <small class="field-error">Le nom est requis.</small>
+              }
+              @if (hasError(profileForm, 'lastName', 'minlength')) {
+                <small class="field-error">Au moins 2 caractères.</small>
               }
             </div>
           </div>
@@ -186,15 +128,11 @@
             <button
               type="button"
               class="btn btn-secondary"
-              (click)="profileForm.reset({ firstName: user()!.firstname, lastName: user()!.lastname, email: user()!.email })"
+              (click)="resetProfileForm()"
             >
               Annuler
             </button>
-            <button
-              type="submit"
-              class="btn btn-primary"
-              [disabled]="savingProfile()"
-            >
+            <button type="submit" class="btn btn-primary" [disabled]="savingProfile()">
               @if (savingProfile()) {
                 <i class="pi pi-spin pi-spinner"></i>
               } @else {
@@ -213,12 +151,14 @@
           </div>
           <div>
             <h2 class="section-title">Sécurité</h2>
-            <p class="section-subtitle">Modifiez votre mot de passe. Il doit contenir au moins 8 caractères, une majuscule, un chiffre et un caractère spécial.</p>
+            <p class="section-subtitle">
+              Modifiez votre mot de passe. Il doit contenir au moins 8 caractères, une majuscule, un chiffre et un
+              caractère spécial.
+            </p>
           </div>
         </div>
 
         <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="profile-form">
-
           <div class="field">
             <p-floatlabel>
               <input
@@ -248,7 +188,7 @@
                 <label for="newPassword">Nouveau mot de passe</label>
               </p-floatlabel>
               @if (hasError(passwordForm, 'newPassword', 'pattern')) {
-                <small class="field-error">8 car. min, 1 majuscule, 1 chiffre, 1 caractère spécial.</small>
+                <small class="field-error">8 caractères min, 1 majuscule, 1 chiffre, 1 spécial.</small>
               }
             </div>
 
@@ -284,7 +224,6 @@
           </div>
         </form>
       </section>
-
     </main>
   </div>
 }
