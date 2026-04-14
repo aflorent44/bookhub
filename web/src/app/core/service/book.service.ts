@@ -1,62 +1,40 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs';
 import { Book } from '../type/book';
-import { of } from 'rxjs';
-import {Author} from '../type/author';
-import {Publisher} from '../type/publisher';
-import {Country} from '../type/country';
+import { ServiceResponse } from '../type/service-response';
+import { environment } from '../../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BookService {
-  private apiUrl = 'http://localhost:3000/api'; // à adapter
+  private http = inject(HttpClient);
+  private apiUrl : string = environment.apiUrl;
+  private googleBooksApiUrl : string = environment.googleBooksApiUrl;
 
-  constructor(private http: HttpClient) {}
+  getBookById(id: number): Observable<Book> {
+    return this.http.get<ServiceResponse<Book>>(`${this.apiUrl}/books/${id}`)
+      .pipe(map(response => response.data));
+  }
 
-  getBookById(id: string): Observable<Book> {
+  getBooks(): Observable<Book[]> {
+    return this.http.get<ServiceResponse<Book[]>>(`${this.apiUrl}/books`)
+      .pipe(map((response: ServiceResponse<Book[]>) => response.data));
+  }
 
-    const mockPublisher: Partial<Publisher> = {
-      id: 1,
-      name: "Penguin Books"
-    };
+  createBook(book: any): Observable<Book> {
+    return this.http.post<ServiceResponse<Book>>(`${this.apiUrl}/books`, book)
+      .pipe(map((response: ServiceResponse<Book>) => {
+        if (response.code !== '1030') {
+          throw new Error(response.code);
+        }
+        return response.data;
+      }));
+  }
 
-    const mockCountry: Partial<Country> = {
-      id: 1,
-      code: "GBR",
-      name: "United Kingdom",
-      nationality: "British"
-    };
-
-    const mockAuthor: Partial<Author> = {
-      id: 1,
-      firstName: "Jane",
-      lastName: "Austen",
-      country: mockCountry as Country
-    };
-
-  const mockBook: Partial<Book> = {
-  id: 2,
-  isbn: "9780140430721",
-  title: "Pride and Prejudice",
-  year: 1813,
-  quantity: 3,
-  description: "A classic novel on manners and marriage.",
-  first_page_url: "http://books.google.com/books/content?id=viRcjwEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
-  createdBy: 1,
-  createdAt: new Date ("2026-04-09T16:16:59.73"),
-  updatedBy: 1,
-  updatedAt: new Date("2026-04-09T16:16:59.73"),
-  genres: [
-    { id: 2, label: "Classics" },
-    { id: 1, label: "Fiction" }
-  ],
-    author : mockAuthor as Author,
-    publisher: mockPublisher as Publisher
-};
-
-    return of(mockBook as Book);
-    //return this.http.get<Book>(`${this.apiUrl}/books/${id}`);
+  getBookInfoFromGoogleByIsbn(isbn: string): Observable<any> {
+    return this.http.get<any>(`${this.googleBooksApiUrl}?q=isbn:${isbn}`);
   }
 }

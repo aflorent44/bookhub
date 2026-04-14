@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
@@ -20,6 +21,7 @@ public class BookResponse {
     private Integer year;
     private Integer quantity;
     private String description;
+    private String firstPageUrl;
 
     private String authorFirstName;
     private String authorLastName;
@@ -27,4 +29,10 @@ public class BookResponse {
     private String publisherName;
 
     private Set<GenreDTO> genres;
+
+    private String createdBy;
+    private String updatedBy;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
 }
