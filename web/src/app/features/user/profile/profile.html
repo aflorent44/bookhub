@@ -1,0 +1,290 @@
+<p-toast position="top-right" />
+<p-confirmDialog />
+
+<!-- LOADING STATE -->
+@if (loading()) {
+  <div class="profile-spinner">
+    <p-progressSpinner strokeWidth="3" animationDuration=".8s" />
+  </div>
+}
+
+<!-- MAIN CONTENT -->
+@if (!loading() && user()) {
+  <div class="profile-page">
+
+    <aside class="profile-sidebar">
+
+      <!-- Avatar -->
+      <div class="profile-avatar-card">
+        <div class="avatar-circle">
+          <span class="avatar-initials">{{ getInitials(user()!) }}</span>
+        </div>
+        <div class="profile-identity">
+          <h2 class="profile-fullname">{{ user()!.firstname }} {{ user()!.lastname }}</h2>
+          <p class="profile-email">{{ user()!.email }}</p>
+          <p-tag
+            [value]="getRoleLabel(user()!.role)"
+            [severity]="getRoleSeverity(user()!.role)"
+            styleClass="profile-role-tag"
+          />
+        </div>
+
+        @if (user()!.id) {
+          <div class="membership-number">
+            <span class="membership-label">N° adhérent</span>
+            <span class="membership-value">{{ user()!.id }}</span>
+          </div>
+        }
+
+        <div class="member-since">
+          <i class="pi pi-calendar-plus"></i>
+          Membre depuis {{ user()!.createdAt | date:'MMMM yyyy' : '' : 'fr' }}
+        </div>
+      </div>
+
+      <!-- Stats emprunts -->
+<!--      @if (loanSummary()) {-->
+<!--        <div class="stats-card">-->
+<!--          <h3 class="stats-title">Mon activité</h3>-->
+
+<!--          <div class="stat-item">-->
+<!--            <div class="stat-icon stat-icon&#45;&#45;blue">-->
+<!--              <i class="pi pi-book"></i>-->
+<!--            </div>-->
+<!--            <div class="stat-info">-->
+<!--              <span class="stat-value">{{ loanSummary()!.activeLoans }}</span>-->
+<!--              <span class="stat-label">Emprunts en cours</span>-->
+<!--            </div>-->
+<!--          </div>-->
+
+<!--          <div class="stat-item">-->
+<!--            <div class="stat-icon stat-icon&#45;&#45;yellow">-->
+<!--              <i class="pi pi-history"></i>-->
+<!--            </div>-->
+<!--            <div class="stat-info">-->
+<!--              <span class="stat-value">{{ loanSummary()!.totalLoans }}</span>-->
+<!--              <span class="stat-label">Total emprunts</span>-->
+<!--            </div>-->
+<!--          </div>-->
+
+<!--          <div class="stat-item" [class.stat-item&#45;&#45;alert]="loanSummary()!.lateLoans > 0">-->
+<!--            <div class="stat-icon" [class.stat-icon&#45;&#45;red]="loanSummary()!.lateLoans > 0"-->
+<!--                 [class.stat-icon&#45;&#45;green]="loanSummary()!.lateLoans === 0">-->
+<!--              <i class="pi" [class.pi-exclamation-circle]="loanSummary()!.lateLoans > 0"-->
+<!--                 [class.pi-check-circle]="loanSummary()!.lateLoans === 0"></i>-->
+<!--            </div>-->
+<!--            <div class="stat-info">-->
+<!--              <span class="stat-value">{{ loanSummary()!.lateLoans }}</span>-->
+<!--              <span class="stat-label">En retard</span>-->
+<!--            </div>-->
+<!--          </div>-->
+
+<!--          <div class="stat-item">-->
+<!--            <div class="stat-icon stat-icon&#45;&#45;green">-->
+<!--              <i class="pi pi-bookmark"></i>-->
+<!--            </div>-->
+<!--            <div class="stat-info">-->
+<!--              <span class="stat-value">{{ loanSummary()!.reservations }}</span>-->
+<!--              <span class="stat-label">Réservations</span>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      }-->
+
+      <!-- Danger zone -->
+      <div class="danger-zone">
+        <button
+          class="btn-delete-account"
+          (click)="confirmDeleteAccount()"
+        >
+          <i class="pi pi-trash"></i>
+          Supprimer mon compte
+        </button>
+        <p class="danger-note">Conformément au RGPD, toutes vos données seront effacées.</p>
+      </div>
+
+    </aside>
+
+    <main class="profile-main">
+
+      <!-- ── Modifier le profil ── -->
+      <section class="profile-section">
+        <div class="section-header">
+          <div class="section-icon">
+            <i class="pi pi-user-edit"></i>
+          </div>
+          <div>
+            <h2 class="section-title">Informations personnelles</h2>
+            <p class="section-subtitle">Modifiez votre prénom, nom et numéro de téléphone.</p>
+          </div>
+        </div>
+
+        <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="profile-form">
+
+          <div class="field-row">
+            <div class="field">
+              <p-floatlabel>
+                <input
+                  pInputText
+                  id="firstName"
+                  formControlName="firstName"
+                  [class.ng-invalid]="hasError(profileForm, 'firstName', 'required') || hasError(profileForm, 'firstName', 'minlength')"
+                />
+                <label for="firstName">Prénom</label>
+              </p-floatlabel>
+              @if (hasError(profileForm, 'firstName', 'required')) {
+                <small class="field-error">Le prénom est requis.</small>
+              }
+              @if (hasError(profileForm, 'firstName', 'minlength')) {
+                <small class="field-error">Au moins 2 caractères.</small>
+              }
+            </div>
+
+            <div class="field">
+              <p-floatlabel>
+                <input
+                  pInputText
+                  id="lastName"
+                  formControlName="lastName"
+                  [class.ng-invalid]="hasError(profileForm, 'lastName', 'required') || hasError(profileForm, 'lastName', 'minlength')"
+                />
+                <label for="lastName">Nom</label>
+              </p-floatlabel>
+              @if (hasError(profileForm, 'lastName', 'required')) {
+                <small class="field-error">Le nom est requis.</small>
+              }
+            </div>
+          </div>
+
+          <div class="field">
+            <p-floatlabel>
+              <input
+                pInputText
+                id="phone"
+                formControlName="phone"
+                type="tel"
+                placeholder="ex : 06 12 34 56 78"
+                [class.ng-invalid]="hasError(profileForm, 'phone', 'pattern')"
+              />
+              <label for="phone">Téléphone (optionnel)</label>
+            </p-floatlabel>
+            @if (hasError(profileForm, 'phone', 'pattern')) {
+              <small class="field-error">Format invalide (ex : 0612345678 ou +33612345678).</small>
+            }
+          </div>
+
+          <div class="field email-readonly">
+            <label class="readonly-label">Adresse e-mail</label>
+            <div class="readonly-value">
+              <i class="pi pi-envelope"></i>
+              {{ user()!.email }}
+              <span class="readonly-note">Non modifiable</span>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="profileForm.reset({ firstName: user()!.firstname, lastName: user()!.lastname, email: user()!.email })"
+            >
+              Annuler
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="savingProfile()"
+            >
+              @if (savingProfile()) {
+                <i class="pi pi-spin pi-spinner"></i>
+              } @else {
+                <i class="pi pi-check"></i>
+              }
+              Enregistrer
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <section class="profile-section">
+        <div class="section-header">
+          <div class="section-icon section-icon--yellow">
+            <i class="pi pi-lock"></i>
+          </div>
+          <div>
+            <h2 class="section-title">Sécurité</h2>
+            <p class="section-subtitle">Modifiez votre mot de passe. Il doit contenir au moins 8 caractères, une majuscule, un chiffre et un caractère spécial.</p>
+          </div>
+        </div>
+
+        <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="profile-form">
+
+          <div class="field">
+            <p-floatlabel>
+              <input
+                pInputText
+                id="currentPassword"
+                type="password"
+                formControlName="currentPassword"
+                [class.ng-invalid]="hasError(passwordForm, 'currentPassword', 'required')"
+              />
+              <label for="currentPassword">Mot de passe actuel</label>
+            </p-floatlabel>
+            @if (hasError(passwordForm, 'currentPassword', 'required')) {
+              <small class="field-error">Ce champ est requis.</small>
+            }
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <p-floatlabel>
+                <input
+                  pInputText
+                  id="newPassword"
+                  type="password"
+                  formControlName="newPassword"
+                  [class.ng-invalid]="hasError(passwordForm, 'newPassword', 'required') || hasError(passwordForm, 'newPassword', 'minlength') || hasError(passwordForm, 'newPassword', 'pattern')"
+                />
+                <label for="newPassword">Nouveau mot de passe</label>
+              </p-floatlabel>
+              @if (hasError(passwordForm, 'newPassword', 'pattern')) {
+                <small class="field-error">8 car. min, 1 majuscule, 1 chiffre, 1 caractère spécial.</small>
+              }
+            </div>
+
+            <div class="field">
+              <p-floatlabel>
+                <input
+                  pInputText
+                  id="confirmPassword"
+                  type="password"
+                  formControlName="confirmPassword"
+                  [class.ng-invalid]="passwordForm.hasError('passwordMismatch') && passwordForm.get('confirmPassword')?.touched"
+                />
+                <label for="confirmPassword">Confirmer le mot de passe</label>
+              </p-floatlabel>
+              @if (passwordForm.hasError('passwordMismatch') && passwordForm.get('confirmPassword')?.touched) {
+                <small class="field-error">Les mots de passe ne correspondent pas.</small>
+              }
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" (click)="passwordForm.reset()">
+              Annuler
+            </button>
+            <button type="submit" class="btn btn-primary" [disabled]="savingPassword()">
+              @if (savingPassword()) {
+                <i class="pi pi-spin pi-spinner"></i>
+              } @else {
+                <i class="pi pi-shield"></i>
+              }
+              Modifier le mot de passe
+            </button>
+          </div>
+        </form>
+      </section>
+
+    </main>
+  </div>
+}
