@@ -11,7 +11,7 @@ export interface Book {
   authorLastName: string;
   publisherName: string;
   genres: Genre[];
-  first_page_url?: string | null;
+  firstPageUrl?: string | null;
   createdAt?: string;
   updatedAt?: string;
   createdBy?: string;
