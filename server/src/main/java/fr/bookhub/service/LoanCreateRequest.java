@@ -1,6 +1,5 @@
 package fr.bookhub.service;
 
-import fr.bookhub.entity.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
