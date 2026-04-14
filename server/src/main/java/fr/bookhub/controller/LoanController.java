@@ -4,10 +4,9 @@ import fr.bookhub.service.LoanCreateRequest;
 import fr.bookhub.service.LoanService;
 import fr.bookhub.service.ServiceResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -23,6 +22,11 @@ public class LoanController {
     @PostMapping("/api/loan/return")
     public ServiceResponse<?> returnBook(@RequestBody LoanCreateRequest req) {
         return loanService.finishLoan(req);
+    }
+
+    @GetMapping("/api/loan/{bookId}")
+    public ServiceResponse<List<?>> getLoansByBookId(@PathVariable int bookId) {
+        return loanService.getLoansByBookId(bookId);
     }
 
     @PostMapping("/api/loan/validate")

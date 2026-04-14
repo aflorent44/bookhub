@@ -1,12 +1,13 @@
 package fr.bookhub.service;
 
-import fr.bookhub.entity.*;
+import fr.bookhub.entity.Book;
+import fr.bookhub.entity.Loan;
+import fr.bookhub.entity.Status;
+import fr.bookhub.entity.User;
 import fr.bookhub.repository.BookRepository;
 import fr.bookhub.repository.LoanRepository;
-import fr.bookhub.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -180,6 +181,11 @@ public class LoanService {
         bookRepository.save(foundBook);
 
         return new ServiceResponse<>("7010", "Book successfully returned", loanMapper.toResponse(savedLoan));
+    }
+
+    public ServiceResponse<List<?>> getLoansByBookId(int bookId) {
+        List<Loan> loans = loanRepository.findByBookId(bookId);
+        return new ServiceResponse<>("7000", "Loans successfully retrieved", loanMapper.toResponse(loans));
     }
 
     public ServiceResponse<?> deleteLoan(int loanId) {

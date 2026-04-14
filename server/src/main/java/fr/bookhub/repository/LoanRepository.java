@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface LoanRepository extends JpaRepository<Loan, Integer> {
     List<Loan> findByUserId(Integer userId);
     Optional<Loan> findLoanByUserIdAndBookId(Integer userId, Integer bookId);
+    List<Loan> findByBookId(Integer bookId);
 }
