@@ -35,7 +35,12 @@ public class BookController {
     // Recherche :
     @PostMapping("/search")
     public ServiceResponse<Page<BookResponse>> search(@RequestBody BookSearchFilter filter) {
-        System.out.println(filter);
         return bookService.search(filter);
+    }
+
+    // Supprimer un livre :
+    @GetMapping("/delete")
+    public ServiceResponse<?> deleteBook(@RequestParam int id) {
+        return bookService.delete(id);
     }
 }

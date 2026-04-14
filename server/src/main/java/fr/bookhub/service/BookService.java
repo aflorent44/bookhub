@@ -248,4 +248,14 @@ public class BookService {
                 Sort.by(direction, sortBy)
         );
     }
+
+    public ServiceResponse<?> delete(int id) {
+        Book book = bookRepository.findById(id).orElse(null);
+
+        if (book == null) {
+            return new ServiceResponse<>("6001", "Book not found");
+        }
+
+        return new ServiceResponse<>("6000", "Book successfully deleted", book);
+    }
 }
