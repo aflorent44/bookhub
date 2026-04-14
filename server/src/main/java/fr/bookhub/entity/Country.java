@@ -1,6 +1,7 @@
 package fr.bookhub.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 @Entity
@@ -14,6 +15,8 @@ public class Country {
     @Id
     @Column(columnDefinition = "char(3)")
     private String code;
+    @NotEmpty
     private String name;
+    @NotEmpty
     private String nationality;
 }

@@ -1,6 +1,9 @@
 package fr.bookhub.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -18,7 +21,7 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
+    @NotEmpty
     private String title;
 
     @Column(name = "first_page_url")
@@ -27,6 +30,7 @@ public class Book {
     private Integer year;
 
     @Column(unique = true)
+    @Size(min = 13, max = 13)
     private String isbn;
 
     private Integer quantity = 1;
@@ -36,10 +40,12 @@ public class Book {
     private Country country;
 
     @Lob
+    @NotEmpty
     private String description;
 
     @ManyToOne
     @JoinColumn(name = "author_id")
+    @NotNull
     private Author author;
 
     @ManyToOne
@@ -52,6 +58,7 @@ public class Book {
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
+    @NotNull
     private Set<Genre> genres = new HashSet<>();
 
     @Column(name = "created_at")
