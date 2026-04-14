@@ -102,15 +102,15 @@
             <p-floatlabel>
               <input
                 pInputText
-                id="phone"
-                formControlName="phone"
+                id="phoneNumber"
+                formControlName="phoneNumber"
                 type="tel"
                 placeholder="ex : 06 12 34 56 78"
-                [class.ng-invalid]="hasError(profileForm, 'phone', 'pattern')"
+                [class.ng-invalid]="hasError(profileForm, 'phoneNumber', 'pattern')"
               />
-              <label for="phone">Téléphone (optionnel)</label>
+              <label for="phoneNumber">Téléphone (optionnel)</label>
             </p-floatlabel>
-            @if (hasError(profileForm, 'phone', 'pattern')) {
+            @if (hasError(profileForm, 'phoneNumber', 'pattern')) {
               <small class="field-error">Format invalide (ex : 0612345678 ou +33612345678).</small>
             }
           </div>

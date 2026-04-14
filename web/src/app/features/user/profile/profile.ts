@@ -143,8 +143,22 @@ export class Profile implements OnInit {
       return;
     }
 
-    const payload = this.passwordForm.getRawValue();
-    console.log(payload);
+    this.savingPassword.set(true);
+
+    const { currentPassword, newPassword } = this.passwordForm.getRawValue();
+
+    this.profileService.changePassword({ currentPassword, newPassword }).subscribe({
+      next: () => {
+        this.savingPassword.set(false);
+        this.passwordForm.reset();
+        this.showSuccess('Mot de passe modifié avec succès !');
+      },
+      error: (err) => {
+        this.savingPassword.set(false);
+        const message = err?.error?.message || 'Erreur lors de la modification du mot de passe.';
+        this.showError(message);
+      },
+    });
   }
 
   confirmDeleteAccount(): void {

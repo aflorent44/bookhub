@@ -1,5 +1,6 @@
 package fr.bookhub.controller;
 
+import fr.bookhub.dto.ChangePasswordRequest;
 import fr.bookhub.dto.UpdateProfileRequest;
 import fr.bookhub.dto.UserResponse;
 import fr.bookhub.service.UserService;
@@ -25,6 +26,15 @@ public class UserController {
     public ResponseEntity<UserResponse> updateProfile(@AuthenticationPrincipal UserDetails userDetails, @RequestBody UpdateProfileRequest request) {
         userService.updateProfile(userDetails.getUsername(), request);
         return ResponseEntity.ok(userService.getProfile(userDetails.getUsername()));
+    }
+
+    @PutMapping("/me/password")
+    public ResponseEntity<Void> changePassword(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody ChangePasswordRequest request
+    ) {
+        userService.changePassword(userDetails.getUsername(), request);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/me")

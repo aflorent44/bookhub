@@ -19,10 +19,9 @@ export class ProfileService {
     return this.http.put<UserResponse>(`${this.apiUrl}/me`, request);
   }
 
-  // TODO : change password
-  // changePassword(request: ChangePasswordRequest): Observable<void> {
-  //   return this.http.put<void>(`${this.apiUrl}/me/password`, request);
-  // }
+  changePassword(payload: { currentPassword: string; newPassword: string }) {
+    return this.http.put<void>(`${this.apiUrl}/me/password`, payload);
+  }
 
   deleteAccount(): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/me`);

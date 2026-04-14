@@ -1,5 +1,6 @@
 package fr.bookhub.service;
 
+import fr.bookhub.dto.ChangePasswordRequest;
 import fr.bookhub.dto.UpdateProfileRequest;
 import fr.bookhub.dto.UserRegistrationRequest;
 import fr.bookhub.dto.UserResponse;
@@ -103,6 +104,32 @@ public class UserServiceImpl implements UserService {
             user.setPhoneNumber(request.phoneNumber().trim());
         }
 
+        user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(String email, ChangePasswordRequest request) {
+        User user = findByEmail(email);
+
+        if (request.currentPassword() == null || request.currentPassword().isBlank()) {
+            throw new RuntimeException("Le mot de passe actuel est requis.");
+        }
+
+        if (request.newPassword() == null || request.newPassword().isBlank()) {
+            throw new RuntimeException("Le nouveau mot de passe est requis.");
+        }
+
+        if (!passwordEncoder.matches(request.currentPassword(), user.getUserPassword())) {
+            throw new RuntimeException("Le mot de passe actuel est incorrect.");
+        }
+
+        if (passwordEncoder.matches(request.newPassword(), user.getUserPassword())) {
+            throw new RuntimeException("Le nouveau mot de passe doit être différent de l'ancien.");
+        }
+
+        user.setUserPassword(passwordEncoder.encode(request.newPassword()));
         user.setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);
     }
