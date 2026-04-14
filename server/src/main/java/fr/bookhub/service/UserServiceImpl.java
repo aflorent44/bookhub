@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -53,5 +54,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean existsByUsername(String username) {
         return userRepository.existsByPseudo(username);
+    }
+
+    public ServiceResponse<User> getUserById(Integer userId) {
+        Optional<User> user = userRepository.findById(userId);
+
+        return user.map(value ->
+                new ServiceResponse<>("8000", "User found", value))
+                    .orElseGet(() ->
+                            new ServiceResponse<>("8001", "User not found"));
     }
 }

@@ -13,4 +13,5 @@ public class LoanCreateRequest {
     private Integer userId;
     private Integer internalUserId;
     private Integer bookId;
+    private Integer loanId;
 }

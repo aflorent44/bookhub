@@ -18,4 +18,9 @@ public class LoanController {
     public ServiceResponse<?> loanBook(@RequestBody LoanCreateRequest req) {
         return loanService.createLoan(req);
     }
+
+    @PostMapping("/api/loan/return")
+    public ServiceResponse<?> returnBook(@RequestBody LoanCreateRequest req) {
+        return loanService.finishLoan(req);
+    }
 }
