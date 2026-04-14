@@ -4,10 +4,8 @@
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
     <div class="field">
-      <p-floatlabel>
-        <input id="isbn" type="text" pInputText formControlName="isbn"/>
-        <label for="isbn">ISBN (13 chiffres)</label>
-      </p-floatlabel>
+      <label class="field-label" for="isbn">ISBN (13 chiffres)</label>
+      <input id="isbn" type="text" pInputText formControlName="isbn" placeholder="ex: 9782070360024"/>
       @if (form.get('isbn')?.invalid && form.get('isbn')?.touched) {
         <small class="feedback error">ISBN requis (13 chiffres)</small>
       }
@@ -21,10 +19,8 @@
     }
 
     <div class="field">
-      <p-floatlabel>
-        <input id="title" type="text" pInputText formControlName="title"/>
-        <label for="title">Titre</label>
-      </p-floatlabel>
+      <label class="field-label" for="title">Titre</label>
+      <input id="title" type="text" pInputText formControlName="title" placeholder="Titre du livre"/>
       @if (form.get('title')?.invalid && form.get('title')?.touched) {
         <small class="feedback error">Titre requis</small>
       }
@@ -32,92 +28,66 @@
 
     <div class="field-row">
       <div class="field">
-        <p-floatlabel>
-          <input id="authorFirstName" type="text" pInputText formControlName="authorFirstName"/>
-          <label for="authorFirstName">Prénom de l'auteur</label>
-        </p-floatlabel>
+        <label class="field-label" for="authorFirstName">Prénom de l'auteur·ice</label>
+        <input id="authorFirstName" type="text" pInputText formControlName="authorFirstName" placeholder="Prénom"/>
         @if (form.get('authorFirstName')?.invalid && form.get('authorFirstName')?.touched) {
           <small class="feedback error">Prénom requis</small>
         }
       </div>
-
       <div class="field">
-        <p-floatlabel>
-          <input id="authorLastName" type="text" pInputText formControlName="authorLastName"/>
-          <label for="authorLastName">Nom de l'auteur</label>
-        </p-floatlabel>
+        <label class="field-label" for="authorLastName">Nom de l'auteur·ice</label>
+        <input id="authorLastName" type="text" pInputText formControlName="authorLastName" placeholder="Nom"/>
       </div>
     </div>
 
     <div class="field-row">
       <div class="field">
-        <p-floatlabel>
-          <input id="publisher" type="text" pInputText formControlName="publisher"/>
-          <label for="publisher">Éditeur</label>
-        </p-floatlabel>
+        <label class="field-label" for="publisher">Éditeur</label>
+        <input id="publisher" type="text" pInputText formControlName="publisher" placeholder="Nom de l'éditeur"/>
       </div>
-
       <div class="field">
-        <p-floatlabel>
-          <input id="year" type="number" pInputText formControlName="year"/>
-          <label for="year">Année de publication</label>
-        </p-floatlabel>
+        <label class="field-label" for="year">Année de publication</label>
+        <input id="year" type="number" pInputText formControlName="year" placeholder="ex: 2024"/>
       </div>
     </div>
 
     <div class="field">
-      <p-floatlabel>
-        <p-multiselect
-          inputId="genres"
-          [options]="availableGenres()"
-          formControlName="genres"
-          optionLabel="label"
-          placeholder="Sélectionner des genres"
-          display="chip"
-          class="w-full"
-        />
-        <label for="genres">Genres</label>
-      </p-floatlabel>
+      <label class="field-label" for="genres">Genres</label>
+      <p-multiselect
+        inputId="genres"
+        [options]="availableGenres()"
+        formControlName="genres"
+        optionLabel="label"
+        placeholder="Sélectionner des genres"
+        display="chip"
+        class="w-full"
+      />
     </div>
 
     <div class="field">
-      <p-floatlabel>
-        <textarea id="description" pTextarea rows="5"
-                  formControlName="description">
-        </textarea>
-        <label for="description">Description</label>
-      </p-floatlabel>
+      <label class="field-label" for="description">Description</label>
+      <textarea id="description" pTextarea rows="6" formControlName="description" placeholder="Résumé du livre..." style="width: 100%; max-width: 100%; box-sizing: border-box; resize: vertical;"></textarea>
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="firstPageUrl">URL de la couverture</label>
+      <input id="firstPageUrl" type="text" pInputText formControlName="firstPageUrl" placeholder="https://..."/>
     </div>
 
     <div class="field-row">
       <div class="field">
-        <p-floatlabel>
-          <input id="language" type="text" pInputText formControlName="language"/>
-          <label for="language">Langue</label>
-        </p-floatlabel>
+        <label class="field-label" for="language">Langue</label>
+        <input id="language" type="text" pInputText formControlName="language" placeholder="ex: fr"/>
       </div>
-
       <div class="field">
-        <p-floatlabel>
-          <input id="quantity" type="number" pInputText formControlName="quantity"/>
-          <label for="quantity">Quantité</label>
-        </p-floatlabel>
+        <label class="field-label" for="quantity">Quantité</label>
+        <input id="quantity" type="number" pInputText formControlName="quantity"/>
       </div>
     </div>
 
     <div class="form-actions">
-      <p-button
-        label="Annuler"
-        icon="pi pi-times"
-        type="button"
-        (onClick)="resetForm()"
-      />
-      <p-button
-        label="Enregistrer"
-        icon="pi pi-save"
-        type="submit"
-        [disabled]="form.invalid"
-      />
+      <p-button label="Annuler" icon="pi pi-times" type="button" (onClick)="resetForm()" />
+      <p-button label="Enregistrer" icon="pi pi-save" type="submit" [disabled]="form.invalid" />
     </div>
 
   </form>

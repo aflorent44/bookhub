@@ -11,7 +11,9 @@ public class ServiceResponse<T>{
     private T data;
 
     public ServiceResponse() {}
-    public ServiceResponse(String code) { this.code = code; }
+    public ServiceResponse(String code) {
+        this.code = code;
+    }
     public ServiceResponse(String code, String message) {
         this.code = code;
         this.message = message;
