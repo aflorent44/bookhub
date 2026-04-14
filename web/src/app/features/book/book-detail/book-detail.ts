@@ -24,7 +24,6 @@ export class BookDetail implements OnInit {
     const id = Number(this.route.snapshot.paramMap.get('id') ?? '');
     this.bookService.getBookById(id).subscribe({
       next: (book) => {
-        console.log('Book récupéré :', book);
         this.book.set(book);
       },
       error: (err) => {

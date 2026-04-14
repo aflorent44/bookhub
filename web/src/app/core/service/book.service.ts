@@ -27,7 +27,6 @@ export class BookService {
   createBook(book: any): Observable<Book> {
     return this.http.post<ServiceResponse<Book>>(`${this.apiUrl}/books`, book)
       .pipe(map((response: ServiceResponse<Book>) => {
-        console.log('Réponse createBook :', response); // debug
         if (response.code !== '1030') {
           throw new Error(response.code);
         }

@@ -1,7 +1,7 @@
+import {Role} from './role';
+
 export interface User {
-  id: number;
-  username: string;
-  email?: string;
-  firstname?: string;
-  lastname?: string;
+  id: number
+  email: string;
+  role: Role;
 }
