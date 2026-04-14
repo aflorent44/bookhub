@@ -91,7 +91,7 @@ export class RegistrationForm {
       .subscribe({
         next: (user) => {
           this.loading = false;
-          this.router.navigate(['/auth/login']);
+          this.router.navigate(['/login']);
         },
         error: (error) => {
           this.loading = false;

@@ -6,6 +6,7 @@ import {UserResponse} from '../type/user-response';
 import {LoginRequest} from '../type/login-request';
 import {AuthResponse} from '../type/auth-response';
 import {RegisterRequest} from '../type/register-request';
+import {environment} from '../../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root',
@@ -15,12 +16,21 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
 
-  private readonly API_URL = 'http://localhost:8080/api/auth';
+  private readonly API_URL = environment.apiUrl;
 
-  currentUser$ = signal<UserResponse | null>(null);
+  currentUser$ = signal<UserResponse | null>(this.getUserFromStorage());
+
+  private getUserFromStorage(): UserResponse | null {
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+    if (token && user) {
+      return JSON.parse(user);
+    }
+    return null;
+  }
 
   login(credentials: LoginRequest) {
-    return this.http.post<AuthResponse>(`${this.API_URL}/login`, credentials).pipe(
+    return this.http.post<AuthResponse>(`${this.API_URL}/auth/login`, credentials).pipe(
       tap(res => {
         localStorage.setItem('token', res.token);
         this.currentUser$.set(res.user);
@@ -30,11 +40,11 @@ export class AuthService {
   }
 
   register(data: RegisterRequest) {
-    return this.http.post<UserResponse>(`${this.API_URL}/register`, data);
+    return this.http.post<UserResponse>(`${this.API_URL}/auth/register`, data);
   }
 
   logout() {
-    localStorage.removeItem('token');
+    localStorage.clear();
     this.currentUser$.set(null);
     this.router.navigate(['/login']);
   }

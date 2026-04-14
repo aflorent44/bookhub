@@ -1,6 +1,7 @@
-import {Component} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { RouterLink } from "@angular/router";
+import {Router, RouterLink} from "@angular/router";
+import {AuthService} from '../../core/service/auth-service';
 
 @Component({
   selector: 'app-navbar',
@@ -12,13 +13,11 @@ import { RouterLink } from "@angular/router";
   standalone: true
 })
 export class Navbar {
-  isLoggedIn: boolean = true;
+  private authService = inject(AuthService);
 
-  login() {
-    this.isLoggedIn = true;
-  }
+  currentUser = this.authService.currentUser$;  // expose le signal directement
 
   logout() {
-    this.isLoggedIn = false;
+    this.authService.logout();
   }
 }
