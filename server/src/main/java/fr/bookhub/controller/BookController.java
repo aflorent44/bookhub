@@ -1,9 +1,6 @@
 package fr.bookhub.controller;
 
-import fr.bookhub.service.BookCreateRequest;
-import fr.bookhub.service.BookResponse;
-import fr.bookhub.service.BookService;
-import fr.bookhub.service.ServiceResponse;
+import fr.bookhub.service.*;
 import fr.bookhub.service.filter.BookSearchFilter;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

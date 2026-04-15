@@ -1,5 +1,5 @@
-import publicGuard, { authGuard } from './core/guards/auth-guard';
-import { Routes } from '@angular/router';
+import publicGuard, {authGuard} from './core/guards/auth-guard';
+import {Routes} from '@angular/router';
 
 export const routes: Routes = [
   // Routes publiques (redirige si déjà connecté)
@@ -34,5 +34,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
 
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  {
+    path: 'books/:id/edit',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/book/book-form/book-form').then(m => m.BookForm)
+  },
+
+  {path: '', redirectTo: '/login', pathMatch: 'full'},
 ];

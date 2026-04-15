@@ -8,7 +8,8 @@ import { Genre } from '../../../core/type/genre';
 import { Textarea } from 'primeng/textarea';
 import { BookService } from '../../../core/service/book.service';
 import { GenreService } from '../../../core/service/genre.service';
-import { Router } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
+import {AuthService} from '../../../core/service/auth-service';
 
 @Component({
   selector: 'app-book-form',
@@ -21,13 +22,17 @@ export class BookForm implements OnInit {
 
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private bookService = inject(BookService);
   private genreService = inject(GenreService);
+  private authService = inject(AuthService);
 
   loading = signal(false);
   error = signal('');
-
+  isEditMode = signal(false);
+  bookId = signal<number | null>(null);
   availableGenres = signal<Genre[]>([]);
+  currentUser = this.authService.currentUser$;
 
   private getErrorMessage(err: any): string {
     const code: string = err?.message ?? '';
@@ -43,7 +48,6 @@ export class BookForm implements OnInit {
   form!: FormGroup;
 
   ngOnInit() {
-
     this.form = this.fb.group({
       isbn:            ['', [Validators.required, Validators.minLength(13), Validators.maxLength(13)]],
       title:           ['', Validators.required],
@@ -58,20 +62,50 @@ export class BookForm implements OnInit {
       firstPageUrl:    [''],
     });
 
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.isEditMode.set(true);
+      this.bookId.set(Number(id));
+      this.loadBookForEdit(Number(id));
+    }
+
     this.genreService.getGenres().subscribe({
       next: (genres) => {
         this.availableGenres.set(genres);
-
-        // Écoute les changements de l'ISBN seulement après chargement des genres
-        this.form.get('isbn')?.valueChanges.subscribe((value: string) => {
-          if (value === '') {
-            this.resetForm();
-          } else if (value?.length === 13) {
-            this.fetchBookInfo(value);
-          }
-        });
+        if (!this.isEditMode()) {
+          this.form.get('isbn')?.valueChanges.subscribe((value: string) => {
+            if (value === '') {
+              this.resetForm();
+            } else if (value?.length === 13) {
+              this.fetchBookInfo(value);
+            }
+          });
+        }
       },
       error: () => this.error.set('Erreur lors du chargement des genres.')
+    });
+  }
+
+  loadBookForEdit(id: number) {
+    this.bookService.getBookById(id).subscribe({
+      next: (book) => {
+        this.form.patchValue({
+          isbn:            book.isbn,
+          title:           book.title,
+          authorFirstName: book.authorFirstName,
+          authorLastName:  book.authorLastName,
+          publisher:       book.publisherName,
+          year:            book.year,
+          genres:          book.genres,
+          description:     book.description,
+          quantity:        book.quantity,
+          firstPageUrl:    book.firstPageUrl,
+          language:        book.country?.language ?? '',
+          createdById:     book.createdBy,
+          updatedById:     book.updatedBy,
+        });
+      },
+      error: () => this.error.set('Erreur lors du chargement du livre.')
     });
   }
 
@@ -160,6 +194,8 @@ export class BookForm implements OnInit {
   onSubmit() {
     if (this.form.invalid) return;
 
+    console.log(this.currentUser()?.id);
+
     const book = {
       isbn:            this.form.value.isbn,
       title:           this.form.value.title,
@@ -172,16 +208,21 @@ export class BookForm implements OnInit {
       publisherName:   this.form.value.publisher,
       countryName:     this.form.value.language,
       genres:          this.form.value.genres,
-      createdById:     null,
+      createdById:     this.currentUser()?.id,
+      updatedById:     this.currentUser()?.id,
+      bookId:          this.isEditMode() ? this.bookId() : null,  // ← ajout
     };
 
     this.loading.set(true);
-    this.bookService.createBook(book).subscribe({
-      next: (created) => {
-        console.log('Livre créé :', created);
+
+    const request$ = this.isEditMode()
+      ? this.bookService.updateBook(book)
+      : this.bookService.createBook(book);
+
+    request$.subscribe({
+      next: (saved) => {
         this.loading.set(false);
-        this.resetForm();
-        this.router.navigate(['/books', created.id]);
+        this.router.navigate(['/books', saved.bookId]);
       },
       error: (err) => {
         this.error.set(this.getErrorMessage(err));

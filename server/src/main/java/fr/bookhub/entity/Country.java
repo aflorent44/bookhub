@@ -20,7 +20,5 @@ public class Country {
     @NotEmpty
     private String nationality;
     @Column(columnDefinition = "char(2)")
-    private String code_2_char;
-    @Column(columnDefinition = "char(2)")
     private String language;
 }
