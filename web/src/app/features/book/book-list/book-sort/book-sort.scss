@@ -1,0 +1,36 @@
+.sort-buttons {
+  display: flex;
+  gap: 8px;
+  margin-left: 12px;
+}
+
+.sort-buttons button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  background: var(--txt-primary-hover);
+  padding: 6px 10px;
+  border-radius: var(--radius-l);
+  cursor: pointer;
+
+  font-size: var(--font-size-m);
+  font-family: var(--font-body);
+
+  color: var(--bg-white);
+  border: none;
+
+  transition: all 0.15s ease;
+}
+
+.sort-buttons button.active {
+  background: var(--txt-primary);
+}
+
+.sort-buttons button:hover {
+  background: var(--bg-green);
+}
+
+.sort-buttons i {
+  font-size: var(--font-size-m);
+}
