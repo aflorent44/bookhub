@@ -11,7 +11,7 @@ public class BookMapper {
     public BookResponse toResponse(Book book) {
         BookResponse dto = new BookResponse();
 
-        dto.setId(book.getId());
+        dto.setBookId(book.getId());
         dto.setIsbn(book.getIsbn());
         dto.setTitle(book.getTitle());
         dto.setYear(book.getYear());
@@ -19,7 +19,9 @@ public class BookMapper {
         dto.setDescription(book.getDescription());
         dto.setFirstPageUrl(book.getFirstPageUrl());
         dto.setCreatedAt(book.getCreatedAt());
+        dto.setCreatedBy(book.getCreatedBy());
         dto.setUpdatedAt(book.getUpdatedAt());
+        dto.setUpdatedBy(book.getUpdatedBy());
 
         dto.setAuthorFirstName(book.getAuthor().getFirstName());
         dto.setAuthorLastName(book.getAuthor().getLastName());
