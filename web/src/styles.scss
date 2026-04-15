@@ -238,13 +238,12 @@ h1, h2, h3, h4, .p-card-title {
 }
 
 .book-detail-wrapper {
-  max-width: 900px;
+  max-width: 900px; // pour les users
   margin: var(--space-xl) auto;
   padding: 0 var(--space-m);
 
-  .p-card {
-    border-radius: var(--radius-l);
-    background-color: var(--bg-off-white);
+  &.admin {
+    max-width: 1400px; // plus large pour l'admin
   }
 }
 
@@ -350,4 +349,161 @@ h1, h2, h3, h4, .p-card-title {
   justify-content: center;
   align-items: center;
   height: 50vh;
+}
+
+.admin-layout {
+  display: flex;
+  gap: var(--space-xl);
+  align-items: flex-start;
+
+  .admin-book-col {
+    flex: 1;
+    min-width: 420px;
+  }
+
+  .admin-loans-col {
+    flex: 1;
+    min-width: 420px;
+  }
+}
+
+.user-activity-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-m);
+  margin-bottom: var(--space-s);
+  font-size: var(--font-size-sm);
+}
+
+.badge-LATE {
+  background-color: var(--btn-red);
+  color: white;
+}
+
+.badge-IN_PROGRESS {
+  background-color: var(--txt-green);
+  color: white;
+}
+
+.badge-PENDING {
+  background-color: var(--txt-yellow);
+  color: var(--txt-primary);
+}
+
+.badge-WAITING {
+  background-color: var(--bg-off-white);
+  color: var(--txt-primary);
+}
+
+// Dans styles.scss, ajoute après .badge-WAITING
+
+.badge-FINISHED {
+  background-color: var(--btn-green);
+  color: white;
+}
+
+.badge.available {
+  background-color: var(--btn-green);
+  color: white;
+}
+
+.badge.unavailable {
+  background-color: var(--btn-red);
+  color: white;
+}
+
+// Table des emprunts/réservations
+.loans-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+
+  th {
+    text-align: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: var(--font-size-s);
+    color: var(--txt-primary);
+    padding: var(--space-s) var(--space-m);
+    border-bottom: 2px solid var(--zone-border);
+  }
+
+  td {
+    padding: var(--space-s) var(--space-m);
+    border-bottom: 1px solid var(--zone-border);
+    vertical-align: middle;
+    color: var(--txt-primary);
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  tr:hover td {
+    background-color: var(--bg-off-white);
+  }
+}
+
+// Section admin loans
+.book-loans,
+.book-reservations {
+  h3 {
+    font-size: var(--font-size-l);
+    margin-bottom: var(--space-m);
+  }
+
+  .text-muted {
+    color: var(--txt-yellow);
+    font-size: var(--font-size-sm);
+    font-style: italic;
+  }
+}
+
+// Book detail wrapper en mode admin (plus large)
+.admin-layout {
+  .book-detail-wrapper {
+    max-width: 100%;
+  }
+
+  .admin-loans-col {
+    .p-card {
+      border-radius: var(--radius-l);
+      background-color: var(--bg-off-white);
+    }
+  }
+}
+
+// Actions du livre
+.book-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-m);
+}
+
+// Activité user
+.user-activity {
+  h3 {
+    font-size: var(--font-size-l);
+    margin-bottom: var(--space-m);
+  }
+
+  .meta-label {
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: var(--space-s) 0 var(--space-xs);
+  }
+}
+
+// Responsive : en dessous de 1100px, passe en colonne
+@media (max-width: 1100px) {
+  .admin-layout {
+    flex-direction: column;
+
+    .admin-loans-col {
+      width: 100%;
+    }
+  }
 }

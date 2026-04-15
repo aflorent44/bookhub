@@ -12,6 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookCreateRequest {
+    private Integer bookId;
     private String isbn;
     private String title;
     private Integer year;
@@ -29,4 +30,5 @@ public class BookCreateRequest {
     private Set<GenreDTO> genres;
 
     private Integer createdById;
+    private Integer updatedById;
 }

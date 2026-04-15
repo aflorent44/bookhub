@@ -9,9 +9,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoanCreateRequest {
+public class ReservationCreateRequest {
     private Integer userId;
     private Integer internalUserId;
     private Integer bookId;
-    private Integer loanId;
+    private Integer reservationId;
 }

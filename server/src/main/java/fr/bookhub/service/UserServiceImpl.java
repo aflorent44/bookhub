@@ -1,6 +1,7 @@
 package fr.bookhub.service;
 
 import fr.bookhub.dto.UserRegistrationRequest;
+import fr.bookhub.entity.Loan;
 import fr.bookhub.entity.Role;
 import fr.bookhub.entity.User;
 import fr.bookhub.repository.UserRepository;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -54,4 +57,14 @@ public class UserServiceImpl implements UserService {
     public boolean existsByUsername(String username) {
         return userRepository.existsByPseudo(username);
     }
+
+    public ServiceResponse<User> getUserById(Integer userId) {
+        Optional<User> user = userRepository.findById(userId);
+
+        return user.map(value ->
+                new ServiceResponse<>("8000", "User found", value))
+                    .orElseGet(() ->
+                            new ServiceResponse<>("8001", "User not found"));
+    }
+
 }

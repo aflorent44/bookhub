@@ -41,6 +41,16 @@ export class BookService {
       }));
   }
 
+  updateBook(book: any): Observable<Book> {
+    return this.http.post<ServiceResponse<Book>>(`${this.apiUrl}/books/update`, book)
+      .pipe(map((response: ServiceResponse<Book>) => {
+        if (response.code !== '1033') {
+          throw new Error(response.code);
+        }
+        return response.data;
+      }));
+  }
+
   getBookInfoFromGoogleByIsbn(isbn: string): Observable<any> {
     return this.http.get<any>(`${this.googleBooksApiUrl}?q=isbn:${isbn}`);
   }

@@ -6,7 +6,6 @@ import fr.bookhub.entity.Status;
 import fr.bookhub.entity.User;
 import fr.bookhub.repository.BookRepository;
 import fr.bookhub.repository.LoanRepository;
-import fr.bookhub.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,28 +19,18 @@ public class LoanService {
 
     private final BookRepository bookRepository;
     private final LoanRepository loanRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
+    private final LoanMapper loanMapper;
 
     public ServiceResponse<?> createLoan(LoanCreateRequest req) {
-        // Récupérer l'utilisateur "interne" (le bibliothéquaire) :
-        Optional<User> internalUser = userRepository.findById(req.getInternalUserId());
-        User foundInternalUser;
-
-        if (internalUser.isPresent()) {
-            foundInternalUser = internalUser.get();
-        } else {
-            return new ServiceResponse<>("7006", "Internal user not found");
-        }
-
         // Vérifier si l'utilisateur existe :
-        Optional<User> user = userRepository.findById(req.getUserId());
-        User foundUser;
+        ServiceResponse<User> responseUser = userService.getUserById(req.getUserId());
 
-        if (user.isPresent()) {
-            foundUser = user.get();
-        } else {
-            return new ServiceResponse<>("7005", "User not found");
+        if (responseUser.getCode().equals("8001")) {
+            return responseUser;
         }
+
+        User foundUser = responseUser.getData();
 
         // Vérifier la disponibilité du livre
         Optional<Book> book = bookRepository.findById(req.getBookId());
@@ -91,23 +80,136 @@ public class LoanService {
         newLoan.setDebutDate(LocalDateTime.now());
         newLoan.setEndDate(LocalDateTime.now().plusDays(14));
         newLoan.setReturnDate(null);
-        newLoan.setStatus(Status.IN_PROGRESS);
+        newLoan.setStatus(Status.WAITING);
         newLoan.setUser(foundUser);
         newLoan.setBook(foundBook);
         newLoan.setCreatedAt(LocalDateTime.now());
-        newLoan.setUpdatedAt(LocalDateTime.now());
-        newLoan.setUpdatedBy(foundInternalUser);
 
         // Décrémenter la quantité du livre et sauvegarder :
         foundBook.setQuantity(foundBook.getQuantity() - 1);
-        foundBook.setUpdatedAt(LocalDateTime.now());
-        foundBook.setUpdatedBy(foundInternalUser);
         bookRepository.save(foundBook);
 
         // Enregistrer l'emprunt
         Loan savedLoan = loanRepository.save(newLoan);
 
         // Renvoyer la réponse avec l'emprunt sauvegardé
-        return new ServiceResponse<>("7000", "Loan successfully created",savedLoan);
+        return new ServiceResponse<>("7000", "Loan successfully created", loanMapper.toResponse(savedLoan));
+    }
+
+    public ServiceResponse<?> validate(LoanCreateRequest req) {
+        // Récupérer le userInternal
+        ServiceResponse<User> responseInternalUser = userService.getUserById(req.getInternalUserId());
+
+        if (responseInternalUser.getCode().equals("8001")) {
+            return responseInternalUser;
+        }
+
+        // Récupérer l'emprunt
+        Optional<Loan> loan = loanRepository.findById(req.getLoanId());
+        Loan foundLoan;
+
+        if (loan.isPresent()) {
+            foundLoan = loan.get();
+        } else {
+            return new ServiceResponse<>("7021", "Loan not found");
+        }
+
+        // Passer le statut en IN_PROGRESS
+        foundLoan.setStatus(Status.IN_PROGRESS);
+        foundLoan.setEndDate(LocalDateTime.now().plusDays(14));
+
+        // Mettre à jour (updated_by, updated_at)
+        foundLoan.setUpdatedAt(LocalDateTime.now());
+        foundLoan.setUpdatedBy(responseInternalUser.getData());
+
+        // Sauvegarder
+        Loan savedLoan = loanRepository.save(foundLoan);
+
+        return new ServiceResponse<>("7020", "Loan successfully validated", loanMapper.toResponse(savedLoan));
+    }
+
+    public ServiceResponse<?> finishLoan(LoanCreateRequest req) {
+        // Récupérer l'utilisateur "interne" (le bibliothéquaire) :
+        ServiceResponse<User> responseInternalUser = userService.getUserById(req.getInternalUserId());
+
+        if (responseInternalUser.getCode().equals("8001")) {
+            return responseInternalUser;
+        }
+
+        User foundInternalUser = responseInternalUser.getData();
+
+        // Vérifier si l'utilisateur existe :
+        ServiceResponse<User> responseUser = userService.getUserById(req.getUserId());
+
+        if (responseUser.getCode().equals("8001")) {
+            return responseUser;
+        }
+
+        // Rechercher le livre dans les emprunts :
+        Optional<Loan> loan = loanRepository.findById(req.getLoanId());
+        Loan foundLoan;
+
+        if (loan.isPresent()) {
+            foundLoan = loan.get();
+        } else {
+            return new ServiceResponse<>("7011", "Loan not found");
+        }
+        // Mettre à jour l'emprunt
+        foundLoan.setStatus(Status.FINISHED);
+        foundLoan.setReturnDate(LocalDateTime.now());
+        foundLoan.setUpdatedAt(LocalDateTime.now());
+        foundLoan.setUpdatedBy(foundInternalUser);
+
+        // Mettre à jour le livre
+        Optional<Book> book = bookRepository.findById(req.getBookId());
+        Book foundBook;
+
+        if (book.isPresent()) {
+            foundBook = book.get();
+        }  else {
+            return new ServiceResponse<>("7012", "Book not found");
+        }
+
+        foundBook.setQuantity(foundBook.getQuantity() + 1);
+        foundBook.setUpdatedAt(LocalDateTime.now());
+        foundBook.setUpdatedBy(foundInternalUser);
+
+        // Sauvegarder l'emprunt :
+        Loan savedLoan = loanRepository.save(foundLoan);
+
+        // Sauvegarder le livre :
+        bookRepository.save(foundBook);
+
+        return new ServiceResponse<>("7010", "Book successfully returned", loanMapper.toResponse(savedLoan));
+    }
+
+    public ServiceResponse<List<?>> getLoansByBookId(int bookId) {
+        List<Loan> loans = loanRepository.findByBookId(bookId);
+        return new ServiceResponse<>("7000", "Loans successfully retrieved", loanMapper.toResponse(loans));
+    }
+
+    public ServiceResponse<?> deleteLoan(int loanId) {
+        // Trouver la réservation :
+        Optional<Loan> loan = loanRepository.findById(loanId);
+
+        if (loan.isEmpty()) {
+            return new ServiceResponse<>("7031", "Loan not found");
+        }
+
+        if (loan.get().getStatus() != Status.WAITING) {
+            return new ServiceResponse<>("7032", "Only loan with a waiting status can be deleted");
+        }
+
+        loanRepository.deleteById(loanId);
+
+        return new ServiceResponse<>("7030","Loan successfully deleted");
+    }
+
+    public ServiceResponse<List<?>> getLoansByUserIdAndBookId(int userId, int bookId) {
+        List<Loan> loans = loanRepository.findByUserIdAndBookId(userId, bookId);
+        if (loans.isEmpty()) {
+            return new ServiceResponse<>("7040", "No loans found");
+        }
+        return new ServiceResponse<>("7041", "Loans found", loanMapper.toResponse(loans));
     }
 }

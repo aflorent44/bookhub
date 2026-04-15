@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface LoanRepository extends JpaRepository<Loan, Integer> {
     List<Loan> findByUserId(Integer userId);
+    List<Loan> findByUserIdAndBookId(Integer userId, Integer bookId);
+    List<Loan> findByBookId(Integer bookId);
 }

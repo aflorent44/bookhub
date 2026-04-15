@@ -1,82 +1,222 @@
+<p-toast position="bottom-center" />
+<p-confirm-dialog />
+
 @if (book()) {
-  <div class="book-detail-wrapper">
-    <p-card>
-      <ng-template #content>
-        <div class="book-detail-layout">
+  <div [class]="'book-detail-wrapper ' + (isAdminOrLibrarian() ? 'admin' : '')">
 
-          <!-- Couverture -->
-          <div class="book-cover">
-            <img
-              [src]="book()!.firstPageUrl ?? 'assets/book_cover.jpg'"
-              alt="Couverture de {{ book()!.title }}"
-            />
-          </div>
+    @if (isAdminOrLibrarian()) {
+      <!-- LAYOUT DEUX COLONNES ADMIN -->
+      <div class="admin-layout">
 
-          <!-- Infos côte à côte avec l'image -->
-          <div class="book-info">
-            <div class="book-header">
-              <h1>{{ book()!.title }}</h1>
-              <p class="book-author">
-                {{ book()!.authorFirstName }} {{ book()!.authorLastName }}
-              </p>
-            </div>
-
-            <p-divider />
-
-            <div class="book-meta">
-              <div class="book-meta-row">
-                <span class="meta-label">ISBN</span>
-                <span>{{ book()!.isbn }}</span>
-              </div>
-              <div class="book-meta-row">
-                <span class="meta-label">Année de parution</span>
-                <span>{{ book()!.year }}</span>
-              </div>
-              <div class="book-meta-row">
-                <span class="meta-label">Éditeur</span>
-                <span>{{ book()!.publisherName }}</span>
-              </div>
-              <div class="book-meta-row">
-                <span class="meta-label">Quantité</span>
-                <span>{{ book()!.quantity }}</span>
-              </div>
-              <div class="book-meta-row">
-                <span class="meta-label">Genres</span>
-                <span class="book-genres">
-          @for (genre of book()!.genres; track genre.id) {
-            <span class="badge">{{ genre.label }}</span>
-          }
-        </span>
-              </div>
-            </div>
-          </div>
-
+        <!-- Colonne gauche : détail du livre -->
+        <div class="admin-book-col">
+          <p-card>
+            <ng-template #content>
+              <ng-container *ngTemplateOutlet="bookContent" />
+            </ng-template>
+          </p-card>
         </div>
 
-        <!-- Description et footer pleine largeur -->
-        <p-divider />
+        <!-- Colonne droite : emprunts et réservations -->
+        <div class="admin-loans-col">
+          <p-card>
+            <ng-template #content>
 
-        <div class="book-description">
-          <p class="meta-label">Description</p>
-          <p>{{ book()!.description }}</p>
+              <h3>Emprunts en cours et en attente</h3>
+              @if (loans().length === 0) {
+                <p class="text-muted">Aucun emprunt en cours.</p>
+              } @else {
+                <table class="loans-table">
+                  <thead>
+                  <tr>
+                    <th>Utilisateur</th>
+                    <th>Début</th>
+                    <th>Retour prévu</th>
+                    <th>Statut</th>
+                    <th>Action</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    @for (loan of loans(); track loan.id) {
+                      <tr>
+                        <td>{{ loan.userId }}</td>
+                        <td>{{ loan.debutDate | date: 'dd/MM/yyyy' }}</td>
+                        <td>
+                          {{ loan.endDate | date: 'dd/MM/yyyy' }}
+                          @if (getDaysLate(loan.endDate) > 0 && loan.status === 'IN_PROGRESS') {
+                            <span class="badge badge-LATE">{{ getDaysLate(loan.endDate) }}j de retard</span>
+                          }
+                        </td>
+                        <td>
+                          <span [class]="'badge badge-' + loan.status">{{ loan.status | loanStatus }}</span>
+                        </td>
+                        <td>
+                          @if (loan.status === 'WAITING') {
+                            <app-button text="Valider" color="var(--btn-green)" (clicked)="onValidateLoan(loan.id)" />
+                          }
+                          @if (loan.status === 'IN_PROGRESS') {
+                            <app-button text="Retour" color="var(--btn-yellow)" (clicked)="onReturnBook(loan)" />
+                          }
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              }
+
+              <p-divider />
+
+              <h3>Réservations en attente</h3>
+              @if (reservations().length === 0) {
+                <p class="text-muted">Aucune réservation en attente.</p>
+              } @else {
+                <table class="loans-table">
+                  <thead>
+                  <tr>
+                    <th>Utilisateur</th>
+                    <th>Date</th>
+                    <th>Statut</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    @for (reservation of reservations(); track reservation.id) {
+                      <tr>
+                        <td>{{ reservation.userId }}</td>
+                        <td>{{ reservation.createdAt | date: 'dd/MM/yyyy' }}</td>
+                        <td><span class="badge badge-WAITING">En attente</span></td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              }
+
+            </ng-template>
+          </p-card>
         </div>
 
-        <p-divider />
-
-        <div class="book-footer">
-          <p>Ajouté le {{ book()!.createdAt | date: 'dd/MM/yyyy à HH:mm' }}</p>
-        </div>
-      </ng-template>
-    </p-card>
-  </div>
-} @else {
-  @if (!book()?.id ) {
-    <div>
-      <h2>Aucun livre trouvé</h2>
-    </div>
-  } @else {
-  <div class="book-detail-spinner">
-    <p-progressSpinner />
-  </div>
+      </div>
     }
+
+    @if (isUser()) {
+      <p-card>
+        <ng-template #content>
+          <ng-container *ngTemplateOutlet="bookContent" />
+
+          <!-- Emprunts et réservations de l'user sur ce livre -->
+          @if (userLoans().length > 0 || userReservations().length > 0) {
+            <p-divider />
+            <div class="user-activity">
+              <h3>Votre activité sur ce livre</h3>
+
+              @if (userLoans().length > 0) {
+                <p class="meta-label">Emprunts</p>
+                @for (loan of userLoans(); track loan.id) {
+                  <div class="user-activity-row">
+                    <span [class]="'badge badge-' + loan.status">{{ loan.status | loanStatus }}</span>
+                    <span>Du {{ loan.debutDate | date: 'dd/MM/yyyy' }} au {{ loan.endDate | date: 'dd/MM/yyyy' }}</span>
+                    @if (getDaysLate(loan.endDate) > 0 && loan.status === 'IN_PROGRESS') {
+                      <span class="badge badge-LATE">{{ getDaysLate(loan.endDate) }}j de retard</span>
+                    }
+                  </div>
+                }
+              }
+
+              @if (userReservations().length > 0) {
+                <p class="meta-label">Réservations</p>
+                @for (reservation of userReservations(); track reservation.id) {
+                  <div class="user-activity-row">
+                    <span class="badge badge-WAITING">En attente</span>
+                    <span>Depuis le {{ reservation.createdAt | date: 'dd/MM/yyyy' }}</span>
+                  </div>
+                }
+              }
+            </div>
+          }
+
+        </ng-template>
+      </p-card>
+    }
+
+  </div>
 }
+
+<!-- Template réutilisable pour le contenu du livre -->
+<ng-template #bookContent>
+  <div class="book-detail-layout">
+    <div class="book-cover">
+      <img [src]="book()!.firstPageUrl ?? 'assets/book_cover.jpg'" alt="Couverture de {{ book()!.title }}" />
+    </div>
+    <div class="book-info">
+      <div class="book-header">
+        <h1>{{ book()!.title }}</h1>
+        <p class="book-author">{{ book()!.authorFirstName }} {{ book()!.authorLastName }}</p>
+      </div>
+      <p-divider />
+      <div class="book-meta">
+        <div class="book-meta-row">
+          <span class="meta-label">ISBN</span>
+          <span>{{ book()!.isbn }}</span>
+        </div>
+        <div class="book-meta-row">
+          <span class="meta-label">Année de parution</span>
+          <span>{{ book()!.year }}</span>
+        </div>
+        <div class="book-meta-row">
+          <span class="meta-label">Éditeur</span>
+          <span>{{ book()!.publisherName }}</span>
+        </div>
+        <div class="book-meta-row">
+          <span class="meta-label">Disponibilité</span>
+          @if (book()!.quantity > 0) {
+            <span class="badge available">{{ book()!.quantity }} disponible(s)</span>
+          } @else {
+            <span class="badge unavailable">Indisponible</span>
+          }
+        </div>
+        <div class="book-meta-row">
+          <span class="meta-label">Genres</span>
+          <span class="book-genres">
+            @for (genre of book()!.genres; track genre.id) {
+              <span class="badge">{{ genre.label }}</span>
+            }
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p-divider />
+
+  <div class="book-description">
+    <p class="meta-label">Description</p>
+    <p>{{ book()!.description }}</p>
+  </div>
+
+  <p-divider />
+
+  <div class="book-footer">
+    <p>Ajouté le {{ book()!.createdAt | date: 'dd/MM/yyyy à HH:mm' }}</p>
+  </div>
+
+  @if (error()) {
+    <p class="feedback error">{{ error() }}</p>
+  }
+
+  @if (isUser()) {
+    <div class="book-actions">
+      @if (book()!.quantity > 0) {
+        <app-button text="Emprunter ce livre" color="var(--btn-yellow)" width="200px" (clicked)="onLoan(book()!.bookId)" />
+      } @else {
+        <app-button text="Réserver ce livre" color="var(--btn-yellow)" width="200px" (clicked)="onReserve(book()!.bookId)" />
+      }
+    </div>
+  }
+
+  @if (isAdminOrLibrarian()) {
+    <app-button
+      text="Modifier le livre"
+      color="var(--btn-green)"
+      (clicked)="onEditBook()"
+    />
+  }
+</ng-template>

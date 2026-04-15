@@ -4,7 +4,7 @@
   <ul class="nav-links">
     <li><a routerLink="/library">Bibliothèque</a></li>
 
-    @if (isLoggedIn) {
+    @if (currentUser()) {
       <li><a routerLink="/profile">Mon profil</a></li>
     }
 
@@ -16,7 +16,7 @@
     </li>
 
     <li>
-      @if (isLoggedIn) {
+      @if (currentUser()) {
         <a class="logout" (click)="logout()">
           <i class="pi pi-sign-out"></i>
         </a>
