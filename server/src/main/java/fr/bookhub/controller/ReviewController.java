@@ -19,12 +19,12 @@ public class ReviewController {
         return reviewService.createOrUpdateReview(req, MethodType.CREATE);
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ServiceResponse<?> updateReview(@RequestBody ReviewCreateRequest req) {
         return reviewService.createOrUpdateReview(req, MethodType.UPDATE);
     }
 
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public ServiceResponse<?> deleteReview(@PathVariable int id) {
         return reviewService.delete(id);
     }
