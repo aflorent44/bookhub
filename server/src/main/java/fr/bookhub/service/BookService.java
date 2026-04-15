@@ -1,7 +1,12 @@
 package fr.bookhub.service;
 
+import fr.bookhub.dto.AuthorCreateRequest;
+import fr.bookhub.dto.BookCreateRequest;
+import fr.bookhub.dto.BookMapper;
+import fr.bookhub.dto.BookResponse;
 import fr.bookhub.entity.*;
 import fr.bookhub.repository.*;
+import fr.bookhub.utility.MethodType;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +19,6 @@ import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 

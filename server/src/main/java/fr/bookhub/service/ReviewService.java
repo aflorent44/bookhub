@@ -1,14 +1,16 @@
 package fr.bookhub.service;
 
+import fr.bookhub.dto.ReviewCreateRequest;
+import fr.bookhub.dto.ReviewMapper;
 import fr.bookhub.entity.*;
 import fr.bookhub.repository.BookRepository;
 import fr.bookhub.repository.LoanRepository;
 import fr.bookhub.repository.ReviewRepository;
+import fr.bookhub.utility.MethodType;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;

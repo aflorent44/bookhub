@@ -1,4 +1,4 @@
-package fr.bookhub.service;
+package fr.bookhub.dto;
 
 import fr.bookhub.entity.Book;
 import org.springframework.stereotype.Component;

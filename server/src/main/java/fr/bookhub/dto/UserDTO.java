@@ -1,8 +1,7 @@
-package fr.bookhub.service;
+package fr.bookhub.dto;
 
 import fr.bookhub.entity.Role;
 import fr.bookhub.entity.User;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

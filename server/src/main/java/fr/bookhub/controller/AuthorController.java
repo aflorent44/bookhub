@@ -1,6 +1,6 @@
 package fr.bookhub.controller;
 
-import fr.bookhub.service.AuthorCreateRequest;
+import fr.bookhub.dto.AuthorCreateRequest;
 import fr.bookhub.service.AuthorService;
 import fr.bookhub.service.ServiceResponse;
 import lombok.AllArgsConstructor;

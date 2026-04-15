@@ -1,7 +1,5 @@
-package fr.bookhub.service;
+package fr.bookhub.dto;
 
-import fr.bookhub.entity.Book;
-import fr.bookhub.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,8 +1,7 @@
 package fr.bookhub.controller;
 
-import fr.bookhub.entity.Review;
-import fr.bookhub.service.MethodType;
-import fr.bookhub.service.ReviewCreateRequest;
+import fr.bookhub.utility.MethodType;
+import fr.bookhub.dto.ReviewCreateRequest;
 import fr.bookhub.service.ReviewService;
 import fr.bookhub.service.ServiceResponse;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package fr.bookhub.service;
+package fr.bookhub.dto;
 
 import fr.bookhub.entity.Loan;
 import org.springframework.stereotype.Component;

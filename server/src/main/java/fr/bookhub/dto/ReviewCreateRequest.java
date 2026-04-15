@@ -1,12 +1,9 @@
-package fr.bookhub.service;
+package fr.bookhub.dto;
 
-import fr.bookhub.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
