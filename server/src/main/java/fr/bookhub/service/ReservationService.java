@@ -1,10 +1,8 @@
 package fr.bookhub.service;
 
-import fr.bookhub.entity.Book;
-import fr.bookhub.entity.Reservation;
-import fr.bookhub.entity.Status;
-import fr.bookhub.entity.User;
+import fr.bookhub.entity.*;
 import fr.bookhub.repository.BookRepository;
+import fr.bookhub.repository.LoanRepository;
 import fr.bookhub.repository.ReservationRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +19,7 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final BookRepository bookRepository;
     private final ReservationMapper reservationMapper;
+    private final LoanRepository loanRepository;
 
     public ServiceResponse<?> createReservation(ReservationCreateRequest req) {
         // Récupérer l'utilisateur :
@@ -47,6 +46,23 @@ public class ReservationService {
             foundBook = book.get();
         } else {
             return new ServiceResponse<>("9002", "Book not found");
+        }
+
+        List<Reservation> existingReservations = reservationRepository.findByUserIdAndBookId(req.getUserId(), req.getBookId());
+
+        boolean hasActiveReservation = existingReservations.stream()
+                .anyMatch(r -> r.getStatus() == Status.WAITING);
+
+        if (hasActiveReservation) {
+            return new ServiceResponse<>("9003", "User already has a pending reservation for this book");
+        }
+
+        List<Loan> existingLoans = loanRepository.findByUserIdAndBookId(req.getUserId(), req.getBookId());
+        boolean hasActiveLoan = existingLoans.stream()
+                .anyMatch(l -> l.getStatus() == Status.WAITING || l.getStatus() == Status.IN_PROGRESS);
+
+        if (hasActiveLoan) {
+            return new ServiceResponse<>("9004", "User already has an active loan for this book");
         }
 
         // Création de la réservation :

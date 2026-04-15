@@ -113,7 +113,8 @@ export class LoanService {
       '7003': 'Vous avez un ou plusieurs livres en retard.',
       '7004': 'Vous avez atteint votre quota d\'emprunts.',
       '7011': 'Emprunt non trouvé',
-      '7012':	'Livre introuvable'
+      '7012':	'Livre introuvable',
+      '7005': 'Vous avez déjà un emprunt en cours ou en attente pour ce livre.',
     };
     return messages[code] ?? 'Erreur lors de l\'emprunt.';
   }
