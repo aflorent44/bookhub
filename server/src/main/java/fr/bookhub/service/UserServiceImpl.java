@@ -1,6 +1,7 @@
 package fr.bookhub.service;
 
 import fr.bookhub.dto.UserRegistrationRequest;
+import fr.bookhub.entity.Loan;
 import fr.bookhub.entity.Role;
 import fr.bookhub.entity.User;
 import fr.bookhub.repository.UserRepository;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -64,4 +66,5 @@ public class UserServiceImpl implements UserService {
                     .orElseGet(() ->
                             new ServiceResponse<>("8001", "User not found"));
     }
+
 }
