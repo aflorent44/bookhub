@@ -33,6 +33,7 @@ public class BookService {
     private final GenreService genreService;
     private final AuthorService authorService;
     private final UserService userService;
+    private final LoanRepository loanRepository;
 
     public ServiceResponse<List<BookResponse>> getBooks() {
         List<BookResponse> books = bookRepository.findAll()
@@ -272,6 +273,15 @@ public class BookService {
 
         if (book == null) {
             return new ServiceResponse<>("6001", "Book not found");
+        }
+
+        // Vérifier s'il y a des emprunts sur le livre :
+        List<Loan> loans = loanRepository.findByBookId(book.getId());
+
+        for (Loan loan : loans) {
+            if (loan.getStatus() == Status.IN_PROGRESS || loan.getStatus() == Status.WAITING) {
+                return new ServiceResponse<>("6002", "A loan is in progress or a user is waiting to loan this book");
+            }
         }
 
         return new ServiceResponse<>("6000", "Book successfully deleted", book);
