@@ -51,7 +51,7 @@
                           <span [class]="'badge badge-' + loan.status">{{ loan.status | loanStatus }}</span>
                         </td>
                         <td>
-                          @if (loan.status === 'PENDING') {
+                          @if (loan.status === 'WAITING') {
                             <app-button text="Valider" color="var(--btn-green)" (clicked)="onValidateLoan(loan.id)" />
                           }
                           @if (loan.status === 'IN_PROGRESS') {
