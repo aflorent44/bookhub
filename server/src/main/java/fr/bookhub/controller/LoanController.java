@@ -16,7 +16,7 @@ public class LoanController {
 
     private final LoanService loanService;
 
-    @PostMapping("")
+    @PostMapping
     public ServiceResponse<?> loanBook(@RequestBody LoanCreateRequest req) {
         return loanService.createLoan(req);
     }

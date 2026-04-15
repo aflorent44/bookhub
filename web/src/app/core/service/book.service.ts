@@ -19,15 +19,32 @@ export class BookService {
       .pipe(map(response => response.data));
   }
 
-  getBooks(): Observable<Book[]> {
+  /*getBooks(): Observable<Book[]> {
     return this.http.get<ServiceResponse<Book[]>>(`${this.apiUrl}/books`)
       .pipe(map((response: ServiceResponse<Book[]>) => response.data));
+  }*/
+
+  getBooks(filters: any): Observable<any> {
+    return this.http.post<ServiceResponse<any>>(
+      `${this.apiUrl}/books/search`,
+      filters
+    );
   }
 
   createBook(book: any): Observable<Book> {
     return this.http.post<ServiceResponse<Book>>(`${this.apiUrl}/books`, book)
       .pipe(map((response: ServiceResponse<Book>) => {
         if (response.code !== '1030') {
+          throw new Error(response.code);
+        }
+        return response.data;
+      }));
+  }
+
+  updateBook(book: any): Observable<Book> {
+    return this.http.post<ServiceResponse<Book>>(`${this.apiUrl}/books/update`, book)
+      .pipe(map((response: ServiceResponse<Book>) => {
+        if (response.code !== '1033') {
           throw new Error(response.code);
         }
         return response.data;

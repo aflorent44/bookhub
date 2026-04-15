@@ -22,6 +22,7 @@ public class BookMapper {
         dto.setCreatedBy(book.getCreatedBy());
         dto.setUpdatedAt(book.getUpdatedAt());
         dto.setUpdatedBy(book.getUpdatedBy());
+        dto.setCountry(book.getCountry());
 
         dto.setAuthorFirstName(book.getAuthor().getFirstName());
         dto.setAuthorLastName(book.getAuthor().getLastName());

@@ -9226,3 +9226,4 @@
 .settings/
 *.sublime-workspace
 package-lock.json
+/hs_err_pid19224.log

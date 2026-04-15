@@ -1,7 +1,9 @@
 import { Genre } from './genre';
+import {Country} from './country';
+import {User} from './user';
 
 export interface Book {
-  id: number;
+  bookId: number;
   isbn: string;
   title: string;
   year: number;
@@ -14,6 +16,7 @@ export interface Book {
   firstPageUrl?: string | null;
   createdAt?: string;
   updatedAt?: string;
-  createdBy?: string;
-  updatedBy?: string;
+  createdBy?: User;
+  updatedBy?: User;
+  country: Country;
 }

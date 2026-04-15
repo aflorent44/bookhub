@@ -1,5 +1,5 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Book } from '../../../core/type/book';
 import { BookService } from '../../../core/service/book.service';
@@ -27,6 +27,7 @@ import {Loan} from '../../../core/type/loan';
 export class BookDetail implements OnInit {
 
   private route = inject(ActivatedRoute);
+  router = inject(Router);
   private bookService = inject(BookService);
   private loanService = inject(LoanService);
   private authService = inject(AuthService);
@@ -106,6 +107,13 @@ export class BookDetail implements OnInit {
     const now = new Date();
     const diff = Math.floor((now.getTime() - end.getTime()) / (1000 * 60 * 60 * 24));
     return diff > 0 ? diff : 0;
+  }
+
+  onEditBook() {
+    const id = this.book()?.bookId;
+    if (id) {
+      this.router.navigate(['/books', id, 'edit']);
+    }
   }
 
   onValidateLoan(loanId: number) {
