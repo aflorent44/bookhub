@@ -16,6 +16,7 @@ public class LoanResponse {
     private Integer id;
     private LocalDateTime debutDate;
     private LocalDateTime endDate;
+    private LocalDateTime returnDate;
     private Status status;
     private Integer userId;
     private Integer bookId;

@@ -38,6 +38,7 @@
                   </thead>
                   <tbody>
                     @for (loan of loans(); track loan.id) {
+                      @if (loan.status !== 'FINISHED') {
                       <tr>
                         <td>{{ loan.userId }}</td>
                         <td>{{ loan.debutDate | date: 'dd/MM/yyyy' }}</td>
@@ -59,6 +60,7 @@
                           }
                         </td>
                       </tr>
+                      }
                     }
                   </tbody>
                 </table>
@@ -88,6 +90,45 @@
                     }
                   </tbody>
                 </table>
+              }
+
+              @if (completedLoans().length > 0) {
+                <p-divider />
+                <h3>Emprunts terminés</h3>
+                <table class="loans-table">
+                  <thead>
+                  <tr>
+                    <th>Utilisateur</th>
+                    <th>Début</th>
+                    <th>Retourné le</th>
+                    <th>Statut</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    @for (loan of completedLoansPaged(); track loan.id) {
+                      <tr>
+                        <td>{{ loan.userId }}</td>
+                        <td>{{ loan.debutDate | date: 'dd/MM/yyyy' }}</td>
+                        <td>{{ loan.returnDate | date: 'dd/MM/yyyy' }}</td>
+                        <td>
+                          <span [class]="'badge badge-' + loan.status">{{ loan.status | loanStatus }}</span>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+
+                @if (completedLoansTotalPages() > 1) {
+                  <div class="pagination">
+                    <button (click)="prevCompletedPage()" [disabled]="completedLoansPage() === 0">
+                      <i class="pi pi-chevron-left"></i>
+                    </button>
+                    <span>{{ completedLoansPage() + 1 }} / {{ completedLoansTotalPages() }}</span>
+                    <button (click)="nextCompletedPage()" [disabled]="completedLoansPage() === completedLoansTotalPages() - 1">
+                      <i class="pi pi-chevron-right"></i>
+                    </button>
+                  </div>
+                }
               }
 
             </ng-template>

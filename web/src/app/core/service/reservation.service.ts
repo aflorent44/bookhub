@@ -63,6 +63,8 @@ export class ReservationService {
       '9002': 'Livre introuvable.',
       '9011': 'Réservation introuvable.',
       '9012': 'Seules les réservations en attente peuvent être annulées.',
+      '9003': 'Vous avez déjà une réservation en attente pour ce livre.',
+      '9004': 'Vous avez déjà un emprunt actif pour ce livre.',
     };
     return messages[code] ?? 'Erreur lors de la réservation.';
   }

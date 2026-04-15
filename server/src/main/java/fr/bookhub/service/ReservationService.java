@@ -1,5 +1,6 @@
 package fr.bookhub.service;
 
+import fr.bookhub.entity.*;
 import fr.bookhub.dto.ReservationBookResponse;
 import fr.bookhub.dto.ReservationCreateRequest;
 import fr.bookhub.dto.ReservationResponse;
@@ -8,6 +9,7 @@ import fr.bookhub.entity.Reservation;
 import fr.bookhub.entity.Status;
 import fr.bookhub.entity.User;
 import fr.bookhub.repository.BookRepository;
+import fr.bookhub.repository.LoanRepository;
 import fr.bookhub.repository.ReservationRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,22 +25,43 @@ public class ReservationService {
     private final UserService userService;
     private final ReservationRepository reservationRepository;
     private final BookRepository bookRepository;
+    private final LoanRepository loanRepository;
+
 
     public ServiceResponse<?> createReservation(String email, ReservationCreateRequest req) {
         // Récupérer l'utilisateur connecté
         User foundUser = userService.findByEmail(email);
-
         // Max 5 réservations / utilisateur
         List<Reservation> userReservations = reservationRepository.findByUserId(foundUser.getId());
         if (userReservations.size() >= 5) {
             return new ServiceResponse<>("9001", "Reservation quota reached");
         }
 
+        // Récupérer le livre :
         Optional<Book> book = bookRepository.findById(req.getBookId());
         if (book.isEmpty()) {
             return new ServiceResponse<>("9002", "Book not found");
         }
 
+        List<Reservation> existingReservations = reservationRepository.findByUserIdAndBookId(foundUser.getId(), req.getBookId());
+
+        boolean hasActiveReservation = existingReservations.stream()
+                .anyMatch(r -> r.getStatus() == Status.WAITING);
+
+        if (hasActiveReservation) {
+            return new ServiceResponse<>("9003", "User already has a pending reservation for this book");
+        }
+
+        List<Loan> existingLoans = loanRepository.findByUserIdAndBookId(foundUser.getId(), req.getBookId());
+
+        boolean hasActiveLoan = existingLoans.stream()
+                .anyMatch(l -> l.getStatus() == Status.WAITING || l.getStatus() == Status.IN_PROGRESS);
+
+        if (hasActiveLoan) {
+            return new ServiceResponse<>("9004", "User already has an active loan for this book");
+        }
+
+        // Création de la réservation :
         Book foundBook = book.get();
 
         Reservation reservation = new Reservation();
@@ -70,6 +93,7 @@ public class ReservationService {
     }
 
     public ServiceResponse<?> deleteReservation(int reservationId) {
+        // Trouver la réservation :
         Optional<Reservation> reservation = reservationRepository.findById(reservationId);
 
         if (reservation.isEmpty()) {

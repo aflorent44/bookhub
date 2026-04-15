@@ -41,6 +41,8 @@ export class BookDetail implements OnInit {
   reservations = signal<any[]>([]);
   userLoans = signal<Loan[]>([]);
   userReservations = signal<any[]>([]);
+  completedLoansPage = signal(0);
+  completedLoansPageSize = 5;
 
   isAdminOrLibrarian = computed(() => {
     const role = this.authService.currentUser$()?.role;
@@ -51,6 +53,33 @@ export class BookDetail implements OnInit {
     const role = this.authService.currentUser$()?.role;
     return role === 'USER';
   });
+
+  completedLoans = computed(() =>
+    this.loans()
+      .filter(l => l.status === 'FINISHED')
+      .sort((a, b) => new Date(b.returnDate).getTime() - new Date(a.returnDate).getTime())
+  );
+
+  completedLoansPaged = computed(() => {
+    const start = this.completedLoansPage() * this.completedLoansPageSize;
+    return this.completedLoans().slice(start, start + this.completedLoansPageSize);
+  });
+
+  completedLoansTotalPages = computed(() =>
+    Math.ceil(this.completedLoans().length / this.completedLoansPageSize)
+  );
+
+  prevCompletedPage() {
+    if (this.completedLoansPage() > 0) {
+      this.completedLoansPage.update(p => p - 1);
+    }
+  }
+
+  nextCompletedPage() {
+    if (this.completedLoansPage() < this.completedLoansTotalPages() - 1) {
+      this.completedLoansPage.update(p => p + 1);
+    }
+  }
 
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id') ?? '');
@@ -71,6 +100,26 @@ export class BookDetail implements OnInit {
       },
       error: (err) => console.error('Erreur :', err)
     });
+  }
+
+  reloadBook() {
+    const id = Number(this.route.snapshot.paramMap.get('id') ?? '');
+    this.bookService.getBookById(id).subscribe({
+      next: (book) => this.book.set(book),
+      error: (err) => console.error('Erreur reload book :', err)
+    });
+  }
+
+  private reloadAll() {
+    const id = Number(this.route.snapshot.paramMap.get('id') ?? '');
+    this.reloadBook();
+    if (this.isAdminOrLibrarian()) {
+      this.loadLoans(id);
+      this.loadReservations(id);
+    }
+    if (this.isUser()) {
+      this.loadUserLoansAndReservations();
+    }
   }
 
   loadLoans(bookId: number) {
@@ -118,24 +167,15 @@ export class BookDetail implements OnInit {
 
   onValidateLoan(loanId: number) {
     this.loanService.validateLoan(loanId).subscribe({
-      next: () => {
-        // Recharge les loans après validation
-        const id = Number(this.route.snapshot.paramMap.get('id') ?? '');
-        this.loadLoans(id);
-        this.loadReservations(id);
-      },
-      error: (err) => {
-        this.error.set(this.loanService.getErrorMessage(err.message));
-      }
+      next: () => this.reloadAll(),
+      error: (err) => this.error.set(this.loanService.getErrorMessage(err.message))
     });
   }
 
   onReturnBook(loan: Loan) {
     this.loanService.returnBook(loan.id, loan.userId, loan.bookId).subscribe({
       next: () => {
-        const id = Number(this.route.snapshot.paramMap.get('id') ?? '');
-        this.loadLoans(id);
-        this.loadReservations(id);
+        this.reloadAll();
         this.messageService.add({
           severity: 'success',
           summary: 'Retour enregistré',
@@ -158,13 +198,13 @@ export class BookDetail implements OnInit {
         this.loanService.loanBook(bookId).subscribe({
           next: () => {
             this.error.set('');
+            this.reloadAll();
             this.messageService.add({
               severity: 'success',
               summary: 'Emprunt enregistré',
               detail: 'Votre demande est en attente — veuillez venir à la librairie récupérer votre livre.',
               life: 6000
             });
-            this.loadUserLoansAndReservations();
           },
           error: (err) => {
             this.error.set(this.loanService.getErrorMessage(err.message));
@@ -185,13 +225,13 @@ export class BookDetail implements OnInit {
         this.reservationService.reserveBook(bookId).subscribe({
           next: () => {
             this.error.set('');
+            this.reloadAll();
             this.messageService.add({
               severity: 'info',
               summary: 'Réservation enregistrée',
               detail: 'Vous serez notifié lorsque le livre sera disponible.',
               life: 6000
             });
-            this.loadUserLoansAndReservations();
           },
           error: (err) => {
             this.error.set(this.reservationService.getErrorMessage(err.message));

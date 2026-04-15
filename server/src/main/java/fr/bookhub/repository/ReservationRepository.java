@@ -12,7 +12,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Intege
     List<Reservation> findByUserId(Integer userId);
     List<Reservation> findByBookId(int bookId);
     List<Reservation> findByUserIdAndBookId(int userId, int bookId);
-
     List<Reservation> findByBookIdAndStatusOrderByCreatedAtAsc(Integer bookId, Status status);
 
 }

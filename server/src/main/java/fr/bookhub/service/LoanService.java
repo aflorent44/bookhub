@@ -1,5 +1,6 @@
 package fr.bookhub.service;
 
+import fr.bookhub.entity.*;
 import fr.bookhub.dto.LoanCreateRequest;
 import fr.bookhub.dto.LoanMapper;
 import fr.bookhub.entity.Book;
@@ -8,6 +9,7 @@ import fr.bookhub.entity.Status;
 import fr.bookhub.entity.User;
 import fr.bookhub.repository.BookRepository;
 import fr.bookhub.repository.LoanRepository;
+import fr.bookhub.repository.ReservationRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,7 @@ public class LoanService {
 
     private final BookRepository bookRepository;
     private final LoanRepository loanRepository;
+    private final ReservationRepository reservationRepository;
     private final UserService userService;
     private final LoanMapper loanMapper;
 
@@ -84,6 +87,15 @@ public class LoanService {
             if (totalLoansInProgress >= 3) {
                 return new ServiceResponse<>("7004", "Loan quota reached");
             }
+        }
+
+        List<Loan> existingLoans = loanRepository.findByUserIdAndBookId(req.getUserId(), req.getBookId());
+
+        boolean hasActiveOrPendingLoan = existingLoans.stream()
+                .anyMatch(l -> l.getStatus() == Status.WAITING || l.getStatus() == Status.IN_PROGRESS);
+
+        if (hasActiveOrPendingLoan) {
+            return new ServiceResponse<>("7005", "User already has an active or pending loan for this book");
         }
 
         // Créer l'objet Loan
@@ -205,6 +217,8 @@ public class LoanService {
         // Sauvegarder le livre :
         bookRepository.save(foundBook);
 
+        handleWaitingList(foundBook, foundInternalUser);
+
         if (status == Status.FINISHED) {
             return new ServiceResponse<>("7010", "Book successfully returned", loanMapper.toResponse(savedLoan));
         }
@@ -223,4 +237,54 @@ public class LoanService {
         }
         return new ServiceResponse<>("7041", "Loans found", loanMapper.toResponse(loans));
     }
+
+    private void handleWaitingList(Book book, User internalUser) {
+        // 1. Chercher l'emprunt en attente le plus ancien pour ce livre
+        List<Loan> waitingLoans = loanRepository.findByBookIdAndStatusOrderByCreatedAtAsc(
+                book.getId(), Status.WAITING
+        );
+
+        if (!waitingLoans.isEmpty()) {
+            Loan oldestWaitingLoan = waitingLoans.get(0);
+            oldestWaitingLoan.setStatus(Status.IN_PROGRESS);
+            oldestWaitingLoan.setDebutDate(LocalDateTime.now());
+            oldestWaitingLoan.setEndDate(LocalDateTime.now().plusDays(14));
+            oldestWaitingLoan.setUpdatedAt(LocalDateTime.now());
+            oldestWaitingLoan.setUpdatedBy(internalUser);
+            loanRepository.save(oldestWaitingLoan);
+
+            bookRepository.save(book);
+            return; // Un emprunt en attente a été activé, pas besoin de vérifier les réservations
+        }
+
+        // 2. Si pas d'emprunt en attente et quantité > 0, convertir la réservation la plus ancienne
+        if (book.getQuantity() > 0) {
+            List<Reservation> waitingReservations = reservationRepository
+                    .findByBookIdAndStatusOrderByCreatedAtAsc(book.getId(), Status.WAITING);
+
+            if (!waitingReservations.isEmpty()) {
+                Reservation oldestReservation = waitingReservations.get(0);
+
+                // Créer un emprunt depuis la réservation
+                Loan newLoan = new Loan();
+                newLoan.setUser(oldestReservation.getUser());
+                newLoan.setBook(book);
+                newLoan.setStatus(Status.WAITING); // En attente que l'user vienne chercher le livre
+                newLoan.setDebutDate(LocalDateTime.now());
+                newLoan.setEndDate(LocalDateTime.now().plusDays(14));
+                newLoan.setCreatedAt(LocalDateTime.now());
+                newLoan.setUpdatedAt(LocalDateTime.now());
+                newLoan.setUpdatedBy(internalUser);
+                loanRepository.save(newLoan);
+
+                // Supprimer la réservation
+                reservationRepository.deleteById(oldestReservation.getId());
+
+                // Décrémenter la quantité
+                book.setQuantity(book.getQuantity() - 1);
+                bookRepository.save(book);
+            }
+        }
+    }
+
 }

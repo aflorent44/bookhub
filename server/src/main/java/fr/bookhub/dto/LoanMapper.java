@@ -14,6 +14,7 @@ public class LoanMapper {
         dto.setId(loan.getId());
         dto.setDebutDate(loan.getDebutDate());
         dto.setEndDate(loan.getEndDate());
+        dto.setReturnDate(loan.getReturnDate());
         dto.setStatus(loan.getStatus());
         dto.setUserId(loan.getUser().getId());
         dto.setBookId(loan.getBook().getId());
