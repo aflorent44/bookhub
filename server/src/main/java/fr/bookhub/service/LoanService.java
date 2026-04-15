@@ -128,7 +128,7 @@ public class LoanService {
         return new ServiceResponse<>("7020", "Loan successfully validated", loanMapper.toResponse(savedLoan));
     }
 
-    public ServiceResponse<?> finishLoan(LoanCreateRequest req) {
+    public ServiceResponse<?> finishOrCancelLoan(LoanCreateRequest req, Status status) {
         // Récupérer l'utilisateur "interne" (le bibliothéquaire) :
         ServiceResponse<User> responseInternalUser = userService.getUserById(req.getInternalUserId());
 
@@ -154,11 +154,6 @@ public class LoanService {
         } else {
             return new ServiceResponse<>("7011", "Loan not found");
         }
-        // Mettre à jour l'emprunt
-        foundLoan.setStatus(Status.FINISHED);
-        foundLoan.setReturnDate(LocalDateTime.now());
-        foundLoan.setUpdatedAt(LocalDateTime.now());
-        foundLoan.setUpdatedBy(foundInternalUser);
 
         // Mettre à jour le livre
         Optional<Book> book = bookRepository.findById(req.getBookId());
@@ -170,6 +165,25 @@ public class LoanService {
             return new ServiceResponse<>("7012", "Book not found");
         }
 
+        if (status == Status.FINISHED) {
+            if (foundLoan.getStatus() != Status.IN_PROGRESS) {
+                return new ServiceResponse<>("7013", "User can't return the loan because the status is not in progress");
+            }
+            // Mettre à jour l'emprunt
+            foundLoan.setStatus(Status.FINISHED);
+            foundLoan.setReturnDate(LocalDateTime.now());
+        }
+
+        if (status == Status.CANCELED) {
+            if (foundLoan.getStatus() != Status.WAITING) {
+                return new ServiceResponse<>("7014", "User can't cancel the loan because the status is not waiting");
+            }
+            foundLoan.setStatus(Status.CANCELED);
+            foundLoan.setReturnDate(null);
+        }
+
+        foundLoan.setUpdatedAt(LocalDateTime.now());
+        foundLoan.setUpdatedBy(foundInternalUser);
         foundBook.setQuantity(foundBook.getQuantity() + 1);
         foundBook.setUpdatedAt(LocalDateTime.now());
         foundBook.setUpdatedBy(foundInternalUser);
@@ -180,29 +194,15 @@ public class LoanService {
         // Sauvegarder le livre :
         bookRepository.save(foundBook);
 
-        return new ServiceResponse<>("7010", "Book successfully returned", loanMapper.toResponse(savedLoan));
+        if (status == Status.FINISHED) {
+            return new ServiceResponse<>("7010", "Book successfully returned", loanMapper.toResponse(savedLoan));
+        }
+        return new ServiceResponse<>("7015", "Loan successfully canceled",  loanMapper.toResponse(savedLoan));
     }
 
     public ServiceResponse<List<?>> getLoansByBookId(int bookId) {
         List<Loan> loans = loanRepository.findByBookId(bookId);
         return new ServiceResponse<>("7000", "Loans successfully retrieved", loanMapper.toResponse(loans));
-    }
-
-    public ServiceResponse<?> deleteLoan(int loanId) {
-        // Trouver la réservation :
-        Optional<Loan> loan = loanRepository.findById(loanId);
-
-        if (loan.isEmpty()) {
-            return new ServiceResponse<>("7031", "Loan not found");
-        }
-
-        if (loan.get().getStatus() != Status.WAITING) {
-            return new ServiceResponse<>("7032", "Only loan with a waiting status can be deleted");
-        }
-
-        loanRepository.deleteById(loanId);
-
-        return new ServiceResponse<>("7030","Loan successfully deleted");
     }
 
     public ServiceResponse<List<?>> getLoansByUserIdAndBookId(int userId, int bookId) {

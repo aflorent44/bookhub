@@ -1,5 +1,6 @@
 package fr.bookhub.controller;
 
+import fr.bookhub.entity.Status;
 import fr.bookhub.service.LoanCreateRequest;
 import fr.bookhub.service.LoanService;
 import fr.bookhub.service.ServiceResponse;
@@ -22,7 +23,7 @@ public class LoanController {
 
     @PostMapping("/return")
     public ServiceResponse<?> returnBook(@RequestBody LoanCreateRequest req) {
-        return loanService.finishLoan(req);
+        return loanService.finishOrCancelLoan(req, Status.FINISHED);
     }
 
     @GetMapping("/{bookId}")
@@ -33,9 +34,9 @@ public class LoanController {
     @PostMapping("/validate")
     public ServiceResponse<?> validateLoan(@RequestBody LoanCreateRequest req) { return loanService.validate(req); }
 
-    @PostMapping("/delete/{id}")
-    public ServiceResponse<?> cancelLoan(@PathVariable int id) {
-        return loanService.deleteLoan(id);
+    @PostMapping("/cancel")
+    public ServiceResponse<?> cancelLoan(@RequestBody LoanCreateRequest req) {
+        return loanService.finishOrCancelLoan(req, Status.CANCELED);
     }
 
     @GetMapping("/user/{userId}/book/{bookId}")
