@@ -10,34 +10,35 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping("/api/loan")
 public class LoanController {
 
     private final LoanService loanService;
 
-    @PostMapping("/api/loan")
+    @PostMapping("")
     public ServiceResponse<?> loanBook(@RequestBody LoanCreateRequest req) {
         return loanService.createLoan(req);
     }
 
-    @PostMapping("/api/loan/return")
+    @PostMapping("/return")
     public ServiceResponse<?> returnBook(@RequestBody LoanCreateRequest req) {
         return loanService.finishLoan(req);
     }
 
-    @GetMapping("/api/loan/{bookId}")
+    @GetMapping("/{bookId}")
     public ServiceResponse<List<?>> getLoansByBookId(@PathVariable int bookId) {
         return loanService.getLoansByBookId(bookId);
     }
 
-    @PostMapping("/api/loan/validate")
+    @PostMapping("/validate")
     public ServiceResponse<?> validateLoan(@RequestBody LoanCreateRequest req) { return loanService.validate(req); }
 
-    @PostMapping("/api/loan/delete/{id}")
+    @PostMapping("/delete/{id}")
     public ServiceResponse<?> cancelLoan(@PathVariable int id) {
         return loanService.deleteLoan(id);
     }
 
-    @GetMapping("/api/loan/user/{userId}/book/{bookId}")
+    @GetMapping("/user/{userId}/book/{bookId}")
     public ServiceResponse<?> getLoansByUserIdAndBookId(@PathVariable int userId, @PathVariable int bookId) {
         return loanService.getLoansByUserIdAndBookId(userId, bookId);
     }

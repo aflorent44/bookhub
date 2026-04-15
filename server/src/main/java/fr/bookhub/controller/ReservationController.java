@@ -8,26 +8,27 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping("/api/reservation")
 public class ReservationController {
 
     private final ReservationService reservationService;
 
-    @PostMapping("/api/reservation")
+    @PostMapping("")
     public ServiceResponse<?> reservationBook(@RequestBody ReservationCreateRequest req) {
         return reservationService.createReservation(req);
     }
 
-    @PostMapping("/api/reservation/delete/{id}")
+    @PostMapping("/delete/{id}")
     public ServiceResponse<?> cancelReservation(@PathVariable int id) {
         return reservationService.deleteReservation(id);
     }
 
-    @GetMapping("/api/reservation/book/{bookId}")
+    @GetMapping("/book/{bookId}")
     public ServiceResponse<?> getReservationsByBookId(@PathVariable int bookId) {
         return reservationService.getReservationsByBookId(bookId);
     }
 
-    @GetMapping("/api/reservation/user/{userId}/book/{bookId}")
+    @GetMapping("/user/{userId}/book/{bookId}")
     public ServiceResponse<?> getReservationsByUserIdAndBookId(@PathVariable int userId, @PathVariable int bookId) {
         return reservationService.getReservationsByUserIdAndBookId(userId, bookId);
     }
