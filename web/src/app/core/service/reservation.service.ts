@@ -1,9 +1,9 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {AuthService} from './auth-service';
 import {environment} from '../../../environments/environment.development';
 import {map, Observable} from 'rxjs';
 import {ServiceResponse} from '../type/service-response';
+import {Reservation} from "../type/reservation";
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +11,6 @@ import {ServiceResponse} from '../type/service-response';
 export class ReservationService {
 
   private http = inject(HttpClient);
-  private authService = inject(AuthService);
   private apiUrl: string = environment.apiUrl;
 
   getReservationsByBookId(bookId: number): Observable<any[]> {
@@ -32,25 +31,23 @@ export class ReservationService {
       }));
   }
 
-  reserveBook(bookId: number): Observable<any> {
-    const userId = this.authService.currentUser$()?.id;
+  reserveBook(bookId: number): Observable<Reservation> {
+    const request = {bookId};
 
-    const request = {
-      userId: userId,
-      bookId: bookId,
-    };
-
-    return this.http.post<ServiceResponse<any>>(`${this.apiUrl}/reservation`, request)
-      .pipe(map(response => {
-        if (response.code !== '9000') {
-          throw new Error(response.code);
-        }
-        return response.data;
-      }));
+    return this.http
+      .post<ServiceResponse<Reservation>>(`${this.apiUrl}/reservation`, request)
+      .pipe(
+        map((response) => {
+          if (response.code !== '9000') {
+            throw new Error(response.code);
+          }
+          return response.data;
+        })
+      );
   }
 
   cancelReservation(reservationId: number): Observable<any> {
-    return this.http.post<ServiceResponse<any>>(`${this.apiUrl}/reservation/delete/${reservationId}`, {})
+    return this.http.post<ServiceResponse<any>>(`${this.apiUrl}/reservation/${reservationId}`, {})
       .pipe(map(response => {
         if (response.code !== '9010') {
           throw new Error(response.code);
@@ -66,6 +63,8 @@ export class ReservationService {
       '9002': 'Livre introuvable.',
       '9011': 'Réservation introuvable.',
       '9012': 'Seules les réservations en attente peuvent être annulées.',
+      '9003': 'Vous avez déjà une réservation en attente pour ce livre.',
+      '9004': 'Vous avez déjà un emprunt actif pour ce livre.',
     };
     return messages[code] ?? 'Erreur lors de la réservation.';
   }

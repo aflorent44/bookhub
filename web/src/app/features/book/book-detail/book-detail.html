@@ -1,5 +1,5 @@
-<p-toast position="bottom-center" />
-<p-confirm-dialog />
+<p-toast position="bottom-center"></p-toast>
+<p-confirm-dialog></p-confirm-dialog>
 
 @if (book()) {
   <div [class]="'book-detail-wrapper ' + (isAdminOrLibrarian() ? 'admin' : '')">
@@ -38,6 +38,7 @@
                   </thead>
                   <tbody>
                     @for (loan of loans(); track loan.id) {
+                      @if (loan.status !== 'FINISHED') {
                       <tr>
                         <td>{{ loan.userId }}</td>
                         <td>{{ loan.debutDate | date: 'dd/MM/yyyy' }}</td>
@@ -52,13 +53,14 @@
                         </td>
                         <td>
                           @if (loan.status === 'WAITING') {
-                            <app-button text="Valider" color="var(--btn-green)" (clicked)="onValidateLoan(loan.id)" />
+                            <app-button text="Valider" color="var(--btn-green)" (clicked)="onValidateLoan(loan.id)"></app-button>
                           }
                           @if (loan.status === 'IN_PROGRESS') {
-                            <app-button text="Retour" color="var(--btn-yellow)" (clicked)="onReturnBook(loan)" />
+                            <app-button text="Retour" color="var(--btn-yellow)" (clicked)="onReturnBook(loan)"></app-button>
                           }
                         </td>
                       </tr>
+                      }
                     }
                   </tbody>
                 </table>
@@ -90,6 +92,45 @@
                 </table>
               }
 
+              @if (completedLoans().length > 0) {
+                <p-divider />
+                <h3>Emprunts terminés</h3>
+                <table class="loans-table">
+                  <thead>
+                  <tr>
+                    <th>Utilisateur</th>
+                    <th>Début</th>
+                    <th>Retourné le</th>
+                    <th>Statut</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    @for (loan of completedLoansPaged(); track loan.id) {
+                      <tr>
+                        <td>{{ loan.userId }}</td>
+                        <td>{{ loan.debutDate | date: 'dd/MM/yyyy' }}</td>
+                        <td>{{ loan.returnDate | date: 'dd/MM/yyyy' }}</td>
+                        <td>
+                          <span [class]="'badge badge-' + loan.status">{{ loan.status | loanStatus }}</span>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+
+                @if (completedLoansTotalPages() > 1) {
+                  <div class="pagination">
+                    <button (click)="prevCompletedPage()" [disabled]="completedLoansPage() === 0">
+                      <i class="pi pi-chevron-left"></i>
+                    </button>
+                    <span>{{ completedLoansPage() + 1 }} / {{ completedLoansTotalPages() }}</span>
+                    <button (click)="nextCompletedPage()" [disabled]="completedLoansPage() === completedLoansTotalPages() - 1">
+                      <i class="pi pi-chevron-right"></i>
+                    </button>
+                  </div>
+                }
+              }
+
             </ng-template>
           </p-card>
         </div>
@@ -104,7 +145,7 @@
 
           <!-- Emprunts et réservations de l'user sur ce livre -->
           @if (userLoans().length > 0 || userReservations().length > 0) {
-            <p-divider />
+            <p-divider></p-divider>
             <div class="user-activity">
               <h3>Votre activité sur ce livre</h3>
 
@@ -151,7 +192,7 @@
         <h1>{{ book()!.title }}</h1>
         <p class="book-author">{{ book()!.authorFirstName }} {{ book()!.authorLastName }}</p>
       </div>
-      <p-divider />
+      <p-divider></p-divider>
       <div class="book-meta">
         <div class="book-meta-row">
           <span class="meta-label">ISBN</span>
@@ -185,7 +226,7 @@
     </div>
   </div>
 
-  <p-divider />
+  <p-divider></p-divider>
 
   <div class="book-description">
     <p class="meta-label">Description</p>

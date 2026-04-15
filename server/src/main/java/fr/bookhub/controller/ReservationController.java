@@ -1,9 +1,10 @@
 package fr.bookhub.controller;
 
-import fr.bookhub.service.ReservationCreateRequest;
+import fr.bookhub.dto.ReservationCreateRequest;
 import fr.bookhub.service.ReservationService;
 import fr.bookhub.service.ServiceResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,12 +14,22 @@ public class ReservationController {
 
     private final ReservationService reservationService;
 
-    @PostMapping("")
-    public ServiceResponse<?> reservationBook(@RequestBody ReservationCreateRequest req) {
-        return reservationService.createReservation(req);
+    @PostMapping
+    public ServiceResponse<?> reserveBook(@RequestBody ReservationCreateRequest req,
+                                          Authentication authentication) {
+        if (authentication == null) {
+            return new ServiceResponse<>("9401", "Unauthorized");
+        }
+        String email = authentication.getName();
+        return reservationService.createReservation(email, req);
     }
 
-    @PostMapping("/delete/{id}")
+    @GetMapping("/my")
+    public ServiceResponse<?> getMyReservations(Authentication authentication) {
+        return reservationService.getMyReservations(authentication.getName());
+    }
+
+    @DeleteMapping("/{id}")
     public ServiceResponse<?> cancelReservation(@PathVariable int id) {
         return reservationService.deleteReservation(id);
     }

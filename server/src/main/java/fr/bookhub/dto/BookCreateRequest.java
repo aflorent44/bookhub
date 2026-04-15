@@ -1,40 +1,34 @@
-package fr.bookhub.service;
+package fr.bookhub.dto;
 
-import fr.bookhub.entity.Country;
-import fr.bookhub.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.Set;
 
-@Getter
 @Setter
-@AllArgsConstructor
+@Getter
 @NoArgsConstructor
-public class BookResponse {
-
+@AllArgsConstructor
+public class BookCreateRequest {
     private Integer bookId;
     private String isbn;
     private String title;
-
     private Integer year;
     private Integer quantity;
     private String description;
     private String firstPageUrl;
-    private Country country;
 
     private String authorFirstName;
     private String authorLastName;
 
     private String publisherName;
 
+    private String countryName;
+
     private Set<GenreDTO> genres;
 
-    private User createdBy;
-    private User updatedBy;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Integer createdById;
+    private Integer updatedById;
 }

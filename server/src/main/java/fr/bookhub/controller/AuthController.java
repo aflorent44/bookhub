@@ -35,6 +35,7 @@ public class AuthController {
                 savedUser.getLastName(),
                 savedUser.getPseudo(),
                 savedUser.getEmail(),
+                savedUser.getPhoneNumber(),
                 savedUser.getRole().name(),
                 savedUser.getCreatedAt()
         );

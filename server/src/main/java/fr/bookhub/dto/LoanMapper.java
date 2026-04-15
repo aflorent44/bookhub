@@ -1,4 +1,4 @@
-package fr.bookhub.service;
+package fr.bookhub.dto;
 
 import fr.bookhub.entity.Loan;
 import org.springframework.stereotype.Component;
@@ -14,6 +14,7 @@ public class LoanMapper {
         dto.setId(loan.getId());
         dto.setDebutDate(loan.getDebutDate());
         dto.setEndDate(loan.getEndDate());
+        dto.setReturnDate(loan.getReturnDate());
         dto.setStatus(loan.getStatus());
         dto.setUserId(loan.getUser().getId());
         dto.setBookId(loan.getBook().getId());

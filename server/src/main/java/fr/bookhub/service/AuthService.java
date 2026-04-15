@@ -43,6 +43,7 @@ public class AuthService {
                 user.getLastName(),
                 user.getPseudo(),
                 user.getEmail(),
+                user.getPhoneNumber(),
                 user.getRole() != null ? user.getRole().name() : "USER",
                 user.getCreatedAt()
         );
