@@ -44,16 +44,22 @@ public class ReviewService {
 
         // Vérifier si l'utilisateur à emprunter ce livre :
         if (method == MethodType.CREATE) {
-            List<Loan> loans = loanRepository.findByUserIdAndBookId(req.getBookId(), req.getBookId());
+            System.out.println("user id :" + req.getUserId());
+            System.out.println("book id :" + req.getBookId());
+            List<Loan> loans = loanRepository.findByUserIdAndBookId(req.getUserId(), req.getBookId());
+
+            System.out.println("loans size :" + loans.size());
 
             if (loans.isEmpty()) {
                 return new ServiceResponse<>("10004", "User unauthorized to review");
             }
 
-            for (Loan loan : loans) {
-                if (!EnumSet.of(Status.FINISHED, Status.IN_PROGRESS).contains(loan.getStatus())) {
-                    return new ServiceResponse<>("10004", "User unauthorized to review");
-                }
+            boolean hasValidLoan = loans.stream()
+                    .anyMatch(loan -> EnumSet.of(Status.FINISHED, Status.IN_PROGRESS)
+                            .contains(loan.getStatus()));
+
+            if (!hasValidLoan) {
+                return new ServiceResponse<>("10004", "User unauthorized to review");
             }
         }
 
@@ -96,5 +102,18 @@ public class ReviewService {
             return new ServiceResponse<>("10000", "Review successfully created", reviewMapper.toResponse(savedReview));
         }
         return new ServiceResponse<>("10005", "Review successfully updated", reviewMapper.toResponse(savedReview));
+    }
+
+    public ServiceResponse<?> delete(int id) {
+        // Vérifier que la review existe :
+        Optional<Review> foundReview = reviewRepository.findById(id);
+
+        if (foundReview.isEmpty()) {
+            return new ServiceResponse<>("10004", "Review not found");
+        }
+
+        reviewRepository.deleteById(id);
+
+        return new ServiceResponse<>("10010", "Review successfully deleted");
     }
 }
