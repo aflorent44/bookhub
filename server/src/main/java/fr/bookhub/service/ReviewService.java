@@ -44,11 +44,7 @@ public class ReviewService {
 
         // Vérifier si l'utilisateur à emprunter ce livre :
         if (method == MethodType.CREATE) {
-            System.out.println("user id :" + req.getUserId());
-            System.out.println("book id :" + req.getBookId());
             List<Loan> loans = loanRepository.findByUserIdAndBookId(req.getUserId(), req.getBookId());
-
-            System.out.println("loans size :" + loans.size());
 
             if (loans.isEmpty()) {
                 return new ServiceResponse<>("10004", "User unauthorized to review");
