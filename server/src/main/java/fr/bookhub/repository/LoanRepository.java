@@ -1,6 +1,7 @@
 package fr.bookhub.repository;
 
 import fr.bookhub.entity.Loan;
+import fr.bookhub.entity.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,4 +12,5 @@ public interface LoanRepository extends JpaRepository<Loan, Integer> {
     List<Loan> findByUserId(Integer userId);
     List<Loan> findByUserIdAndBookId(Integer userId, Integer bookId);
     List<Loan> findByBookId(Integer bookId);
+    List<Loan> findByUserIdOrderByCreatedAtDesc(Integer userId);
 }

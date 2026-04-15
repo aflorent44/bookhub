@@ -217,22 +217,142 @@
       <!-- Bloc principal large -->
       <div class="profile-grid">
         <!-- Emprunts -->
+        <!-- SECTION EMPRUNTS - Remplace ton placeholder -->
         <section class="profile-section">
           <div class="section-header">
-            <div class="section-icon section-icon--orange">
+            <div class="section-icon">
               <i class="pi pi-book"></i>
             </div>
             <div>
               <h2 class="section-title">Mes emprunts</h2>
               <p class="section-subtitle">
-                Consultez vos emprunts en cours et votre historique.
+                Suivez vos emprunts en cours et consultez votre historique.
               </p>
             </div>
           </div>
 
-          <div class="loans-placeholder">
-            <p>Section emprunts à venir</p>
-          </div>
+          @if (loadingLoans != null) {
+            <div class="reservations-empty">
+              <p-progressSpinner strokeWidth="3" styleClass="reservation-spinner"></p-progressSpinner>
+              <p>Chargement de vos emprunts...</p>
+            </div>
+          } @else {
+            @if (currentLoans().length === 0 && loanHistory().length === 0) {
+              <div class="reservations-empty">
+                <i class="pi pi-book empty-icon"></i>
+                <h3>Aucun emprunt</h3>
+                <p>Vos emprunts en cours et votre historique apparaîtront ici.</p>
+                <p-button
+                  label="Parcourir le catalogue"
+                  icon="pi pi-search"
+                  severity="secondary"
+                  link="true"
+                  routerLink="/books">
+                </p-button>
+              </div>
+            } @else {
+              <!-- Onglet En cours -->
+              @if (currentLoans().length > 0) {
+                <div class="loans-section">
+                  <h3 class="section-subtitle">
+                    <i class="pi pi-clock"></i> En cours ({{ currentLoans().length }})
+                  </h3>
+                  <div class="reservations-list">
+                    @for (loan of currentLoans(); track loan.id) {
+                      <div class="reservation-card">
+                        <div class="reservation-header">
+                          <p-tag
+                            [value]="getLoanStatus(loan.status)"
+                            [severity]="getLoanSeverity(loan.status)"
+                            styleClass="status-tag">
+                          </p-tag>
+                          @if (loan) {
+                            <p-tag value="En retard" severity="danger" styleClass="late-tag"></p-tag>
+                          }
+                        </div>
+
+                        <div class="reservation-book">
+<!--                          <div class="book-cover">-->
+<!--                            <img-->
+<!--                              [src]="loan.book.coverUrl || 'assets/images/book-placeholder.jpg'"-->
+<!--                              [alt]="'Couverture de ' + loan.book.title"-->
+<!--                              width="64"-->
+<!--                              height="96"-->
+<!--                              loading="lazy">-->
+<!--                          </div>-->
+
+                          <div class="book-info">
+                            <h4 class="book-title">{{ loan }}</h4>
+                            <p class="book-author">{{ loan }}</p>
+
+                            <div class="reservation-dates">
+                              <p class="reservation-date">
+                                <i class="pi pi-calendar"></i>
+                                Emprunté le {{ loan.debutDate | date:'dd/MM/yyyy' : '' : 'fr' }}
+                              </p>
+                              <p class="reservation-date">
+                                <i class="pi pi-calendar-clock"></i>
+                                <strong>Retour prévu le {{ loan.endDate | date:'dd/MM/yyyy' : '' : 'fr' }}</strong>
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+
+              <!-- Onglet Historique -->
+              @if (loanHistory().length > 0) {
+                <div class="loans-section">
+                  <h3 class="section-subtitle">
+                    <i class="pi pi-history"></i> Historique ({{ loanHistory().length }})
+                  </h3>
+                  <div class="reservations-list">
+                    @for (loan of loanHistory(); track loan.id) {
+                      <div class="reservation-card">
+                        <div class="reservation-header">
+                          <p-tag
+                            [value]="getLoanStatus(loan.status)"
+                            severity="secondary"
+                            styleClass="status-tag">
+                          </p-tag>
+                        </div>
+
+                        <div class="reservation-book">
+                          <div class="book-cover">
+                            <img
+                              [src]="loans || 'assets/images/book-placeholder.jpg'"
+                              [alt]="'Couverture de ' "
+                              width="64"
+                              height="96"
+                              loading="lazy">
+                          </div>
+
+                          <div class="book-info">
+                            <h4 class="book-title">TODO</h4>
+                            <p class="book-author">TODO</p>
+
+                            @if (loan.returnDate) {
+                              <p class="reservation-date">
+                                <i class="pi pi-check-circle"></i>
+                                Retourné le {{ loan.returnDate | date:'dd/MM/yyyy' : '' : 'fr' }}
+                              </p>
+                            }
+                            <p class="reservation-date">
+                              <i class="pi pi-calendar-clock"></i>
+                              Emprunté du {{ loan.debutDate | date:'dd/MM' : '' : 'fr' }} au {{ loan.endDate | date:'dd/MM/yyyy' : '' : 'fr' }}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            }
+          }
         </section>
 
         <!-- Réservations -->

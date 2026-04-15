@@ -1,6 +1,7 @@
 package fr.bookhub.service;
 
 import fr.bookhub.dto.LoanCreateRequest;
+import fr.bookhub.dto.LoanResponse;
 import fr.bookhub.entity.Book;
 import fr.bookhub.entity.Loan;
 import fr.bookhub.entity.Status;
@@ -11,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -221,5 +223,15 @@ public class LoanService {
             return new ServiceResponse<>("7040", "No loans found");
         }
         return new ServiceResponse<>("7041", "Loans found", loanMapper.toResponse(loans));
+    }
+
+    public ServiceResponse<List<LoanResponse>> getMyLoansWithHistory(String email) {
+        User user = userService.findByEmail(email);
+        List<Loan> loans = loanRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
+        List<LoanResponse> loanResponseList = loans.stream()
+                .map(loanMapper::toResponse)
+                .toList();
+
+        return new ServiceResponse<>("7050", "Loans successfully retrieved", loanResponseList);
     }
 }
