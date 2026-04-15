@@ -1,6 +1,6 @@
 <div class="grid-wrapper">
   <div class="grid">
-    @for (book of books; track book.id) {
+    @for (book of books; track book.bookId) {
       <app-book-tile [book]="book"></app-book-tile>
     }
   </div>

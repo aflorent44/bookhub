@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
-export type SortField = 'name' | 'author' | 'year';
+export type SortField = 'title' | 'author' | 'year';
 export type SortDirection = 'asc' | 'desc' | null;
 
 @Component({
@@ -18,10 +18,10 @@ export class BookSort {
     sortDirection: SortDirection;
   }>();
 
-  fields: SortField[] = ['name', 'author', 'year'];
+  fields: SortField[] = ['title', 'author', 'year'];
 
   labels: Record<SortField, string> = {
-    name: 'Nom',
+    title: 'Nom',
     author: 'Auteur',
     year: 'Année'
   };

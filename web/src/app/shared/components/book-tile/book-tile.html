@@ -1,8 +1,9 @@
 <div class="book-tile">
-    <img [src]="book.firstPageUrl" [alt]="book.title" />
-  
+    <img [src]="book.firstPageUrl ?? 'assets/book_cover.jpg'" alt="Couverture de {{ book.title }}" />
+
     <div class="info">
       <h3>{{ book.title }}</h3>
       <p>{{ book.authorFirstName }} {{ book.authorLastName }}</p>
     </div>
+  <app-button text="Voir plus" color="var(--btn-yellow)" width="200px" (clicked)="goToBook(book)" />
   </div>
