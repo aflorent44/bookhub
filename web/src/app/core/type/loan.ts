@@ -11,6 +11,6 @@ export interface Loan {
   updatedBy?: number;
 }
 
-export type LoanStatus = 'IN_PROGRESS' | 'WAITING' | 'RETURNED' | 'LATE';
+export type LoanStatus = 'IN_PROGRESS' | 'WAITING' | 'FINISHED' | 'LATE';
 
 

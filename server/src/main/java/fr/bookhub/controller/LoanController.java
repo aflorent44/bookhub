@@ -36,4 +36,9 @@ public class LoanController {
     public ServiceResponse<?> cancelLoan(@PathVariable int id) {
         return loanService.deleteLoan(id);
     }
+
+    @GetMapping("/api/loan/user/{userId}/book/{bookId}")
+    public ServiceResponse<?> getLoansByUserIdAndBookId(@PathVariable int userId, @PathVariable int bookId) {
+        return loanService.getLoansByUserIdAndBookId(userId, bookId);
+    }
 }

@@ -10,7 +10,7 @@ export class LoanStatusPipe implements PipeTransform {
     const labels: Record<LoanStatus, string> = {
       'IN_PROGRESS': 'En cours',
       'WAITING':     'En attente',
-      'RETURNED':    'Retourné',
+      'FINISHED':    'Retourné',
       'LATE':        'En retard',
     };
     return labels[status] ?? status;

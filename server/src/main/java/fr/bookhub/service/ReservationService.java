@@ -8,7 +8,6 @@ import fr.bookhub.repository.BookRepository;
 import fr.bookhub.repository.ReservationRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -79,4 +78,27 @@ public class ReservationService {
 
         return new ServiceResponse<>("9010","Reservation successfully deleted");
     }
+
+    public ServiceResponse<List<?>> getReservationsByBookId(int bookId) {
+        List<Reservation> reservations = reservationRepository.findByBookId(bookId);
+
+        if (reservations.isEmpty()) {
+            return new ServiceResponse<>("9020", "No reservations found");
+        }
+
+        return new ServiceResponse<>("9021", "Reservations successfully retrieved",
+                reservations.stream()
+                        .map(reservationMapper::toResponse)
+                        .toList());
+    }
+
+    public ServiceResponse<List<?>> getReservationsByUserIdAndBookId(int userId, int bookId) {
+        List<Reservation> reservations = reservationRepository.findByUserIdAndBookId(userId, bookId);
+        if (reservations.isEmpty()) {
+            return new ServiceResponse<>("9030", "No reservations found");
+        }
+        return new ServiceResponse<>("9031", "Reservations found",
+                reservations.stream().map(reservationMapper::toResponse).toList());
+    }
+
 }

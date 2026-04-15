@@ -204,4 +204,12 @@ public class LoanService {
 
         return new ServiceResponse<>("7030","Loan successfully deleted");
     }
+
+    public ServiceResponse<List<?>> getLoansByUserIdAndBookId(int userId, int bookId) {
+        List<Loan> loans = loanRepository.findByUserIdAndBookId(userId, bookId);
+        if (loans.isEmpty()) {
+            return new ServiceResponse<>("7040", "No loans found");
+        }
+        return new ServiceResponse<>("7041", "Loans found", loanMapper.toResponse(loans));
+    }
 }
