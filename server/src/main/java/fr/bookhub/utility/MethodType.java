@@ -1,4 +1,4 @@
-package fr.bookhub.service;
+package fr.bookhub.utility;
 
 public enum MethodType {
     CREATE,

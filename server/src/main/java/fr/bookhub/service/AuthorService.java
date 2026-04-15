@@ -1,14 +1,13 @@
 package fr.bookhub.service;
 
+import fr.bookhub.dto.AuthorCreateRequest;
 import fr.bookhub.entity.Author;
-import fr.bookhub.entity.Country;
 import fr.bookhub.repository.AuthorRepository;
 import fr.bookhub.repository.CountryRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor

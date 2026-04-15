@@ -1,6 +1,7 @@
 package fr.bookhub.service;
 
 import fr.bookhub.dto.LoanCreateRequest;
+import fr.bookhub.dto.LoanMapper;
 import fr.bookhub.entity.Book;
 import fr.bookhub.entity.Loan;
 import fr.bookhub.entity.Status;
