@@ -1,12 +1,5 @@
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
-
-export interface Book {
-  id: number;
-  title: string;
-  authorFirstName: string;
-  authorLastName: string;
-  coverUrl: string;
-}
+import { Book } from '../../../core/type/book';
 
 @Component({
   selector: 'app-book-tile',
