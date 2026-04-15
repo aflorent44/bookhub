@@ -1,13 +1,24 @@
 <div class="book-form-wrapper">
-  <h2>Ajouter un livre</h2>
+  <h2>{{ isEditMode() ? 'Modifier le livre' : 'Ajouter un livre' }}</h2>
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
     <div class="field">
       <label class="field-label" for="isbn">ISBN (13 chiffres)</label>
-      <input id="isbn" type="text" pInputText formControlName="isbn" placeholder="ex: 9782070360024"/>
+      <input
+        id="isbn"
+        type="text"
+        pInputText
+        formControlName="isbn"
+        [readonly]="isEditMode()"
+        placeholder="ex: 9782070360024"
+        [style]="isEditMode() ? 'background-color: var(--bg-off-white); color: var(--txt-blue); cursor: not-allowed; opacity: 0.7;' : ''"
+      />
       @if (form.get('isbn')?.invalid && form.get('isbn')?.touched) {
         <small class="feedback error">ISBN requis (13 chiffres)</small>
+      }
+      @if (isEditMode()) {
+        <small class="feedback loading">L'ISBN ne peut pas être modifié.</small>
       }
     </div>
 
@@ -87,7 +98,12 @@
 
     <div class="form-actions">
       <p-button label="Annuler" icon="pi pi-times" type="button" (onClick)="resetForm()" />
-      <p-button label="Enregistrer" icon="pi pi-save" type="submit" [disabled]="form.invalid" />
+      <p-button
+        [label]="isEditMode() ? 'Mettre à jour' : 'Enregistrer'"
+        icon="pi pi-save"
+        type="submit"
+        [disabled]="form.invalid"
+      />
     </div>
 
   </form>

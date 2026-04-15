@@ -1,5 +1,6 @@
 package fr.bookhub.service;
 
+import fr.bookhub.entity.Country;
 import fr.bookhub.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public class BookResponse {
     private Integer quantity;
     private String description;
     private String firstPageUrl;
+    private Country country;
 
     private String authorFirstName;
     private String authorLastName;

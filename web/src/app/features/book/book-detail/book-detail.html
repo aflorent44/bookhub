@@ -205,10 +205,18 @@
   @if (isUser()) {
     <div class="book-actions">
       @if (book()!.quantity > 0) {
-        <app-button text="Emprunter ce livre" color="var(--btn-yellow)" width="200px" (clicked)="onLoan(book()!.id)" />
+        <app-button text="Emprunter ce livre" color="var(--btn-yellow)" width="200px" (clicked)="onLoan(book()!.bookId)" />
       } @else {
-        <app-button text="Réserver ce livre" color="var(--btn-yellow)" width="200px" (clicked)="onReserve(book()!.id)" />
+        <app-button text="Réserver ce livre" color="var(--btn-yellow)" width="200px" (clicked)="onReserve(book()!.bookId)" />
       }
     </div>
+  }
+
+  @if (isAdminOrLibrarian()) {
+    <app-button
+      text="Modifier le livre"
+      color="var(--btn-green)"
+      (clicked)="onEditBook()"
+    />
   }
 </ng-template>
