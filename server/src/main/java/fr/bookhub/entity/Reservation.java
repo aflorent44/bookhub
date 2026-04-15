@@ -26,6 +26,7 @@ public class Reservation {
     @NotNull
     private Book book;
 
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @Column(name = "created_at")

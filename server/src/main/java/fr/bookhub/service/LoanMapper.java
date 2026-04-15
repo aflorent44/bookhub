@@ -16,8 +16,11 @@ public class LoanMapper {
         dto.setUserId(loan.getUser().getId());
         dto.setBookId(loan.getBook().getId());
         dto.setCreatedAt(loan.getCreatedAt());
-        dto.setUpdatedAt(loan.getUpdatedAt());
-        dto.setUpdatedBy(loan.getUpdatedBy().getId());
+
+        if (loan.getUpdatedBy() != null) {
+            dto.setUpdatedBy(loan.getUpdatedBy().getId());
+            dto.setUpdatedAt(loan.getUpdatedAt());
+        }
 
         return dto;
     }
