@@ -170,7 +170,7 @@ export class BookForm implements OnInit {
       authorFirstName: this.form.value.authorFirstName,
       authorLastName:  this.form.value.authorLastName,
       publisherName:   this.form.value.publisher,
-      countryName:     null,
+      countryName:     this.form.value.language,
       genres:          this.form.value.genres,
       createdById:     null,
     };

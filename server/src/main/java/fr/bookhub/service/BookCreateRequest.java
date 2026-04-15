@@ -12,6 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookCreateRequest {
+    private Integer bookId;
     private String isbn;
     private String title;
     private Integer year;

@@ -1,12 +1,14 @@
 import {inject, Injectable, signal} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
-import {tap} from 'rxjs';
+import {map, Observable, tap} from 'rxjs';
 import {UserResponse} from '../type/user-response';
 import {LoginRequest} from '../type/login-request';
 import {AuthResponse} from '../type/auth-response';
 import {RegisterRequest} from '../type/register-request';
 import {environment} from '../../../environments/environment.development';
+import {User} from '../type/user';
+import {ServiceResponse} from '../type/service-response';
 
 @Injectable({
   providedIn: 'root',
@@ -27,6 +29,11 @@ export class AuthService {
       return JSON.parse(user);
     }
     return null;
+  }
+
+  getUserById(id: number): Observable<User> {
+    return this.http.get<ServiceResponse<User>>(`${this.API_URL}/users/${id}`)
+      .pipe(map(response => response.data));
   }
 
   login(credentials: LoginRequest) {

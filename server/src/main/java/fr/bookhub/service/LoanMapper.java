@@ -3,6 +3,8 @@ package fr.bookhub.service;
 import fr.bookhub.entity.Loan;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class LoanMapper {
 
@@ -23,5 +25,11 @@ public class LoanMapper {
         }
 
         return dto;
+    }
+
+    public List<LoanResponse> toResponse(List<Loan> loans) {
+        return loans.stream()
+                .map(this::toResponse)
+                .toList();
     }
 }

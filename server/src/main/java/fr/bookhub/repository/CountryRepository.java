@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface CountryRepository extends JpaRepository<Country, String> {
     Optional<Country> findByCode(String code);
     Optional<Country> findByNameIgnoreCase(String name);
+    Optional<Country> findByLanguageIgnoreCase(String countryName);
 }
