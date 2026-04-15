@@ -1,0 +1,330 @@
+<p-toast position="top-right"></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
+@if (loading()) {
+  <div class="profile-spinner">
+    <p-progressSpinner strokeWidth="3" animationDuration=".8s"></p-progressSpinner>
+  </div>
+}
+
+@if (!loading() && user()) {
+  <div class="profile-page">
+    <!-- Sidebar -->
+    <aside class="profile-sidebar">
+      <div class="profile-avatar-card">
+        <div class="avatar-circle">
+          <span class="avatar-initials">{{ getInitials(user()!) }}</span>
+        </div>
+
+        <div class="profile-identity">
+          <h2 class="profile-fullname">{{ user()!.firstname }} {{ user()!.lastname }}</h2>
+          <p class="profile-email">{{ user()!.email }}</p>
+          <p-tag
+            [value]="getRoleLabel(user()!.role)"
+            [severity]="getRoleSeverity(user()!.role)"
+            styleClass="profile-role-tag">
+          </p-tag>
+        </div>
+
+        @if (user()!.id) {
+          <div class="membership-number">
+            <span class="membership-label">N° adhérent</span>
+            <span class="membership-value">{{ user()!.id }}</span>
+          </div>
+        }
+
+        <div class="member-since">
+          <i class="pi pi-calendar-plus"></i>
+          Membre depuis {{ user()!.createdAt | date:'MMMM yyyy' : '' : 'fr' }}
+        </div>
+      </div>
+
+      <!-- Sécurité compacte -->
+      <div class="profile-security-compact">
+        <div class="section-header-compact">
+          <i class="pi pi-lock section-icon-compact"></i>
+          <span>Sécurité</span>
+        </div>
+
+        <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="security-form-compact">
+          <div class="field-compact">
+            <p-floatlabel>
+              <input
+                pInputText
+                id="currentPassword"
+                type="password"
+                formControlName="currentPassword"
+                [class.ng-invalid]="hasError(passwordForm, 'currentPassword', 'required')"
+              />
+              <label for="currentPassword">Mot de passe actuel</label>
+            </p-floatlabel>
+          </div>
+
+          <div class="field-compact">
+            <p-floatlabel>
+              <input
+                pInputText
+                id="newPassword"
+                type="password"
+                formControlName="newPassword"
+                [class.ng-invalid]="hasError(passwordForm, 'newPassword', 'required') || hasError(passwordForm, 'newPassword', 'pattern')"
+              />
+              <label for="newPassword">Nouveau mot de passe</label>
+            </p-floatlabel>
+          </div>
+
+          <div class="field-compact">
+            <p-floatlabel>
+              <input
+                pInputText
+                id="confirmPassword"
+                type="password"
+                formControlName="confirmPassword"
+                [class.ng-invalid]="passwordForm.hasError('passwordMismatch') && passwordForm.get('confirmPassword')?.touched"
+              />
+              <label for="confirmPassword">Confirmation</label>
+            </p-floatlabel>
+          </div>
+
+          @if (passwordForm.hasError('passwordMismatch') && passwordForm.get('confirmPassword')?.touched) {
+            <small class="field-error">Les mots de passe ne correspondent pas.</small>
+          }
+
+          <div class="form-actions-compact">
+            <button type="button" class="btn btn-secondary btn-compact" (click)="passwordForm.reset()">
+              Annuler
+            </button>
+            <button type="submit" class="btn btn-primary btn-compact" [disabled]="savingPassword()">
+              @if (savingPassword()) {
+                <i class="pi pi-spin pi-spinner"></i>
+              } @else {
+                <i class="pi pi-shield"></i>
+              }
+              Modifier
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Danger zone -->
+      <div class="danger-zone">
+        <button class="btn-delete-account" type="button" (click)="confirmDeleteAccount()">
+          <i class="pi pi-trash"></i>
+          Supprimer mon compte
+        </button>
+        <p class="danger-note">
+          Conformément au RGPD, toutes vos données seront effacées.
+        </p>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="profile-main">
+      <!-- Infos perso compactes -->
+      <section class="profile-section profile-section--compact">
+        <div class="section-header">
+          <div class="section-icon">
+            <i class="pi pi-user-edit"></i>
+          </div>
+          <div>
+            <h2 class="section-title">Informations personnelles</h2>
+            <p class="section-subtitle">
+              Modifiez vos informations principales.
+            </p>
+          </div>
+        </div>
+
+        <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="profile-form profile-form--compact">
+          <div class="field-row">
+            <div class="field">
+              <p-floatlabel>
+                <input
+                  pInputText
+                  id="firstName"
+                  formControlName="firstName"
+                  [class.ng-invalid]="hasError(profileForm, 'firstName', 'required') || hasError(profileForm, 'firstName', 'minlength')"
+                />
+                <label for="firstName">Prénom</label>
+              </p-floatlabel>
+              @if (hasError(profileForm, 'firstName', 'required')) {
+                <small class="field-error">Le prénom est requis.</small>
+              }
+              @if (hasError(profileForm, 'firstName', 'minlength')) {
+                <small class="field-error">Au moins 2 caractères.</small>
+              }
+            </div>
+
+            <div class="field">
+              <p-floatlabel>
+                <input
+                  pInputText
+                  id="lastName"
+                  formControlName="lastName"
+                  [class.ng-invalid]="hasError(profileForm, 'lastName', 'required') || hasError(profileForm, 'lastName', 'minlength')"
+                />
+                <label for="lastName">Nom</label>
+              </p-floatlabel>
+              @if (hasError(profileForm, 'lastName', 'required')) {
+                <small class="field-error">Le nom est requis.</small>
+              }
+              @if (hasError(profileForm, 'lastName', 'minlength')) {
+                <small class="field-error">Au moins 2 caractères.</small>
+              }
+            </div>
+
+            <div class="field">
+              <p-floatlabel>
+                <input
+                  pInputText
+                  id="phoneNumber"
+                  formControlName="phoneNumber"
+                  type="tel"
+                  [class.ng-invalid]="hasError(profileForm, 'phoneNumber', 'pattern')"
+                />
+                <label for="phoneNumber">Téléphone</label>
+              </p-floatlabel>
+              @if (hasError(profileForm, 'phoneNumber', 'pattern')) {
+                <small class="field-error">Format invalide.</small>
+              }
+            </div>
+          </div>
+
+          <div class="field email-readonly">
+            <label class="readonly-label">Adresse e-mail</label>
+            <div class="readonly-value">
+              <i class="pi pi-envelope"></i>
+              {{ user()!.email }}
+              <span class="readonly-note">Non modifiable</span>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" (click)="resetProfileForm()">
+              Annuler
+            </button>
+            <button type="submit" class="btn btn-primary" [disabled]="savingProfile()">
+              @if (savingProfile()) {
+                <i class="pi pi-spin pi-spinner"></i>
+              } @else {
+                <i class="pi pi-check"></i>
+              }
+              Enregistrer
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Bloc principal large -->
+      <div class="profile-grid">
+        <!-- Emprunts -->
+        <section class="profile-section">
+          <div class="section-header">
+            <div class="section-icon section-icon--orange">
+              <i class="pi pi-book"></i>
+            </div>
+            <div>
+              <h2 class="section-title">Mes emprunts</h2>
+              <p class="section-subtitle">
+                Consultez vos emprunts en cours et votre historique.
+              </p>
+            </div>
+          </div>
+
+          <div class="loans-placeholder">
+            <p>Section emprunts à venir</p>
+          </div>
+        </section>
+
+        <!-- Réservations -->
+        <section class="profile-section">
+          <div class="section-header">
+            <div class="section-icon section-icon--blue">
+              <i class="pi pi-calendar-clock"></i>
+            </div>
+            <div>
+              <h2 class="section-title">Mes réservations</h2>
+              <p class="section-subtitle">
+                Suivez vos réservations et votre position dans la file d'attente.
+              </p>
+            </div>
+          </div>
+
+          @if (loadingReservations()) {
+            <div class="reservations-empty">
+              <p-progressSpinner strokeWidth="3" styleClass="reservation-spinner"></p-progressSpinner>
+              <p>Chargement de vos réservations...</p>
+            </div>
+          } @else if (reservations().length === 0) {
+            <div class="reservations-empty">
+              <i class="pi pi-calendar-times empty-icon"></i>
+              <h3>Aucune réservation</h3>
+              <p>Réservez un livre dans le catalogue pour apparaître ici.</p>
+              <a routerLink="/catalogue" class="btn btn-primary">
+                <i class="pi pi-plus"></i>
+                Réserver un livre
+              </a>
+            </div>
+          } @else {
+            <div class="reservations-list">
+              @for (reservation of reservations(); track reservation.id) {
+                <div class="reservation-card">
+                  <div class="reservation-header">
+                    <div class="reservation-queue">
+                      <span class="queue-number">{{ reservation.queuePosition }}</span>
+                      <span class="queue-label">
+                        @if (reservation.queuePosition === 1) {
+                          <span>Prochain disponible</span>
+                        } @else {
+                          <span>{{ reservation.queuePosition }}ᵉ en attente</span>
+                        }
+                      </span>
+                    </div>
+
+                    <p-tag
+                      [value]="getReservationStatus(reservation.status)"
+                      [severity]="getReservationSeverity(reservation.status)"
+                      styleClass="status-tag">
+                    </p-tag>
+                  </div>
+
+                  <div class="reservation-book">
+                    <div class="book-cover">
+                      <img
+                        [src]="reservation.book.coverUrl || 'assets/book_cover.jpg'"
+                        [alt]="'Couverture de ' + reservation.book.title"
+                        width="64"
+                        height="96"
+                      />
+                    </div>
+
+                    <div class="book-info">
+                      <h4 class="book-title">{{ reservation.book.title }}</h4>
+                      <p class="book-author">{{ reservation.book.author }}</p>
+                      <p class="reservation-date">
+                        <i class="pi pi-calendar"></i>
+                        Réservé le {{ reservation.createdAt | date:'dd/MM/yyyy' : '' : 'fr' }}
+                      </p>
+                    </div>
+                  </div>
+
+                  @if (reservation.status === ReservationStates.WAITING) {
+                    <div class="reservation-actions">
+                      <p-button
+                        icon="pi pi-times"
+                        label="Annuler"
+                        severity="secondary"
+                        size="small"
+                        (onClick)="confirmCancelReservation(reservation)"
+                        [rounded]="true">
+                      </p-button>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </section>
+      </div>
+    </main>
+  </div>
+}

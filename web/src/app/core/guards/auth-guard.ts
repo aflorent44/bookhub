@@ -14,7 +14,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   return false;
 };
 
-export const publicGuard: CanActivateFn = (route, state) => {
+const publicGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
@@ -25,4 +25,5 @@ export const publicGuard: CanActivateFn = (route, state) => {
 
   return true;
 };
+export default publicGuard
 

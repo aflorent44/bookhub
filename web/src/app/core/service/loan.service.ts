@@ -15,12 +15,18 @@ export class LoanService {
   private apiUrl: string = environment.apiUrl;
 
   loanBook(bookId: number): Observable<Loan> {
-    const userId = this.authService.currentUser$()?.id;
+    const user = this.authService.currentUser$();
+
+    if (!user?.id) {
+      throw new Error('Utilisateur non identifié');
+    }
 
     const request = {
-      userId: userId,
+      userId: user.id,
       bookId: bookId,
     };
+
+    console.log('loanBook() request =', request);
 
     return this.http.post<ServiceResponse<Loan>>(`${this.apiUrl}/loan`, request)
       .pipe(map(response => {

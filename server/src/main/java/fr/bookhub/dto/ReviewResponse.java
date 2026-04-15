@@ -1,6 +1,5 @@
-package fr.bookhub.service;
+package fr.bookhub.dto;
 
-import fr.bookhub.entity.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,12 +11,15 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReservationResponse {
-    private Integer id;
+public class ReviewResponse {
+    private Integer reviewId;
     private Integer bookId;
-    private Integer userId;
-    private Status status;
+    private UserBasicResponse user;
+    private Integer rating;
+    private String comment;
+    private Boolean isHidden;
+    private UserBasicResponse hiddenBy;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Integer updatedBy;
+    private UserBasicResponse updatedBy;
 }

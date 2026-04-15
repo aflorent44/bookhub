@@ -59,4 +59,5 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "updated_by")
     private User updatedBy;
+
 }

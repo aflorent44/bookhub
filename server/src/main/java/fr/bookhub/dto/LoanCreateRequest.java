@@ -1,4 +1,4 @@
-package fr.bookhub.service;
+package fr.bookhub.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,9 +9,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReservationCreateRequest {
+public class LoanCreateRequest {
     private Integer userId;
     private Integer internalUserId;
     private Integer bookId;
-    private Integer reservationId;
+    private Integer loanId;
 }
