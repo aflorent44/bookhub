@@ -1,8 +1,8 @@
 .profile-page {
   display: grid;
-  grid-template-columns: 320px minmax(0, 1fr);
+  grid-template-columns: 280px minmax(0, 1fr);
   gap: var(--space-xl);
-  max-width: 1180px;
+  max-width: 1280px;
   margin: var(--space-xl) auto;
   padding: 0 var(--space-xl);
   align-items: start;
@@ -18,31 +18,32 @@
 .profile-sidebar {
   display: flex;
   flex-direction: column;
-  gap: var(--space-l);
+  gap: var(--space-m);
   position: sticky;
   top: var(--space-xl);
 }
 
 .profile-avatar-card,
 .profile-section,
-.danger-zone {
+.danger-zone,
+.profile-security-compact {
   background-color: var(--bg-off-white);
   border-radius: var(--radius-xl);
   box-shadow: 0 12px 30px rgba(27, 67, 83, 0.08);
 }
 
 .profile-avatar-card {
-  padding: var(--space-xl) var(--space-l);
+  padding: var(--space-l);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-m);
+  gap: var(--space-s);
   text-align: center;
 }
 
 .avatar-circle {
-  width: 88px;
-  height: 88px;
+  width: 76px;
+  height: 76px;
   border-radius: var(--radius-full);
   background: var(--txt-primary);
   display: flex;
@@ -54,7 +55,7 @@
 
 .avatar-initials {
   font-family: var(--font-titles), serif;
-  font-size: var(--font-size-xxl);
+  font-size: var(--font-size-xl);
   font-weight: 700;
   color: var(--btn-yellow);
   letter-spacing: 0.02em;
@@ -64,22 +65,23 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-xs);
+  gap: 4px;
 }
 
 .profile-fullname {
   font-family: var(--font-titles), serif;
-  font-size: var(--font-size-xl);
+  font-size: calc(var(--font-size-l) + 0.1rem);
   color: var(--txt-primary);
   margin: 0;
   line-height: 1.2;
 }
 
 .profile-email {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-s);
   color: var(--txt-primary);
   opacity: 0.65;
   margin: 0;
+  word-break: break-word;
 }
 
 :host ::ng-deep .profile-role-tag {
@@ -98,40 +100,122 @@
   gap: 2px;
   background: var(--bg-green);
   border-radius: var(--radius-l);
-  padding: var(--space-s) var(--space-m);
+  padding: var(--space-s);
   width: 100%;
 }
 
 .membership-label {
   font-size: var(--font-size-s);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   color: var(--bg-off-white);
   opacity: 0.8;
 }
 
 .membership-value {
   font-family: var(--font-titles), serif;
-  font-size: var(--font-size-l);
+  font-size: var(--font-size-m);
   font-weight: 700;
   color: var(--btn-yellow);
 }
 
 .member-since {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-s);
   color: var(--txt-primary);
   opacity: 0.6;
   display: flex;
   align-items: center;
-  gap: var(--space-xs);
+  gap: 6px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .member-since .pi {
   font-size: 0.8rem;
 }
 
+/* Bloc sécurité compact */
+.profile-security-compact {
+  padding: var(--space-m);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+}
+
+.section-header-compact {
+  display: flex;
+  align-items: center;
+  gap: var(--space-s);
+  font-family: var(--font-body), sans-serif;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--txt-primary);
+}
+
+.section-icon-compact {
+  color: var(--btn-yellow);
+  font-size: 1rem;
+}
+
+.security-form-compact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+}
+
+.field-row-compact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+}
+
+.field-compact {
+  flex: 1;
+}
+
+:host ::ng-deep .field-compact .p-floatlabel {
+  width: 100%;
+}
+
+:host ::ng-deep .field-compact input.p-inputtext {
+  width: 100%;
+  height: 42px;
+  background-color: var(--bg-white);
+  border: 1px solid transparent;
+  border-radius: var(--radius-l);
+  font-family: var(--font-body), sans-serif;
+  font-size: var(--font-size-s);
+  color: var(--txt-primary);
+  padding: 0 var(--space-s);
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+:host ::ng-deep .field-compact input.p-inputtext:focus {
+  border-color: var(--txt-yellow) !important;
+  box-shadow: 0 0 0 3px rgba(255, 135, 8, 0.12) !important;
+  outline: none;
+}
+
+:host ::ng-deep .field-compact input.p-inputtext.ng-invalid.ng-touched {
+  border-color: var(--btn-red) !important;
+}
+
+.form-actions-compact {
+  display: flex;
+  gap: var(--space-s);
+  justify-content: flex-end;
+}
+
+.btn-compact {
+  padding: 0.55rem 0.85rem;
+  font-size: var(--font-size-s);
+  min-height: 38px;
+}
+
+/* Danger zone */
 .danger-zone {
-  padding: var(--space-l);
+  padding: var(--space-m);
   border: 1px dashed rgba(255, 107, 107, 0.35);
   display: flex;
   flex-direction: column;
@@ -142,6 +226,7 @@
 .btn-delete-account {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-s);
   background: none;
   border: 1.5px solid var(--btn-red);
@@ -149,10 +234,11 @@
   font-family: var(--font-body), sans-serif;
   font-size: var(--font-size-sm);
   font-weight: 700;
-  padding: var(--space-s) var(--space-l);
+  padding: var(--space-s) var(--space-m);
   border-radius: var(--radius-full);
   cursor: pointer;
   transition: background-color 0.2s, color 0.2s, transform 0.1s;
+  width: 100%;
 }
 
 .btn-delete-account:hover {
@@ -173,17 +259,18 @@
   line-height: 1.4;
 }
 
+/* Main */
 .profile-main {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xl);
+  gap: var(--space-l);
 }
 
 .profile-section {
-  padding: var(--space-xl);
+  padding: var(--space-l);
   display: flex;
   flex-direction: column;
-  gap: var(--space-l);
+  gap: var(--space-m);
 }
 
 .section-header {
@@ -193,8 +280,8 @@
 }
 
 .section-icon {
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   border-radius: var(--radius-m);
   background: var(--txt-primary);
   display: flex;
@@ -205,7 +292,7 @@
 
 .section-icon .pi {
   color: var(--btn-yellow);
-  font-size: 1.15rem;
+  font-size: 1rem;
 }
 
 .section-icon--yellow {
@@ -216,26 +303,43 @@
   color: var(--txt-primary);
 }
 
+.section-icon--blue {
+  background: var(--bg-green);
+}
+
+.section-icon--blue .pi {
+  color: var(--bg-off-white);
+}
+
+.section-icon--orange {
+  background: var(--btn-yellow);
+}
+
+.section-icon--orange .pi {
+  color: var(--txt-primary);
+}
+
 .section-title {
   font-family: var(--font-titles), serif;
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-l);
   color: var(--txt-primary);
-  margin: 0 0 var(--space-xs);
+  margin: 0 0 4px;
   line-height: 1.15;
 }
 
 .section-subtitle {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-s);
   color: var(--txt-primary);
   opacity: 0.65;
   margin: 0;
   line-height: 1.5;
 }
 
+/* Formulaire profil plus compact */
 .profile-form {
   display: flex;
   flex-direction: column;
-  gap: var(--space-l);
+  gap: var(--space-m);
 }
 
 .field-row {
@@ -259,12 +363,12 @@
 
 :host ::ng-deep .field input.p-inputtext {
   width: 100%;
-  height: 52px;
+  height: 48px;
   background-color: var(--bg-white);
   border: 1px solid transparent;
   border-radius: var(--radius-l);
   font-family: var(--font-body), sans-serif;
-  font-size: var(--font-size-m);
+  font-size: var(--font-size-sm);
   color: var(--txt-primary);
   padding: 0 var(--space-m);
   box-sizing: border-box;
@@ -288,7 +392,7 @@
 }
 
 .email-readonly .readonly-label {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-s);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -302,8 +406,8 @@
   gap: var(--space-s);
   background: var(--bg-white);
   border-radius: var(--radius-l);
-  padding: var(--space-m);
-  font-size: var(--font-size-m);
+  padding: var(--space-s) var(--space-m);
+  font-size: var(--font-size-sm);
   color: var(--txt-primary);
   opacity: 0.8;
 }
@@ -325,21 +429,24 @@
   display: flex;
   justify-content: flex-end;
   gap: var(--space-s);
-  padding-top: var(--space-s);
+  padding-top: var(--space-xs);
 }
 
+/* Boutons */
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-s);
   font-family: var(--font-body), sans-serif;
-  font-size: var(--font-size-m);
+  font-size: var(--font-size-sm);
   font-weight: 700;
   border: none;
   border-radius: var(--radius-l);
   padding: var(--space-s) var(--space-l);
   cursor: pointer;
   transition: background-color 0.2s, color 0.2s, transform 0.1s, opacity 0.2s;
+  text-decoration: none;
 }
 
 .btn:active {
@@ -372,6 +479,169 @@
   color: var(--bg-white);
 }
 
+/* Grid emprunts + réservations */
+.profile-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+/* Placeholder emprunts */
+.loans-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 220px;
+  border-radius: var(--radius-l);
+  background: var(--bg-white);
+  border: 1px dashed rgba(27, 67, 83, 0.18);
+  color: var(--txt-primary);
+  opacity: 0.55;
+  text-align: center;
+  padding: var(--space-l);
+}
+
+/* Réservations */
+.reservations-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+}
+
+.reservation-card {
+  background: var(--bg-white);
+  border: 1px solid rgba(27, 67, 83, 0.08);
+  border-radius: var(--radius-l);
+  padding: var(--space-m);
+  transition: box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+.reservation-card:hover {
+  box-shadow: 0 8px 18px rgba(27, 67, 83, 0.08);
+}
+
+.reservation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-s);
+  margin-bottom: var(--space-m);
+}
+
+.reservation-queue {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.queue-number {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--bg-green);
+  line-height: 1;
+}
+
+.queue-label {
+  font-size: var(--font-size-s);
+  color: var(--txt-primary);
+  opacity: 0.65;
+}
+
+.reservation-book {
+  display: flex;
+  gap: var(--space-m);
+  align-items: center;
+}
+
+.book-cover img {
+  width: 64px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: var(--radius-m);
+  background: var(--bg-off-white);
+  flex-shrink: 0;
+}
+
+.book-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.book-title {
+  font-size: var(--font-size-m);
+  font-weight: 700;
+  margin: 0 0 0.25rem 0;
+  color: var(--txt-primary);
+  line-height: 1.3;
+}
+
+.book-author {
+  color: var(--txt-primary);
+  opacity: 0.68;
+  margin: 0 0 0.4rem 0;
+  font-size: var(--font-size-sm);
+}
+
+.reservation-date {
+  margin: 0;
+  font-size: var(--font-size-s);
+  color: var(--txt-primary);
+  opacity: 0.55;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.reservations-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--txt-primary);
+  opacity: 0.7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-s);
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  opacity: 0.5;
+}
+
+.reservation-spinner {
+  margin: 0 auto 1rem auto;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.reservation-actions {
+  margin-top: var(--space-m);
+  display: flex;
+  justify-content: flex-end;
+}
+
+:host ::ng-deep .status-tag {
+  font-size: var(--font-size-s) !important;
+  font-weight: 700 !important;
+  border-radius: var(--radius-full) !important;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .profile-page {
+    grid-template-columns: 260px minmax(0, 1fr);
+    gap: var(--space-l);
+  }
+}
+
+@media (max-width: 980px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 900px) {
   .profile-page {
     grid-template-columns: 1fr;
@@ -384,16 +654,49 @@
 }
 
 @media (max-width: 600px) {
-  .field-row {
+  .field-row,
+  .form-actions,
+  .form-actions-compact {
     flex-direction: column;
   }
 
-  .form-actions {
-    flex-direction: column-reverse;
+  .btn,
+  .btn-compact,
+  .btn-delete-account {
+    width: 100%;
   }
 
-  .btn {
-    width: 100%;
-    justify-content: center;
+  .reservation-book {
+    align-items: flex-start;
   }
+
+  .reservation-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .email-readonly .readonly-value {
+    flex-wrap: wrap;
+  }
+
+  .email-readonly .readonly-note {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+.profile-section--compact {
+  padding: var(--space-m) var(--space-l);
+}
+
+.profile-form--compact {
+  gap: var(--space-m);
+}
+
+.profile-form--compact .field-row {
+  align-items: flex-start;
+}
+
+.profile-form--compact .field {
+  min-width: 0;
 }

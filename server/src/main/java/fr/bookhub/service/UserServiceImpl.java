@@ -62,9 +62,9 @@ public class UserServiceImpl implements UserService {
         Optional<User> user = userRepository.findById(userId);
 
         return user.map(value ->
-                new ServiceResponse<>("8000", "User found", value))
-                    .orElseGet(() ->
-                            new ServiceResponse<>("8001", "User not found"));
+                        new ServiceResponse<>("8000", "User found", value))
+                .orElseGet(() ->
+                        new ServiceResponse<>("8001", "User not found"));
     }
 
     @Override
@@ -132,5 +132,12 @@ public class UserServiceImpl implements UserService {
         user.setUserPassword(passwordEncoder.encode(request.newPassword()));
         user.setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);
+    }
+
+    public ServiceResponse<User> getUserByEmail(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+
+        return user.map(value -> new ServiceResponse<>("8000", "User found", value)).orElseGet(() -> new ServiceResponse<>("8001", "User not found"));
+
     }
 }

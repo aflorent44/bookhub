@@ -22,6 +22,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { UserResponse } from '../../../core/type/user-response';
 import { ProfileService } from '../../../core/service/profile-service';
+import { Reservation } from "../../../core/type/reservation";
+import { ReservationStates } from "../../../core/type/reservation-states";
 
 function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
   const newPwd = control.get('newPassword')?.value;
@@ -59,6 +61,8 @@ export class Profile implements OnInit {
   loading = signal(true);
   savingProfile = signal(false);
   savingPassword = signal(false);
+  reservations = signal<Reservation[]>([]);
+  loadingReservations = signal(false);
 
   profileForm!: FormGroup<ProfileForm>;
   passwordForm!: FormGroup<PasswordForm>;
@@ -66,6 +70,7 @@ export class Profile implements OnInit {
   ngOnInit(): void {
     this.initForms();
     this.loadData();
+    this.loadReservations();
   }
 
   private initForms(): void {
@@ -228,4 +233,66 @@ export class Profile implements OnInit {
       phoneNumber: user?.phoneNumber ?? '',
     });
   }
+
+  private loadReservations(): void {
+    this.loadingReservations.set(true);
+    this.profileService.getMyReservations().subscribe({
+      next: (reservations) => {
+        this.reservations.set(reservations);
+        this.loadingReservations.set(false);
+      },
+      error: (err) => {
+        this.loadingReservations.set(false);
+        this.showError('Impossible de charger vos réservations.');
+        console.error('Reservations load error:', err);
+      },
+    });
+  }
+
+  getReservationStatus(status: ReservationStates): string {
+    const labels: Record<ReservationStates, string> = {
+      [ReservationStates.WAITING]: 'En attente',
+      [ReservationStates.AVAILABLE]: 'Disponible',
+      [ReservationStates.CANCELED]: 'Annulée',
+    };
+    return labels[status];
+  }
+
+  getReservationSeverity(status: ReservationStates): 'info' | 'success' | 'danger' {
+    const map: Record<ReservationStates, 'info' | 'success' | 'danger'> = {
+      [ReservationStates.WAITING]: 'info',
+      [ReservationStates.AVAILABLE]: 'success',
+      [ReservationStates.CANCELED]: 'danger',
+    };
+    return map[status];
+  }
+
+  confirmCancelReservation(reservation: Reservation): void {
+    this.confirmationService.confirm({
+      header: 'Annuler la réservation',
+      message: `Voulez-vous vraiment annuler votre réservation pour "${reservation.book.title}" ?`,
+      acceptLabel: 'Oui, annuler',
+      rejectLabel: 'Non',
+      acceptButtonStyleClass: 'p-button-danger p-button-outlined',
+      accept: () => {
+        this.cancelReservation(reservation.id);
+      },
+    });
+  }
+
+  private cancelReservation(id: number) {
+    this.profileService.cancelReservation(id).subscribe({
+      next: () => {
+        const updated = this.reservations().filter(reservation => reservation.id !== id);
+        this.reservations.set(updated);
+        this.showSuccess('Réservation annulée avec succès.');
+      },
+      error: () => {
+        this.showError('Erreur lors de l\'annulation.');
+        this.loadReservations();
+      }
+    })
+  }
+
+  protected readonly ReservationStates = ReservationStates;
 }

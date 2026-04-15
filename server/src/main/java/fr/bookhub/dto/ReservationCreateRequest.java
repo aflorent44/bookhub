@@ -1,4 +1,4 @@
-package fr.bookhub.service;
+package fr.bookhub.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +11,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ReservationCreateRequest {
     private Integer userId;
-    private Integer internalUserId;
     private Integer bookId;
-    private Integer reservationId;
 }
