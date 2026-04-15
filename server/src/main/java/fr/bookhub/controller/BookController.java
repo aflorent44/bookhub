@@ -1,15 +1,15 @@
 package fr.bookhub.controller;
 
-import fr.bookhub.service.*;
+import fr.bookhub.service.BookCreateRequest;
+import fr.bookhub.service.BookResponse;
+import fr.bookhub.service.BookService;
+import fr.bookhub.service.ServiceResponse;
 import fr.bookhub.service.filter.BookSearchFilter;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/books")
@@ -32,7 +32,7 @@ public class BookController {
     // Ajout d'un livre :
     @PostMapping("")
     public ServiceResponse<?> addBook(@RequestBody @Valid BookCreateRequest bookRequest) {
-        return bookService.createBook(bookRequest);
+        return bookService.createOrUpdateBook(bookRequest, MethodType.CREATE);
     }
 
     // Recherche :
@@ -45,6 +45,12 @@ public class BookController {
     @GetMapping("/delete")
     public ServiceResponse<?> deleteBook(@RequestParam int id) {
         return bookService.delete(id);
+    }
+
+    // Modifier un livre :
+    @PostMapping("/update")
+    public ServiceResponse<?> updateBook(@RequestBody BookCreateRequest bookRequest) {
+        return bookService.createOrUpdateBook(bookRequest, MethodType.UPDATE);
     }
 
 }

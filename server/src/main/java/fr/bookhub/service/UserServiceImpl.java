@@ -4,6 +4,7 @@ import fr.bookhub.dto.ChangePasswordRequest;
 import fr.bookhub.dto.UpdateProfileRequest;
 import fr.bookhub.dto.UserRegistrationRequest;
 import fr.bookhub.dto.UserResponse;
+import fr.bookhub.entity.Loan;
 import fr.bookhub.entity.Role;
 import fr.bookhub.entity.User;
 import fr.bookhub.repository.UserRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service

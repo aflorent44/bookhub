@@ -1,5 +1,6 @@
 package fr.bookhub.service;
 
+import fr.bookhub.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class BookResponse {
 
-    private Integer id;
+    private Integer bookId;
     private String isbn;
     private String title;
 
@@ -30,9 +31,8 @@ public class BookResponse {
 
     private Set<GenreDTO> genres;
 
-    private String createdBy;
-    private String updatedBy;
+    private User createdBy;
+    private User updatedBy;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
 }

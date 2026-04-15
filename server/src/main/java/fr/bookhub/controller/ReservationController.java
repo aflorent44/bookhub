@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/reservations")
+@RequestMapping("/api/reservation")
 public class ReservationController {
 
     private final ReservationService reservationService;
@@ -27,5 +27,15 @@ public class ReservationController {
     @DeleteMapping("/{id}")
     public ServiceResponse<?> cancelReservation(@PathVariable int id) {
         return reservationService.deleteReservation(id);
+    }
+
+    @GetMapping("/book/{bookId}")
+    public ServiceResponse<?> getReservationsByBookId(@PathVariable int bookId) {
+        return reservationService.getReservationsByBookId(bookId);
+    }
+
+    @GetMapping("/user/{userId}/book/{bookId}")
+    public ServiceResponse<?> getReservationsByUserIdAndBookId(@PathVariable int userId, @PathVariable int bookId) {
+        return reservationService.getReservationsByUserIdAndBookId(userId, bookId);
     }
 }

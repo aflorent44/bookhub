@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,6 +32,7 @@ public class BookService {
     private final PublisherService publisherService;
     private final GenreService genreService;
     private final AuthorService authorService;
+    private final UserService userService;
 
     public ServiceResponse<List<BookResponse>> getBooks() {
         List<BookResponse> books = bookRepository.findAll()
@@ -56,8 +58,8 @@ public class BookService {
                 );
     }
 
-    public ServiceResponse<BookResponse> createBook(BookCreateRequest req) {
-
+    // Création ou modification d'un livre :
+    public ServiceResponse<BookResponse> createOrUpdateBook(BookCreateRequest req, MethodType method) {
         // 1. validation simple
         ServiceResponse<BookCreateRequest> validation = validate(req);
         if (!"1020".equals(validation.getCode())) {
@@ -65,24 +67,39 @@ public class BookService {
         }
 
         // 2. check ISBN
-        if (bookRepository.findBookByIsbn(req.getIsbn()).isPresent()) {
+        if (bookRepository.findBookByIsbn(req.getIsbn()).isPresent() && method == MethodType.CREATE) {
             return new ServiceResponse<>("1031", "Book already exists");
         }
 
+        User internalUser = userService.getUserById(req.getCreatedById()).getData();
+
+        if (internalUser == null) {
+            return new ServiceResponse<>("1032", "Internal user not found");
+        }
+
         // 3. entity
-        Book book = new Book();
+        Book book;
+
+        if (method == MethodType.CREATE) {
+            book = new Book();
+            book.setCreatedAt(LocalDateTime.now());
+            book.setCreatedBy(internalUser);
+        } else {
+            book = bookRepository.findBookByIsbn(req.getIsbn()).get();
+            book.setUpdatedAt(LocalDateTime.now());
+            book.setUpdatedBy(internalUser);
+        }
+
         book.setTitle(req.getTitle());
         book.setIsbn(req.getIsbn());
         book.setYear(req.getYear());
         book.setQuantity(req.getQuantity());
         book.setDescription(req.getDescription());
         book.setFirstPageUrl(req.getFirstPageUrl());
-        book.setCreatedAt(LocalDateTime.now());
-        book.setUpdatedAt(LocalDateTime.now());
 
         // 4. relations
         Country country = (req.getCountryName() != null)
-                ? countryRepository.findByNameIgnoreCase(req.getCountryName())
+                ? countryRepository.findByLanguageIgnoreCase(req.getCountryName())
                 .orElseGet(() ->
                         countryRepository.findByCode("USA")
                                 .orElseThrow(() -> new RuntimeException("Default country USA not found"))
@@ -141,7 +158,8 @@ public class BookService {
         // 6. save
         Book saved = bookRepository.save(book);
 
-        return new ServiceResponse<>("1030", "Book saved", bookMapper.toResponse(saved)); // Succeed
+        if (method == MethodType.CREATE) return new ServiceResponse<>("1030", "Book saved", bookMapper.toResponse(saved)); // Succeed
+        return new ServiceResponse<>("1033", "Book successfully updated", bookMapper.toResponse(saved));
     }
 
     private ServiceResponse<BookCreateRequest> validate(BookCreateRequest req) {

@@ -10,8 +10,9 @@ import java.util.List;
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Integer> {
     List<Reservation> findByUserId(Integer userId);
+    List<Reservation> findByBookId(int bookId);
+    List<Reservation> findByUserIdAndBookId(int userId, int bookId);
 
     List<Reservation> findByBookIdAndStatusOrderByCreatedAtAsc(Integer bookId, Status status);
-
 
 }
