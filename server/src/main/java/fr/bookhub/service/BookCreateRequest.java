@@ -30,4 +30,5 @@ public class BookCreateRequest {
     private Set<GenreDTO> genres;
 
     private Integer createdById;
+    private Integer updatedById;
 }

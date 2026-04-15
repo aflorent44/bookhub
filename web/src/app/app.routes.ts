@@ -9,6 +9,7 @@ export const routes: Routes = [
   // Routes protégées
   { path: 'books', canActivate: [authGuard], loadComponent: () => import('./features/book/book-form/book-form').then(m => m.BookForm) },
   { path: 'books/:id', canActivate: [authGuard], loadComponent: () => import('./features/book/book-detail/book-detail').then(m => m.BookDetail) },
+  { path: 'books/:id/edit', canActivate: [authGuard], loadComponent: () => import('./features/book/book-form/book-form').then(m => m.BookForm) },
 
   { path: '', redirectTo: 'login', pathMatch: 'full' }
 ];
