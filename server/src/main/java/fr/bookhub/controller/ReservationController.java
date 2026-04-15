@@ -15,8 +15,13 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @PostMapping
-    public ServiceResponse<?> reserveBook(@RequestBody ReservationCreateRequest req) {
-        return reservationService.createReservation(req);
+    public ServiceResponse<?> reserveBook(@RequestBody ReservationCreateRequest req,
+                                          Authentication authentication) {
+        if (authentication == null) {
+            return new ServiceResponse<>("9401", "Unauthorized");
+        }
+        String email = authentication.getName();
+        return reservationService.createReservation(email, req);
     }
 
     @GetMapping("/my")

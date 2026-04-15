@@ -24,14 +24,9 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final BookRepository bookRepository;
 
-    public ServiceResponse<?> createReservation(ReservationCreateRequest req) {
-        ServiceResponse<User> responseUser = userService.getUserById(req.getUserId());
-
-        if (responseUser.getCode().equals("8001")) {
-            return responseUser;
-        }
-
-        User foundUser = responseUser.getData();
+    public ServiceResponse<?> createReservation(String email, ReservationCreateRequest req) {
+        // Récupérer l'utilisateur connecté
+        User foundUser = userService.findByEmail(email);
 
         // Max 5 réservations / utilisateur
         List<Reservation> userReservations = reservationRepository.findByUserId(foundUser.getId());
@@ -55,35 +50,26 @@ public class ReservationService {
 
         Reservation savedReservation = reservationRepository.save(reservation);
 
-        int queuePosition = calculateQueuePosition(savedReservation);
-
         return new ServiceResponse<>(
                 "9000",
                 "Reservation successfully created",
-                toResponse(savedReservation, queuePosition)
+                toResponse(savedReservation)
         );
     }
 
-    /**
-     * Mes réservations : utilise le user connecté (email extrait du JWT).
-     */
     public ServiceResponse<?> getMyReservations(String email) {
         User foundUser = userService.findByEmail(email);
 
         List<Reservation> reservations = reservationRepository.findByUserId(foundUser.getId());
 
         List<ReservationResponse> responses = reservations.stream()
-                .map(reservation -> toResponse(reservation, calculateQueuePosition(reservation)))
+                .map(this::toResponse)
                 .toList();
 
         return new ServiceResponse<>("9020", "Reservations retrieved successfully", responses);
     }
 
-    /**
-     * Annulation d'une réservation (DELETE /api/reservations/{id})
-     */
     public ServiceResponse<?> deleteReservation(int reservationId) {
-        // Trouver la réservation :
         Optional<Reservation> reservation = reservationRepository.findById(reservationId);
 
         if (reservation.isEmpty()) {
@@ -106,26 +92,31 @@ public class ReservationService {
             return new ServiceResponse<>("9020", "No reservations found");
         }
 
-        return new ServiceResponse<>("9021", "Reservations successfully retrieved",
+        return new ServiceResponse<>(
+                "9021",
+                "Reservations successfully retrieved",
                 reservations.stream()
-                        .map(reservationMapper::toResponse)
-                        .toList());
+                        .map(this::toResponse)
+                        .toList()
+        );
     }
 
     public ServiceResponse<List<?>> getReservationsByUserIdAndBookId(int userId, int bookId) {
         List<Reservation> reservations = reservationRepository.findByUserIdAndBookId(userId, bookId);
+
         if (reservations.isEmpty()) {
             return new ServiceResponse<>("9030", "No reservations found");
         }
-        return new ServiceResponse<>("9031", "Reservations found",
-                reservations.stream().map(reservationMapper::toResponse).toList());
+
+        return new ServiceResponse<>(
+                "9031",
+                "Reservations found",
+                reservations.stream()
+                        .map(this::toResponse)
+                        .toList()
+        );
     }
 
-    /**
-     * Calcule la position dans la file d'attente pour ce livre.
-     *  - pour les réservations en WAITING
-     *  sinon on renvoie 0 pour éviter des rangs incohérents
-     */
     private int calculateQueuePosition(Reservation reservation) {
         if (reservation.getStatus() != Status.WAITING) {
             return 0;
@@ -140,9 +131,10 @@ public class ReservationService {
                 .indexOf(reservation.getId()) + 1;
     }
 
-    /**
-     * Mapping entité vers DTO de réponse.
-     */
+    private ReservationResponse toResponse(Reservation reservation) {
+        return toResponse(reservation, calculateQueuePosition(reservation));
+    }
+
     private ReservationResponse toResponse(Reservation reservation, int queuePosition) {
         Book book = reservation.getBook();
 

@@ -33,11 +33,11 @@ export class ProfileService {
 
   getMyReservations(): Observable<Reservation[]> {
     return this.http
-      .get<ServiceResponse<Reservation[]>>(`${this.apiUrl}/reservations/my`)
+      .get<ServiceResponse<Reservation[]>>(`${this.apiUrl}/reservation/my`)
       .pipe(map((res) => res.data ?? []));
   }
 
   cancelReservation(reservationId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/reservations/${reservationId}`);
+    return this.http.delete<void>(`${this.apiUrl}/reservation/${reservationId}`);
   }
 }

@@ -46,6 +46,7 @@ public class SecurityConfig {
                                 "/api/genres/**",
                                 "/api/books/**"
                         ).permitAll()
+                        .requestMatchers("/api/reservation/**", "/api/loan/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())

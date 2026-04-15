@@ -1,4 +1,4 @@
-package fr.bookhub.service;
+package fr.bookhub.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

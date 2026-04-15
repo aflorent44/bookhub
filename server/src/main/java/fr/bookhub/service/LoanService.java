@@ -1,5 +1,6 @@
 package fr.bookhub.service;
 
+import fr.bookhub.dto.LoanCreateRequest;
 import fr.bookhub.entity.Book;
 import fr.bookhub.entity.Loan;
 import fr.bookhub.entity.Status;
@@ -23,6 +24,15 @@ public class LoanService {
     private final LoanMapper loanMapper;
 
     public ServiceResponse<?> createLoan(LoanCreateRequest req) {
+        if (req == null) {
+            throw new IllegalArgumentException("request is null");
+        }
+        if (req.getUserId() == null) {
+            throw new IllegalArgumentException("userId is null");
+        }
+        if (req.getBookId() == null) {
+            throw new IllegalArgumentException("bookId is null");
+        }
         // Vérifier si l'utilisateur existe :
         ServiceResponse<User> responseUser = userService.getUserById(req.getUserId());
 
