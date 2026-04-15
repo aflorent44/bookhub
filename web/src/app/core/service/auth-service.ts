@@ -40,6 +40,7 @@ export class AuthService {
     return this.http.post<AuthResponse>(`${this.API_URL}/auth/login`, credentials).pipe(
       tap(res => {
         localStorage.setItem('token', res.token);
+        localStorage.setItem('user', JSON.stringify(res.user));
         this.currentUser$.set(res.user);
         this.router.navigate(['/home']);
       })

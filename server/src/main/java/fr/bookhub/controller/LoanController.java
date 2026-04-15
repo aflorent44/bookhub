@@ -1,6 +1,6 @@
 package fr.bookhub.controller;
 
-import fr.bookhub.service.LoanCreateRequest;
+import fr.bookhub.dto.LoanCreateRequest;
 import fr.bookhub.service.LoanService;
 import fr.bookhub.service.ServiceResponse;
 import lombok.AllArgsConstructor;
@@ -15,7 +15,7 @@ public class LoanController {
 
     private final LoanService loanService;
 
-    @PostMapping("")
+    @PostMapping
     public ServiceResponse<?> loanBook(@RequestBody LoanCreateRequest req) {
         return loanService.createLoan(req);
     }

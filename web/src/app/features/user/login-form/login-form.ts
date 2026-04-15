@@ -68,7 +68,7 @@ export class LoginForm {
           if (response.user.role === 'ADMIN') {
             this.router.navigate(['/admin']);
           } else {
-            this.router.navigate(['/']);
+            this.router.navigate(['/my-profile']);
           }
         },
         error: (error) => {

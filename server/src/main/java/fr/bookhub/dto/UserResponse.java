@@ -14,6 +14,8 @@ public record UserResponse(
 
         String email,
 
+        String phoneNumber,
+
         String role,
 
         LocalDateTime createdAt

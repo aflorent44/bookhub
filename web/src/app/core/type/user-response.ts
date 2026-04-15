@@ -5,4 +5,5 @@ export interface UserResponse extends User {
   lastname: string;
   username: string;
   createdAt: string;
+  phoneNumber?: string;
 }
