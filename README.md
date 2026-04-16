@@ -134,28 +134,7 @@ L'application sera accessible sur :
 
 ![alt text](doc/images/profil.png)
 
-<!-->
-## 📄 Documentation API
 
-Doc disponible à :
-👉 http://localhost:8080 ?
-TODO
-
----
-
-## 🧪 Tests
-### Backend
-TODO
-```bash
-./gradlew test
-```
-
-### Frontend
-
-```bash
-ng test
-```
-<-->
 ---
 
 ## 🚀 Améliorations possibles
