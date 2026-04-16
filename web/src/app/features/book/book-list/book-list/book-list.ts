@@ -4,6 +4,9 @@ import {FormsModule} from '@angular/forms';
 import {Book} from '../../../../core/type/book';
 import {BookService} from '../../../../core/service/book.service';
 import {SortDirection, SortField} from '../book-sort/book-sort';
+import { BookGrid } from "../book-grid/book-grid";
+import { BookFilter } from '../book-filter/book-filter';
+import { BookSort } from '../book-sort/book-sort';
 
 export interface BookFilters {
   keyword?: string;
@@ -19,19 +22,18 @@ export interface BookFilters {
   countryNationality?: string;
   page: number;
   size: number;
-  sortBy: SortField;
+  sortBy: SortField | null;
   sortDirection: SortDirection;
 }
 
 @Component({
   selector: 'app-book-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, BookGrid, BookFilter, BookSort],
   templateUrl: './book-list.html',
   styleUrl: './book-list.scss',
 })
 export class BookList implements OnInit {
-
   private bookService = inject(BookService);
 
   books: Book[] = [];
@@ -66,27 +68,23 @@ export class BookList implements OnInit {
     });
   }
 
-  applyFilters(): void {
-    this.fetchBooks();
-  }
-
   onFiltersChange(updated: Partial<BookFilters>): void {
     this.filters = {...this.filters, ...updated, page: 0};
     this.fetchBooks();
   }
 
   onPageChange(page: number): void {
-    this.filters.page = page;
+    this.filters = {...this.filters, page};
     this.fetchBooks();
   }
 
-  onSortChange(event: { sortBy: SortField; sortDirection: SortDirection }) {
+  onSortChange(event: { sortBy: SortField | null; sortDirection: SortDirection }): void {
     this.filters = {...this.filters, ...event, page: 0};
     this.fetchBooks();
   }
 
   onSearch(): void {
-    this.filters.page = 0;
+    this.filters = {...this.filters, page: 0};
     this.fetchBooks();
   }
 }
