@@ -18,7 +18,7 @@
 - ✔ Compte créé  
 - ✔ Redirection vers la page de connexion  
 
-![alt text](doc/images/inscription.png)
+![alt text](images/inscription.png)
 
 ---
 
@@ -33,8 +33,8 @@
 - ✔ Accès à l’espace utilisateur  
 - ✔ Redirection selon le rôle  
 
-![alt text](doc/images/inscription.png)
-![alt text](doc/images/profil.png)
+![alt text](images/inscription.png)
+![alt text](images/profil.png)
 
 ---
 
@@ -50,7 +50,7 @@
 - Badge de disponibilité  
 - Affichage couverture  
 
-![alt text](web\public\assets\book_cover.jpg)
+![alt text](../web/public/assets/book_cover.jpg)
 
 ---
 
@@ -70,7 +70,7 @@
 ### Résultat attendu
 - ✔ Résultats filtrés instantanément  
 
-![alt text](web\public\assets\book_cover.jpg)
+![alt text](../web/public/assets/book_cover.jpg)
 
 ---
 
@@ -89,7 +89,7 @@
 - ✔ Confirmation d’emprunt  
 - ✔ Date de retour affichée  
 
-![alt text](doc/images/emprunte.png)
+![alt text](images/emprunte.png)
 
 ---
 
@@ -103,7 +103,7 @@
 - ✔ Livre de nouveau disponible  
 - ✔ Retard calculé automatiquement  
 
-![alt text](web\public\assets\book_cover.jpg)
+![alt text](../web/public/assets/book_cover.jpg)
 
 ---
 
@@ -117,7 +117,7 @@
 - ✔ Ajout à la file d’attente  
 - ✔ Affichage de date de réservation  
 
-![alt text](doc/images/reserve.png)
+![alt text](images/reserve.png)
 
 ---
 
@@ -136,7 +136,7 @@
 - ✔ Note moyenne mise à jour  
 - ✔ Commentaire visible  
 
-![alt text](web\public\assets\book_cover.jpg)
+![alt text](../web/public/assets/book_cover.jpg)
 
 ---
 
@@ -148,4 +148,4 @@
 - Réservations  
 - Historique  
 
-![alt text](doc/images/profil.png)
+![alt text](images/profil.png)
