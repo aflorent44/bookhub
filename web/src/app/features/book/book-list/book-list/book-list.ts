@@ -1,12 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-
-import { Book } from '../../../../core/type/book';
-
-import { BookGrid } from '../book-grid/book-grid';
-import { BookFilter } from '../book-filter/book-filter';
-import { BookSort, SortDirection, SortField } from '../book-sort/book-sort';
+import {Component, inject, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {Book} from '../../../../core/type/book';
+import {BookService} from '../../../../core/service/book.service';
+import {SortDirection, SortField} from '../book-sort/book-sort';
 
 export interface BookFilters {
   keyword?: string;
@@ -29,87 +26,67 @@ export interface BookFilters {
 @Component({
   selector: 'app-book-list',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    BookGrid,
-    BookFilter,
-    BookSort
-  ],
+  imports: [CommonModule, FormsModule],
   templateUrl: './book-list.html',
   styleUrl: './book-list.scss',
 })
 export class BookList implements OnInit {
 
-  private allBooks: Book[] = [
-
-  ];
+  private bookService = inject(BookService);
 
   books: Book[] = [];
+  allBooks: Book[] = [];
   total = 0;
+  loading = false;
 
   filters: BookFilters = {
     keyword: '',
     page: 0,
     size: 21,
-    sortBy: 'name',
+    sortBy: 'title',
     sortDirection: null
   };
 
   ngOnInit(): void {
-    this.loadBooks();
+    this.fetchBooks();
   }
 
-  loadBooks(): void {
-    let filtered = [...this.allBooks];
+  fetchBooks(): void {
+    this.loading = true;
+    this.bookService.getBooks(this.filters).subscribe({
+      next: (response) => {
+        this.books = response.data?.content ?? response.data ?? [];
+        this.total = response.data?.totalElements ?? this.books.length;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Erreur chargement livres :', err);
+        this.loading = false;
+      }
+    });
+  }
 
-    if (this.filters.keyword) {
-      const keyword = this.filters.keyword.toLowerCase();
-      filtered = filtered.filter(book =>
-        book.title.toLowerCase().includes(keyword) ||
-        book.authorFirstName.toLowerCase().includes(keyword) ||
-        book.authorLastName.toLowerCase().includes(keyword)
-      );
-    }
-
-    if (this.filters.genre) {
-      const search = this.filters.genre.toLowerCase();
-
-      filtered = filtered.filter(book =>
-        book.genres?.some(g =>
-          g.label.toLowerCase().includes(search)
-        )
-      );
-    }
-
-    const start = this.filters.page * this.filters.size;
-    const end = start + this.filters.size;
-
-    this.books = filtered.slice(start, end);
-    this.total = filtered.length;
+  applyFilters(): void {
+    this.fetchBooks();
   }
 
   onFiltersChange(updated: Partial<BookFilters>): void {
-    this.filters = { ...this.filters, ...updated, page: 0 };
-    this.loadBooks();
+    this.filters = {...this.filters, ...updated, page: 0};
+    this.fetchBooks();
   }
 
   onPageChange(page: number): void {
     this.filters.page = page;
-    this.loadBooks();
+    this.fetchBooks();
   }
 
   onSortChange(event: { sortBy: SortField; sortDirection: SortDirection }) {
-    this.filters = {
-      ...this.filters,
-      sortBy: event.sortBy,
-      sortDirection: event.sortDirection
-    };
-    this.loadBooks();
+    this.filters = {...this.filters, ...event, page: 0};
+    this.fetchBooks();
   }
 
   onSearch(): void {
     this.filters.page = 0;
-    this.loadBooks();
+    this.fetchBooks();
   }
 }

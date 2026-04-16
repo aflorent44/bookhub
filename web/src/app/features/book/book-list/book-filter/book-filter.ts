@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BookFilters } from '../book-list/book-list';
@@ -11,7 +11,7 @@ import { Button } from '../../../../shared/components/button/button'
   templateUrl: './book-filter.html',
   styleUrl: './book-filter.scss',
 })
-export class BookFilter {
+export class BookFilter implements OnInit {
   @Input() filters!: BookFilters;
   @Output() filtersChange = new EventEmitter<Partial<BookFilters>>();
 
