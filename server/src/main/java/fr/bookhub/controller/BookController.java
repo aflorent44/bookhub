@@ -19,7 +19,7 @@ public class BookController {
     private final BookService bookService;
 
     // Catalogue : Liste de tous les livres
-    @GetMapping("")
+    @GetMapping
     public ServiceResponse<?> getCatalog() {
         return bookService.getBooks();
     }

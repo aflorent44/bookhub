@@ -1,12 +1,11 @@
 package fr.bookhub.controller;
 
 import fr.bookhub.dto.GenreDTO;
+import fr.bookhub.entity.Genre;
 import fr.bookhub.service.GenreService;
 import fr.bookhub.utility.ServiceResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,9 +16,13 @@ public class GenreController {
 
     private final GenreService genreService;
 
-    @GetMapping("")
+    @GetMapping
     public ServiceResponse<List<GenreDTO>> getGenres() {
         return genreService.getGenres();
     }
 
+    @PostMapping
+    public ServiceResponse<Genre> createGenre(@RequestBody GenreDTO genreDTO) {
+        return genreService.createGenre(genreDTO.getLabel());
+    }
 }

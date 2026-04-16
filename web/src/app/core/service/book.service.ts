@@ -5,6 +5,7 @@ import { map } from 'rxjs';
 import { Book } from '../type/book';
 import { ServiceResponse } from '../type/service-response';
 import { environment } from '../../../environments/environment.development';
+import { HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
