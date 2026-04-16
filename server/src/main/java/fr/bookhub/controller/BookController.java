@@ -1,7 +1,7 @@
 package fr.bookhub.controller;
 
-import fr.bookhub.dto.BookCreateRequest;
-import fr.bookhub.dto.BookResponse;
+import fr.bookhub.dto.book.BookCreateRequest;
+import fr.bookhub.dto.book.BookResponse;
 import fr.bookhub.service.*;
 import fr.bookhub.service.filter.BookSearchFilter;
 import fr.bookhub.utility.MethodType;

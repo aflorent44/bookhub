@@ -1,6 +1,12 @@
 package fr.bookhub.service;
 
-import fr.bookhub.dto.*;
+import fr.bookhub.dto.dashboard.DashboardResponse;
+import fr.bookhub.dto.dashboard.RoleCreateRequest;
+import fr.bookhub.dto.dashboard.TopBookResponse;
+import fr.bookhub.dto.loan.LoanBasicMapper;
+import fr.bookhub.dto.loan.LoanBasicResponse;
+import fr.bookhub.dto.user.UserBasicMapper;
+import fr.bookhub.dto.user.UserBasicResponse;
 import fr.bookhub.entity.Loan;
 import fr.bookhub.entity.Role;
 import fr.bookhub.entity.Status;

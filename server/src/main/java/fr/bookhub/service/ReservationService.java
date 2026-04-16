@@ -1,9 +1,9 @@
 package fr.bookhub.service;
 
 import fr.bookhub.entity.*;
-import fr.bookhub.dto.ReservationBookResponse;
-import fr.bookhub.dto.ReservationCreateRequest;
-import fr.bookhub.dto.ReservationResponse;
+import fr.bookhub.dto.reservation.ReservationBookResponse;
+import fr.bookhub.dto.reservation.ReservationCreateRequest;
+import fr.bookhub.dto.reservation.ReservationResponse;
 import fr.bookhub.entity.Book;
 import fr.bookhub.entity.Reservation;
 import fr.bookhub.entity.Status;
@@ -41,12 +41,12 @@ public class ReservationService {
         }
 
         // Récupérer le livre :
-        Optional<Book> book = bookRepository.findById(req.getBookId());
+        Optional<Book> book = bookRepository.findById(req.bookId());
         if (book.isEmpty()) {
             throw new ApiException(ApiCode.RESERVATION_BOOK_NOT_FOUND);
         }
 
-        List<Reservation> existingReservations = reservationRepository.findByUserIdAndBookId(foundUser.getId(), req.getBookId());
+        List<Reservation> existingReservations = reservationRepository.findByUserIdAndBookId(foundUser.getId(), req.bookId());
 
         boolean hasActiveReservation = existingReservations.stream()
                 .anyMatch(r -> r.getStatus() == Status.WAITING);
@@ -55,7 +55,7 @@ public class ReservationService {
             throw new ApiException(ApiCode.RESERVATION_ALREADY_EXISTS);
         }
 
-        List<Loan> existingLoans = loanRepository.findByUserIdAndBookId(foundUser.getId(), req.getBookId());
+        List<Loan> existingLoans = loanRepository.findByUserIdAndBookId(foundUser.getId(), req.bookId());
 
         boolean hasActiveLoan = existingLoans.stream()
                 .anyMatch(l -> l.getStatus() == Status.WAITING || l.getStatus() == Status.IN_PROGRESS);

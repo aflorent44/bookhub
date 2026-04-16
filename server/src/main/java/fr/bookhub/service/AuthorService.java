@@ -1,6 +1,6 @@
 package fr.bookhub.service;
 
-import fr.bookhub.dto.AuthorCreateRequest;
+import fr.bookhub.dto.author.AuthorCreateRequest;
 import fr.bookhub.entity.Author;
 import fr.bookhub.repository.AuthorRepository;
 import fr.bookhub.repository.CountryRepository;
@@ -20,16 +20,16 @@ public class AuthorService {
     private final CountryRepository countryRepository;
 
     public ServiceResponse<Author> createAuthor(AuthorCreateRequest req) {
-        if (req.getFirstName().isEmpty()) throw new ApiException(ApiCode.AUTHOR_FIRSTNAME_EMPTY);
-        if (req.getLastName().isEmpty()) throw new ApiException(ApiCode.AUTHOR_LASTNAME_EMPTY);
-        if (req.getCountry() == null) throw new ApiException(ApiCode.AUTHOR_COUNTRY_EMPTY);
+        if (req.firstName().isEmpty()) throw new ApiException(ApiCode.AUTHOR_FIRSTNAME_EMPTY);
+        if (req.lastName().isEmpty()) throw new ApiException(ApiCode.AUTHOR_LASTNAME_EMPTY);
+        if (req.country() == null) throw new ApiException(ApiCode.AUTHOR_COUNTRY_EMPTY);
 
         Author author = new Author();
-        author.setFirstName(req.getFirstName());
-        author.setLastName(req.getLastName());
+        author.setFirstName(req.firstName());
+        author.setLastName(req.lastName());
 
         author.setCountry(
-                countryRepository.findByNameIgnoreCase(req.getCountry())
+                countryRepository.findByNameIgnoreCase(req.country())
                         .orElseGet(() -> countryRepository.findByNameIgnoreCase("United States")
                                 .orElseThrow(() -> new RuntimeException("Default country USA not found"))
                         )

@@ -1,9 +1,9 @@
 package fr.bookhub.controller;
 
-import fr.bookhub.dto.AuthResponse;
-import fr.bookhub.dto.LoginRequest;
-import fr.bookhub.dto.UserRegistrationRequest;
-import fr.bookhub.dto.UserResponse;
+import fr.bookhub.dto.auth.AuthResponse;
+import fr.bookhub.dto.auth.LoginRequest;
+import fr.bookhub.dto.user.UserRegistrationRequest;
+import fr.bookhub.dto.user.UserResponse;
 import fr.bookhub.entity.User;
 import fr.bookhub.service.AuthService;
 import fr.bookhub.service.UserService;
