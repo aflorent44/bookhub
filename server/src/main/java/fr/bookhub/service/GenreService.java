@@ -1,5 +1,6 @@
 package fr.bookhub.service;
 
+import fr.bookhub.dto.GenreDTO;
 import fr.bookhub.entity.Genre;
 import fr.bookhub.repository.GenreRepository;
 import lombok.AllArgsConstructor;

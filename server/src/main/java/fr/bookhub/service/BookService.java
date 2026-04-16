@@ -1,7 +1,12 @@
 package fr.bookhub.service;
 
+import fr.bookhub.dto.AuthorCreateRequest;
+import fr.bookhub.dto.BookCreateRequest;
+import fr.bookhub.dto.BookMapper;
+import fr.bookhub.dto.BookResponse;
 import fr.bookhub.entity.*;
 import fr.bookhub.repository.*;
+import fr.bookhub.utility.MethodType;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +19,6 @@ import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -33,6 +37,7 @@ public class BookService {
     private final GenreService genreService;
     private final AuthorService authorService;
     private final UserService userService;
+    private final LoanRepository loanRepository;
 
     public ServiceResponse<List<BookResponse>> getBooks() {
         List<BookResponse> books = bookRepository.findAll()
@@ -272,6 +277,15 @@ public class BookService {
 
         if (book == null) {
             return new ServiceResponse<>("6001", "Book not found");
+        }
+
+        // Vérifier s'il y a des emprunts sur le livre :
+        List<Loan> loans = loanRepository.findByBookId(book.getId());
+
+        for (Loan loan : loans) {
+            if (loan.getStatus() == Status.IN_PROGRESS || loan.getStatus() == Status.WAITING) {
+                return new ServiceResponse<>("6002", "A loan is in progress or a user is waiting to loan this book");
+            }
         }
 
         return new ServiceResponse<>("6000", "Book successfully deleted", book);

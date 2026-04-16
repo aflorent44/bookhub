@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -82,64 +81,5 @@ public class UserServiceImpl implements UserService {
                 user.getRole().name(),
                 user.getCreatedAt()
         );
-    }
-
-    @Override
-    public void deleteAccount(String email) {
-        User user = findByEmail(email);
-        userRepository.delete(user);
-    }
-
-    @Override
-    public void updateProfile(String email, UpdateProfileRequest request) {
-        User user = findByEmail(email);
-
-        if (request.firstName() != null) {
-            user.setFirstName(request.firstName().trim());
-        }
-
-        if (request.lastName() != null) {
-            user.setLastName(request.lastName().trim());
-        }
-
-        if (request.phoneNumber() != null) {
-            user.setPhoneNumber(request.phoneNumber().trim());
-        }
-
-        user.setUpdatedAt(LocalDateTime.now());
-        userRepository.save(user);
-    }
-
-    @Override
-    @Transactional
-    public void changePassword(String email, ChangePasswordRequest request) {
-        User user = findByEmail(email);
-
-        if (request.currentPassword() == null || request.currentPassword().isBlank()) {
-            throw new RuntimeException("Le mot de passe actuel est requis.");
-        }
-
-        if (request.newPassword() == null || request.newPassword().isBlank()) {
-            throw new RuntimeException("Le nouveau mot de passe est requis.");
-        }
-
-        if (!passwordEncoder.matches(request.currentPassword(), user.getUserPassword())) {
-            throw new RuntimeException("Le mot de passe actuel est incorrect.");
-        }
-
-        if (passwordEncoder.matches(request.newPassword(), user.getUserPassword())) {
-            throw new RuntimeException("Le nouveau mot de passe doit être différent de l'ancien.");
-        }
-
-        user.setUserPassword(passwordEncoder.encode(request.newPassword()));
-        user.setUpdatedAt(LocalDateTime.now());
-        userRepository.save(user);
-    }
-
-    public ServiceResponse<User> getUserByEmail(String email) {
-        Optional<User> user = userRepository.findByEmail(email);
-
-        return user.map(value -> new ServiceResponse<>("8000", "User found", value)).orElseGet(() -> new ServiceResponse<>("8001", "User not found"));
-
     }
 }

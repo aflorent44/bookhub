@@ -497,7 +497,6 @@ h1, h2, h3, h4, .p-card-title {
   }
 }
 
-// Responsive : en dessous de 1100px, passe en colonne
 @media (max-width: 1100px) {
   .admin-layout {
     flex-direction: column;
@@ -507,3 +506,37 @@ h1, h2, h3, h4, .p-card-title {
     }
   }
 }
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-m);
+  margin-top: var(--space-m);
+
+  button {
+    background: var(--bg-off-white);
+    border: none;
+    border-radius: var(--radius-m);
+    padding: var(--space-xs) var(--space-s);
+    cursor: pointer;
+    color: var(--txt-primary);
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    &:hover:not(:disabled) {
+      background: var(--btn-green);
+      color: white;
+    }
+  }
+
+  span {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--txt-primary);
+  }
+}
+

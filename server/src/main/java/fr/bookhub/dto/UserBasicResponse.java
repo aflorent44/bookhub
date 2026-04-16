@@ -1,6 +1,6 @@
-package fr.bookhub.service;
+package fr.bookhub.dto;
 
-import fr.bookhub.entity.Country;
+import fr.bookhub.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,8 +10,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthorCreateRequest {
-    private String firstName;
+public class UserBasicResponse {
+    private Integer id;
     private String lastName;
-    private String country;
+    private String firstName;
+    private String pseudo;
+    private Role role;
 }
