@@ -23,10 +23,11 @@ L’objectif est de remplacer un système manuel (papier) par une solution moder
 Avant de lancer le projet, assurez-vous d’avoir installé :
 
 * **Java** : version 17 ou supérieure
+* **Spring Boot** : version 3.2 ou supérieure
 * **Node.js** : version 18+
-* **Angular CLI** : version 17+
+* **Angular** : version 17+
 * **SQL Server** : 2019 ou supérieur
-* **Maven ou Gradle** (selon votre projet backend)
+* **Gradle**
 * **Git**
 
 ---
