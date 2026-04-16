@@ -18,8 +18,12 @@ public class LoanResponse {
     private LocalDateTime endDate;
     private LocalDateTime returnDate;
     private Status status;
+    private boolean late;
     private Integer userId;
     private Integer bookId;
+    private String bookTitle;
+    private String bookAuthor;
+    private String bookCoverUrl;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private UserBasicResponse updatedBy;

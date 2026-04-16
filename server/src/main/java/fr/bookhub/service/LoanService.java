@@ -1,12 +1,9 @@
 package fr.bookhub.service;
 
-import fr.bookhub.entity.*;
 import fr.bookhub.dto.LoanCreateRequest;
 import fr.bookhub.dto.LoanMapper;
-import fr.bookhub.entity.Book;
-import fr.bookhub.entity.Loan;
-import fr.bookhub.entity.Status;
-import fr.bookhub.entity.User;
+import fr.bookhub.dto.LoanResponse;
+import fr.bookhub.entity.*;
 import fr.bookhub.repository.BookRepository;
 import fr.bookhub.repository.LoanRepository;
 import fr.bookhub.repository.ReservationRepository;
@@ -72,6 +69,7 @@ public class LoanService {
         if (!userLoans.isEmpty()) {
             int totalLoansInProgress = 0;
 
+            // check sur les emprunts en cours et en attente de récupération
             for (Loan loan : userLoans) {
                 // Cas où l'emprunt n'a pas été retournée
                 LocalDateTime endDate = loan.getEndDate();
@@ -80,9 +78,7 @@ public class LoanService {
                 if (endDate.isBefore(LocalDateTime.now()) && loan.getStatus() == Status.IN_PROGRESS) {
                     throw new ApiException(ApiCode.LOAN_LATE_EXISTS);
                 }
-
-                // Si la date de fin est après aujourd'hui et que le statut de l'emprunt est en cours :
-                if (endDate.isAfter(LocalDateTime.now()) && loan.getStatus() == Status.IN_PROGRESS) {
+                if (loan.getStatus() == Status.IN_PROGRESS || loan.getStatus() == Status.WAITING) {
                     totalLoansInProgress++;
                 }
             }
@@ -290,4 +286,14 @@ public class LoanService {
         }
     }
 
+
+    public ServiceResponse<List<LoanResponse>> getMyLoansWithHistory(String email) {
+        User user = userService.findByEmail(email);
+        List<Loan> loans = loanRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
+        List<LoanResponse> loanResponseList = loans.stream()
+                .map(loanMapper::toResponse)
+                .toList();
+
+        return new ServiceResponse<>("7050", "Loans successfully retrieved", loanResponseList);
+    }
 }

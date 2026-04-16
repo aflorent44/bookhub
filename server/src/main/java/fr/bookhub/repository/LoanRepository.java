@@ -30,4 +30,5 @@ public interface LoanRepository extends JpaRepository<Loan, Integer> {
         ORDER BY count(l) DESC
     """)
     List<TopBookResponse> findTopBooks(Pageable pageable);
+    List<Loan> findByUserIdOrderByCreatedAtDesc(Integer userId);
 }

@@ -33,6 +33,9 @@ export const routes: Routes = [
     title: 'Profile',
     canActivate: [authGuard],
   },
+  { path: 'catalog',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/book/book-catalog/book-catalog').then(m => m.BookCatalog) },
 
   {
     path: 'books/:id/edit',
@@ -40,5 +43,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/book/book-form/book-form').then(m => m.BookForm)
   },
 
-  {path: '', redirectTo: '/login', pathMatch: 'full'},
+  // Redirection par défaut
+  { path: '',
+    redirectTo: 'login',
+    pathMatch: 'full' },
+  { path: '**',
+    redirectTo: 'login' }
 ];

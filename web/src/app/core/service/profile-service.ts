@@ -7,6 +7,7 @@ import {Reservation} from "../type/reservation";
 import {environment} from "../../../environments/environment.development";
 import {ServiceResponse} from "../type/service-response";
 import {map} from 'rxjs';
+import { Loan } from "../type/loan";
 
 @Injectable({
   providedIn: 'root',
@@ -39,5 +40,11 @@ export class ProfileService {
 
   cancelReservation(reservationId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/reservation/${reservationId}`);
+  }
+
+  getMyLoans() {
+    return this.http
+      .get<ServiceResponse<Loan[]>>(`${this.apiUrl}/loan/my`)
+      .pipe(map((res) => res.data ?? []));
   }
 }
