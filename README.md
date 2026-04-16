@@ -122,10 +122,11 @@ L'application sera accessible sur :
 
 ### 🏠 Page d'accueil
 
+![alt text](web\public\assets\book_cover.jpg)
 
 ### 📚 Catalogue de livres
 
-*(Ajouter une capture ici)*
+![alt text](web\public\assets\book_cover.jpg)
 
 ### 📖 Détail d’un livre
 
@@ -135,6 +136,12 @@ L'application sera accessible sur :
 
 ![alt text](doc/images/profil.png)
 
+
+---
+
+## 📚 Documentation
+
+- [Guide utilisateur](docs/Guide-utilisateur.md)
 
 ---
 
