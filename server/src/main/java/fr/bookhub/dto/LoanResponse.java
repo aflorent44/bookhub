@@ -22,5 +22,5 @@ public class LoanResponse {
     private Integer bookId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Integer updatedBy;
+    private UserBasicResponse updatedBy;
 }

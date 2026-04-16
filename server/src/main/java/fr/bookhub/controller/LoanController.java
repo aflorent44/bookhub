@@ -3,7 +3,7 @@ package fr.bookhub.controller;
 import fr.bookhub.dto.LoanCreateRequest;
 import fr.bookhub.entity.Status;
 import fr.bookhub.service.LoanService;
-import fr.bookhub.service.ServiceResponse;
+import fr.bookhub.utility.ServiceResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

@@ -5,6 +5,7 @@ import fr.bookhub.dto.BookResponse;
 import fr.bookhub.service.*;
 import fr.bookhub.service.filter.BookSearchFilter;
 import fr.bookhub.utility.MethodType;
+import fr.bookhub.utility.ServiceResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;

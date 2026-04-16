@@ -4,6 +4,9 @@ import fr.bookhub.dto.AuthorCreateRequest;
 import fr.bookhub.entity.Author;
 import fr.bookhub.repository.AuthorRepository;
 import fr.bookhub.repository.CountryRepository;
+import fr.bookhub.utility.ApiCode;
+import fr.bookhub.utility.ApiException;
+import fr.bookhub.utility.ServiceResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +20,9 @@ public class AuthorService {
     private final CountryRepository countryRepository;
 
     public ServiceResponse<Author> createAuthor(AuthorCreateRequest req) {
-        if (req.getFirstName().isEmpty()) return new ServiceResponse<>("3001", "First name is empty");
-        if (req.getLastName().isEmpty()) return new ServiceResponse<>("3002", "Last name is empty");
-        if (req.getCountry() == null) return new ServiceResponse<>("3003", "Country is empty");
+        if (req.getFirstName().isEmpty()) throw new ApiException(ApiCode.AUTHOR_FIRSTNAME_EMPTY);
+        if (req.getLastName().isEmpty()) throw new ApiException(ApiCode.AUTHOR_LASTNAME_EMPTY);
+        if (req.getCountry() == null) throw new ApiException(ApiCode.AUTHOR_COUNTRY_EMPTY);
 
         Author author = new Author();
         author.setFirstName(req.getFirstName());
@@ -37,6 +40,6 @@ public class AuthorService {
 
         authorRepository.save(author);
 
-        return new ServiceResponse<>("3000", "Author successfully created", author);
+        return new ServiceResponse<>(ApiCode.AUTHOR_CREATED, author);
     }
 }

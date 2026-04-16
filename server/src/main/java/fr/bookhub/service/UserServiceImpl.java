@@ -4,10 +4,12 @@ import fr.bookhub.dto.ChangePasswordRequest;
 import fr.bookhub.dto.UpdateProfileRequest;
 import fr.bookhub.dto.UserRegistrationRequest;
 import fr.bookhub.dto.UserResponse;
-import fr.bookhub.entity.Loan;
 import fr.bookhub.entity.Role;
 import fr.bookhub.entity.User;
 import fr.bookhub.repository.UserRepository;
+import fr.bookhub.utility.ApiCode;
+import fr.bookhub.utility.ApiException;
+import fr.bookhub.utility.ServiceResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -29,11 +30,9 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByEmail(requestUser.email())) {
             throw new RuntimeException("Cet email est déjà utilisé.");
         }
-
         if (userRepository.existsByPseudo(requestUser.username())) {
             throw new RuntimeException("Ce pseudo est déjà utilisé.");
         }
-
         User user = new User();
         user.setLastName(requestUser.lastname().trim());
         user.setFirstName(requestUser.firstname().trim());
@@ -44,14 +43,12 @@ public class UserServiceImpl implements UserService {
         user.setShowRealName(false);
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
-
         return userRepository.save(user);
     }
 
     @Override
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+        return userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
     }
 
     @Override
@@ -61,25 +58,61 @@ public class UserServiceImpl implements UserService {
 
     public ServiceResponse<User> getUserById(Integer userId) {
         Optional<User> user = userRepository.findById(userId);
-
-        return user.map(value ->
-                        new ServiceResponse<>("8000", "User found", value))
-                .orElseGet(() ->
-                        new ServiceResponse<>("8001", "User not found"));
+        return user.map(value -> new ServiceResponse<>(ApiCode.USER_FOUND, value)).orElseThrow(() -> new ApiException(ApiCode.USER_NOT_FOUND));
     }
 
     @Override
     @Transactional
     public UserResponse getProfile(String email) {
         User user = findByEmail(email);
-        return new UserResponse(user.getId(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getPseudo(),
-                user.getEmail(),
-                user.getPhoneNumber(),
-                user.getRole().name(),
-                user.getCreatedAt()
-        );
+        return new UserResponse(user.getId(), user.getFirstName(), user.getLastName(), user.getPseudo(), user.getEmail(), user.getPhoneNumber(), user.getRole().name(), user.getCreatedAt());
+    }
+
+    @Override
+    public void deleteAccount(String email) {
+        User user = findByEmail(email);
+        userRepository.delete(user);
+    }
+
+    @Override
+    public void updateProfile(String email, UpdateProfileRequest request) {
+        User user = findByEmail(email);
+        if (request.firstName() != null) {
+            user.setFirstName(request.firstName().trim());
+        }
+        if (request.lastName() != null) {
+            user.setLastName(request.lastName().trim());
+        }
+        if (request.phoneNumber() != null) {
+            user.setPhoneNumber(request.phoneNumber().trim());
+        }
+        user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(String email, ChangePasswordRequest request) {
+        User user = findByEmail(email);
+        if (request.currentPassword() == null || request.currentPassword().isBlank()) {
+            throw new RuntimeException("Le mot de passe actuel est requis.");
+        }
+        if (request.newPassword() == null || request.newPassword().isBlank()) {
+            throw new RuntimeException("Le nouveau mot de passe est requis.");
+        }
+        if (!passwordEncoder.matches(request.currentPassword(), user.getUserPassword())) {
+            throw new RuntimeException("Le mot de passe actuel est incorrect.");
+        }
+        if (passwordEncoder.matches(request.newPassword(), user.getUserPassword())) {
+            throw new RuntimeException("Le nouveau mot de passe doit être différent de l'ancien.");
+        }
+        user.setUserPassword(passwordEncoder.encode(request.newPassword()));
+        user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);
+    }
+
+    public ServiceResponse<User> getUserByEmail(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        return user.map(value -> new ServiceResponse<>(ApiCode.USER_FOUND, value)).orElseThrow(() -> new ApiException(ApiCode.USER_NOT_FOUND));
     }
 }

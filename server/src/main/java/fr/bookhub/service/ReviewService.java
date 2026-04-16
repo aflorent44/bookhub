@@ -6,7 +6,10 @@ import fr.bookhub.entity.*;
 import fr.bookhub.repository.BookRepository;
 import fr.bookhub.repository.LoanRepository;
 import fr.bookhub.repository.ReviewRepository;
+import fr.bookhub.utility.ApiCode;
+import fr.bookhub.utility.ApiException;
 import fr.bookhub.utility.MethodType;
+import fr.bookhub.utility.ServiceResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +44,7 @@ public class ReviewService {
         // Vérifier si le livre existe :
         Optional<Book> foundBook = bookRepository.findById(req.getBookId());
         if (foundBook.isEmpty()) {
-            return new ServiceResponse<>("10001", "Book not found");
+            throw new ApiException(ApiCode.REVIEW_BOOK_NOT_FOUND);
         }
 
         // Vérifier si l'utilisateur à emprunter ce livre :
@@ -49,7 +52,7 @@ public class ReviewService {
             List<Loan> loans = loanRepository.findByUserIdAndBookId(req.getUserId(), req.getBookId());
 
             if (loans.isEmpty()) {
-                return new ServiceResponse<>("10004", "User unauthorized to review");
+                throw new ApiException(ApiCode.REVIEW_USER_UNAUTHORIZED);
             }
 
             boolean hasValidLoan = loans.stream()
@@ -57,14 +60,14 @@ public class ReviewService {
                             .contains(loan.getStatus()));
 
             if (!hasValidLoan) {
-                return new ServiceResponse<>("10004", "User unauthorized to review");
+                throw new ApiException(ApiCode.REVIEW_USER_UNAUTHORIZED);
             }
         }
 
 
         // Vérification de la note : (doit être comprise entre 1 et 5) :
         if (req.getRating() <= 0 || req.getRating() > 5) {
-            return new ServiceResponse<>("10002", "Invalid rating");
+            throw new ApiException(ApiCode.REVIEW_INVALID_RATING);
         }
 
         Review review;
@@ -78,7 +81,7 @@ public class ReviewService {
             Optional<Review> foundReview = reviewRepository.findById(req.getReviewId());
 
             if (foundReview.isEmpty()) {
-                return new  ServiceResponse<>("10003", "Review not found");
+                throw new ApiException(ApiCode.REVIEW_NOT_FOUND);
             }
 
             review = foundReview.get();
@@ -97,9 +100,9 @@ public class ReviewService {
         Review savedReview = reviewRepository.save(review);
 
         if (method == MethodType.CREATE) {
-            return new ServiceResponse<>("10000", "Review successfully created", reviewMapper.toResponse(savedReview));
+            return new ServiceResponse<>(ApiCode.REVIEW_CREATED, reviewMapper.toResponse(savedReview));
         }
-        return new ServiceResponse<>("10005", "Review successfully updated", reviewMapper.toResponse(savedReview));
+        return new ServiceResponse<>(ApiCode.REVIEW_UPDATED, reviewMapper.toResponse(savedReview));
     }
 
     public ServiceResponse<?> delete(int id) {
@@ -107,11 +110,11 @@ public class ReviewService {
         Optional<Review> foundReview = reviewRepository.findById(id);
 
         if (foundReview.isEmpty()) {
-            return new ServiceResponse<>("10004", "Review not found");
+            throw new ApiException(ApiCode.REVIEW_NOT_FOUND);
         }
 
         reviewRepository.deleteById(id);
 
-        return new ServiceResponse<>("10010", "Review successfully deleted");
+        return new ServiceResponse<>(ApiCode.REVIEW_DELETED);
     }
 }

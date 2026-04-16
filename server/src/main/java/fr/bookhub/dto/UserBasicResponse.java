@@ -15,5 +15,7 @@ public class UserBasicResponse {
     private String lastName;
     private String firstName;
     private String pseudo;
+    private String email;
+    private String phoneNumber;
     private Role role;
 }
