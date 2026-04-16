@@ -141,7 +141,7 @@ L'application sera accessible sur :
 
 ## 📚 Documentation
 
-- [Guide utilisateur](docs/Guide-utilisateur.md)
+- [Guide utilisateur](doc/Guide-utilisateur.md)
 
 ---
 
