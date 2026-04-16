@@ -1,0 +1,73 @@
+<p-drawer
+  [visible]="visible()"
+  (visibleChange)="visibleChange.emit($event)"
+  header="Filtres avancés"
+  position="left"
+  styleClass="catalog-filters-drawer"
+>
+  <div class="filters-body" [formGroup]="form">
+    <div class="filter-group">
+      <p-floatlabel>
+        <input pInputText id="authorFirstName" formControlName="authorFirstName" />
+        <label for="authorFirstName">Prénom de l'auteur</label>
+      </p-floatlabel>
+
+      <p-floatlabel>
+        <input pInputText id="authorLastName" formControlName="authorLastName" />
+        <label for="authorLastName">Nom de l'auteur</label>
+      </p-floatlabel>
+    </div>
+
+    <div class="filter-group">
+      <p-floatlabel>
+        <input pInputText id="genre" formControlName="genre" />
+        <label for="genre">Genre</label>
+      </p-floatlabel>
+
+      <p-floatlabel>
+        <input pInputText id="publisher" formControlName="publisher" />
+        <label for="publisher">Éditeur</label>
+      </p-floatlabel>
+    </div>
+
+    <div class="filter-group">
+      <p-floatlabel>
+        <input pInputText id="year" type="number" formControlName="year" />
+        <label for="year">Année</label>
+      </p-floatlabel>
+
+      <p-floatlabel>
+        <input pInputText id="countryName" formControlName="countryName" />
+        <label for="countryName">Pays</label>
+      </p-floatlabel>
+    </div>
+
+    <p-floatlabel>
+      <input pInputText id="countryNationality" formControlName="countryNationality" />
+      <label for="countryNationality">Langue</label>
+    </p-floatlabel>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="filters-footer">
+      <p-button
+        label="Annuler"
+        severity="secondary"
+        [outlined]="true"
+        (click)="close()">
+      </p-button>
+      <p-button
+        label="Réinitialiser"
+        severity="secondary"
+        [outlined]="true"
+        (click)="reset()"
+        [disabled]="isPristine()">
+      </p-button>
+      <p-button
+        label="Appliquer"
+        (click)="apply()"
+        [disabled]="form.invalid">
+      </p-button>
+    </div>
+  </ng-template>
+</p-drawer>

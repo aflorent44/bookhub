@@ -1,0 +1,67 @@
+<div class="book-catalog">
+  <app-catalog-filters
+    [filters]="filters()"
+    [visible]="drawerVisible()"
+    (visibleChange)="drawerVisible.set($event)"
+    (filtersChange)="onFiltersChange($event)">
+  </app-catalog-filters>
+
+  <div class="catalog-toolbar">
+    <div class="toolbar-search">
+      <p-button
+        icon="pi pi-sliders-h"
+        [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
+        severity="secondary"
+        [outlined]="true"
+        (click)="openFilters()"
+        pTooltip="Filtres avancés">
+      </p-button>
+
+      <div class="search-input-wrapper">
+        <i class="pi pi-search"></i>
+        <input
+          pInputText
+          type="text"
+          placeholder="Rechercher un livre..."
+          [value]="searchKeyword()"
+          (input)="onKeywordInput($event)"
+          (keyup.enter)="onSearch()"
+        />
+      </div>
+    </div>
+
+    <p-select
+      [options]="sortOptions"
+      [formControl]="sortControl"
+      optionLabel="label"
+      placeholder="Trier par..."
+      [showClear]="true">
+    </p-select>
+  </div>
+
+  @if (loading()) {
+    <div class="catalog-spinner">
+      <p-progressSpinner strokeWidth="3"></p-progressSpinner>
+    </div>
+  } @else if (books().length === 0) {
+    <div class="catalog-empty">
+      <i class="pi pi-book"></i>
+      <p>Aucun livre trouvé.</p>
+    </div>
+  } @else {
+    <div class="catalog-grid">
+      @for (book of books(); track book.bookId) {
+        <app-book-card [book]="book"></app-book-card>
+      }
+    </div>
+  }
+
+  @if (total() > filters().size) {
+    <p-paginator
+      [rows]="filters().size"
+      [totalRecords]="total()"
+      [first]="filters().page * filters().size"
+      (onPageChange)="onPageChange($event)">
+    </p-paginator>
+  }
+</div>
