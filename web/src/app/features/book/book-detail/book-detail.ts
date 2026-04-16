@@ -16,11 +16,15 @@ import {ToastModule} from 'primeng/toast';
 import {ConfirmDialog} from 'primeng/confirmdialog';
 import {ReservationService} from '../../../core/service/reservation.service';
 import {Loan} from '../../../core/type/loan';
+import {ReviewService} from '../../../core/service/review.service';
+import {ReviewSection} from '../../review-section/review-section';
+import {Rating} from 'primeng/rating';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-book-detail',
   standalone: true,
-  imports: [CommonModule, CardModule, DividerModule, TagModule, ProgressSpinnerModule, Button, LoanStatusPipe, ToastModule, ConfirmDialog],
+  imports: [CommonModule, CardModule, DividerModule, TagModule, ProgressSpinnerModule, Button, LoanStatusPipe, ToastModule, ConfirmDialog, ReviewSection, Rating, FormsModule],
   providers: [ConfirmationService, MessageService],
   templateUrl: './book-detail.html',
 })
@@ -34,14 +38,18 @@ export class BookDetail implements OnInit {
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
   private reservationService = inject(ReservationService);
+  private reviewService = inject(ReviewService);
 
   book = signal<Book | null>(null);
   error = signal('');
   loans = signal<any[]>([]);
   reservations = signal<any[]>([]);
+  reviews = signal<any[]>([]);
   userLoans = signal<Loan[]>([]);
   userReservations = signal<any[]>([]);
   completedLoansPage = signal(0);
+  averageBookRating = signal(0);
+  bookReviewsCount = signal(0);
   completedLoansPageSize = 5;
 
   isAdminOrLibrarian = computed(() => {
@@ -69,6 +77,16 @@ export class BookDetail implements OnInit {
     Math.ceil(this.completedLoans().length / this.completedLoansPageSize)
   );
 
+  private averageRating = computed(() => {
+    if (!this.reviews().length) return 0;
+    const avg = this.reviews().reduce((sum, r) => sum + r.rating, 0) / this.reviews().length;
+    return Math.round(avg * 100) / 100;
+  });
+
+  get avgRating() {
+    return this.averageRating();
+  }
+
   prevCompletedPage() {
     if (this.completedLoansPage() > 0) {
       this.completedLoansPage.update(p => p - 1);
@@ -87,6 +105,7 @@ export class BookDetail implements OnInit {
     this.bookService.getBookById(id).subscribe({
       next: (book) => {
         this.book.set(book);
+        this.loadReviews(id);
 
         if (this.isAdminOrLibrarian()) {
           this.loadLoans(id);
@@ -113,6 +132,7 @@ export class BookDetail implements OnInit {
   private reloadAll() {
     const id = Number(this.route.snapshot.paramMap.get('id') ?? '');
     this.reloadBook();
+    this.loadReviews(id);
     if (this.isAdminOrLibrarian()) {
       this.loadLoans(id);
       this.loadReservations(id);
@@ -141,13 +161,33 @@ export class BookDetail implements OnInit {
     const bid = bookId ?? Number(this.route.snapshot.paramMap.get('id') ?? '');
 
     this.loanService.getLoansByUserAndBook(uid, bid).subscribe({
-      next: (loans) => this.userLoans.set(loans),
+      next: (loans) => {
+        this.userLoans.set(
+          [...loans].sort((a, b) =>
+            new Date(b.debutDate).getTime() - new Date(a.debutDate).getTime()
+          )
+        );
+      },
       error: (err) => console.error('Erreur user loans :', err)
     });
 
     this.reservationService.getReservationsByUserAndBook(uid, bid).subscribe({
       next: (reservations) => this.userReservations.set(reservations),
       error: (err) => console.error('Erreur user reservations :', err)
+    });
+  }
+
+  loadReviews(bookId: number) {
+    this.reviewService.getReviewsByBookId(bookId).subscribe({
+      next: (reviews) => {
+        this.reviews.set(reviews);
+        const avg = reviews.length
+          ? Math.round(reviews.reduce((s, r) => s + r.rating, 0) / reviews.length)
+          : 0;
+        this.averageBookRating.set(avg);
+        this.bookReviewsCount.set(reviews.length);
+      },
+      error: (err) => console.error('Erreur reviews :', err)
     });
   }
 

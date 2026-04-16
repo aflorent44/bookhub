@@ -2,7 +2,11 @@
   <div class="logo">BookHub</div>
 
   <ul class="nav-links">
-    <li><a routerLink="/library">Bibliothèque</a></li>
+    <li><a routerLink="/catalog">Bibliothèque</a></li>
+
+    @if (currentUser()?.role === 'ADMIN' || currentUser()?.role === 'LIBRARIAN') {
+      <li><a routerLink="/add-book">Ajouter un livre</a></li>
+    }
 
     @if (currentUser()) {
       <li><a routerLink="/my-profile">Mon profil</a></li>

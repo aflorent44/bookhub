@@ -26,8 +26,6 @@ export class LoanService {
       bookId: bookId,
     };
 
-    console.log('loanBook() request =', request);
-
     return this.http.post<ServiceResponse<Loan>>(`${this.apiUrl}/loan`, request)
       .pipe(map(response => {
         if (response.code !== '7000') {

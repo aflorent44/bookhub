@@ -44,7 +44,9 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/api/genres/**",
-                                "/api/books/**"
+                                "/api/books/**",
+                                "/api/review/**",
+                                "/api/review**"
                         ).permitAll()
                         .requestMatchers("/api/reservation/**", "/api/loan/**").authenticated()
                         .anyRequest().authenticated()

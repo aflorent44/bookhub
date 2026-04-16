@@ -1,0 +1,121 @@
+<p-toast position="bottom-center" />
+<p-confirm-dialog />
+
+<div class="review-section">
+
+  @if (isUserAndIsLoggedIn() && (!hasAlreadyReviewed() || isEditMode())) {
+  <p-card class="review-form-card">
+    <ng-template #content>
+
+      <h3>Laisser un avis</h3>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+        <div class="field">
+          <label class="field-label">Note </label>
+          <p-rating formControlName="rating" [stars]="5" />
+          @if (form.get('rating')?.invalid && form.get('rating')?.touched) {
+            <small class="feedback error">Une note est requise.</small>
+          }
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="comment">Commentaire</label>
+          <textarea
+            id="comment"
+            pTextarea
+            rows="4"
+            formControlName="comment"
+            placeholder="Qu'avez-vous pensé de ce livre ?"
+            style="width: 100%; max-width: 100%; box-sizing: border-box; resize: vertical;"
+          ></textarea>
+          @if (form.get('comment')?.invalid && form.get('comment')?.touched) {
+            <small class="feedback error">Un commentaire est requis.</small>
+          }
+        </div>
+
+        @if (error()) {
+          <small class="feedback error">{{ error() }}</small>
+        }
+
+        <div class="form-actions">
+          @if (isEditMode()) {
+            <p-button
+              label="Annuler"
+              icon="pi pi-times"
+              type="button"
+              severity="secondary"
+              (onClick)="onCancelEdit()"
+            />
+          }
+          <p-button
+            [label]="isEditMode() ? 'Mettre à jour' : 'Valider'"
+            icon="pi pi-check"
+            type="submit"
+            [disabled]="form.invalid"
+            [loading]="loading()"
+          />
+        </div>
+
+      </form>
+    </ng-template>
+  </p-card>
+
+  <p-divider />
+  }
+
+  @if (reviews().length === 0) {
+    <p class="text-muted">Aucun avis pour ce livre.</p>
+  } @else {
+
+    <div class="reviews-list">
+      @for (review of reviews(); track review.reviewId) {
+        <div class="review-item">
+
+          <div class="review-header">
+            <div class="review-author-info">
+              <div class="review-avatar">
+                {{ (review.user?.firstName?.[0] ?? '') + (review.user?.lastName?.[0] ?? '') }}
+              </div>
+              <div>
+                <p class="review-author-name">
+                  {{ review.user?.firstName }} {{ review.user?.lastName }}
+                </p>
+                <p class="review-date">
+                  {{ review.createdAt | date: 'dd/MM/yyyy à HH:mm' }}
+                </p>
+              </div>
+            </div>
+
+          </div>
+            @let rating = review.rating;
+            <p-rating [ngModel]="rating" [readonly]="true" />
+            <p class="review-comment">{{ review.comment }}</p>
+
+
+
+          @if (isCurrentUserReview(review)) {
+            <div class="review-actions">
+              <p-button
+                label="Modifier"
+                icon="pi pi-pencil"
+                size="small"
+                severity="secondary"
+                (onClick)="onEditReview(review)"
+              />
+              <p-button
+                label="Supprimer"
+                icon="pi pi-trash"
+                size="small"
+                severity="danger"
+                (onClick)="onDeleteReview(review.reviewId!)"
+              />
+            </div>
+          }
+
+        </div>
+      }
+    </div>
+  }
+
+</div>
