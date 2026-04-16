@@ -17,6 +17,8 @@ public class UserBasicMapper {
         dto.setFirstName(user.getFirstName());
         dto.setLastName(user.getLastName());
         dto.setPseudo(user.getPseudo());
+        dto.setEmail(user.getEmail());
+        dto.setPhoneNumber(user.getPhoneNumber());
         dto.setRole(user.getRole());
 
         return dto;

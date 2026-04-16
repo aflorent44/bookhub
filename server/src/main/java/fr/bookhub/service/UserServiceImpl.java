@@ -7,6 +7,9 @@ import fr.bookhub.dto.UserResponse;
 import fr.bookhub.entity.Role;
 import fr.bookhub.entity.User;
 import fr.bookhub.repository.UserRepository;
+import fr.bookhub.utility.ApiCode;
+import fr.bookhub.utility.ApiException;
+import fr.bookhub.utility.ServiceResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -55,7 +58,7 @@ public class UserServiceImpl implements UserService {
 
     public ServiceResponse<User> getUserById(Integer userId) {
         Optional<User> user = userRepository.findById(userId);
-        return user.map(value -> new ServiceResponse<>("8000", "User found", value)).orElseGet(() -> new ServiceResponse<>("8001", "User not found"));
+        return user.map(value -> new ServiceResponse<>(ApiCode.USER_FOUND, value)).orElseThrow(() -> new ApiException(ApiCode.USER_NOT_FOUND));
     }
 
     @Override
@@ -110,6 +113,6 @@ public class UserServiceImpl implements UserService {
 
     public ServiceResponse<User> getUserByEmail(String email) {
         Optional<User> user = userRepository.findByEmail(email);
-        return user.map(value -> new ServiceResponse<>("8000", "User found", value)).orElseGet(() -> new ServiceResponse<>("8001", "User not found"));
+        return user.map(value -> new ServiceResponse<>(ApiCode.USER_FOUND, value)).orElseThrow(() -> new ApiException(ApiCode.USER_NOT_FOUND));
     }
 }

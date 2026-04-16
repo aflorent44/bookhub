@@ -2,7 +2,7 @@ package fr.bookhub.controller;
 
 import fr.bookhub.dto.GenreDTO;
 import fr.bookhub.service.GenreService;
-import fr.bookhub.service.ServiceResponse;
+import fr.bookhub.utility.ServiceResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

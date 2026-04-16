@@ -7,6 +7,9 @@ import fr.bookhub.entity.*;
 import fr.bookhub.repository.BookRepository;
 import fr.bookhub.repository.LoanRepository;
 import fr.bookhub.repository.ReservationRepository;
+import fr.bookhub.utility.ApiCode;
+import fr.bookhub.utility.ApiException;
+import fr.bookhub.utility.ServiceResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -53,10 +56,10 @@ public class LoanService {
 
             // Le livre n'est pas disponible :
             if (availableQuantities <= 0) {
-                return new ServiceResponse<>("7001", "Book not available");
+                throw new ApiException(ApiCode.LOAN_NOT_FOUND);
             }
         } else {
-            return new ServiceResponse<>("7002", "Book not found");
+            throw new ApiException(ApiCode.LOAN_BOOK_NOT_FOUND);
         }
 
         // Vérifier si l'utilisateur a des emprunts en retard
@@ -68,8 +71,12 @@ public class LoanService {
 
             // check sur les emprunts en cours et en attente de récupération
             for (Loan loan : userLoans) {
-                if (loan.getStatus() == Status.IN_PROGRESS && loan.getEndDate().isBefore(LocalDateTime.now())) {
-                    return new ServiceResponse<>("7003", "One or more books are late");
+                // Cas où l'emprunt n'a pas été retournée
+                LocalDateTime endDate = loan.getEndDate();
+
+                // Si la date de fin de l'emprunt était avant aujourd'hui et que le statut de l'emprunt est en cours :
+                if (endDate.isBefore(LocalDateTime.now()) && loan.getStatus() == Status.IN_PROGRESS) {
+                    throw new ApiException(ApiCode.LOAN_LATE_EXISTS);
                 }
                 if (loan.getStatus() == Status.IN_PROGRESS || loan.getStatus() == Status.WAITING) {
                     totalLoansInProgress++;
@@ -77,7 +84,7 @@ public class LoanService {
             }
 
             if (totalLoansInProgress >= 3) {
-                return new ServiceResponse<>("7004", "Loan quota reached");
+                throw new ApiException(ApiCode.LOAN_QUOTA_REACHED);
             }
         }
 
@@ -87,7 +94,7 @@ public class LoanService {
                 .anyMatch(l -> l.getStatus() == Status.WAITING || l.getStatus() == Status.IN_PROGRESS);
 
         if (hasActiveOrPendingLoan) {
-            return new ServiceResponse<>("7005", "User already has an active or pending loan for this book");
+            throw new ApiException(ApiCode.LOAN_ALREADY_EXISTS_FOR_BOOK);
         }
 
         // Créer l'objet Loan
@@ -108,7 +115,7 @@ public class LoanService {
         Loan savedLoan = loanRepository.save(newLoan);
 
         // Renvoyer la réponse avec l'emprunt sauvegardé
-        return new ServiceResponse<>("7000", "Loan successfully created", loanMapper.toResponse(savedLoan));
+        return new ServiceResponse<>(ApiCode.LOAN_CREATED, loanMapper.toResponse(savedLoan));
     }
 
     public ServiceResponse<?> validate(LoanCreateRequest req) {
@@ -126,7 +133,7 @@ public class LoanService {
         if (loan.isPresent()) {
             foundLoan = loan.get();
         } else {
-            return new ServiceResponse<>("7021", "Loan not found");
+            throw new ApiException(ApiCode.LOAN_VALIDATE_NOT_FOUND);
         }
 
         // Passer le statut en IN_PROGRESS
@@ -140,7 +147,7 @@ public class LoanService {
         // Sauvegarder
         Loan savedLoan = loanRepository.save(foundLoan);
 
-        return new ServiceResponse<>("7020", "Loan successfully validated", loanMapper.toResponse(savedLoan));
+        return new ServiceResponse<>(ApiCode.LOAN_VALIDATED, loanMapper.toResponse(savedLoan));
     }
 
     public ServiceResponse<?> finishOrCancelLoan(LoanCreateRequest req, Status status) {
@@ -167,7 +174,7 @@ public class LoanService {
         if (loan.isPresent()) {
             foundLoan = loan.get();
         } else {
-            return new ServiceResponse<>("7011", "Loan not found");
+            throw new ApiException(ApiCode.LOAN_NOT_FOUND);
         }
 
         // Mettre à jour le livre
@@ -177,12 +184,12 @@ public class LoanService {
         if (book.isPresent()) {
             foundBook = book.get();
         }  else {
-            return new ServiceResponse<>("7012", "Book not found");
+            throw new ApiException(ApiCode.LOAN_RETURN_BOOK_NOT_FOUND);
         }
 
         if (status == Status.FINISHED) {
             if (foundLoan.getStatus() != Status.IN_PROGRESS) {
-                return new ServiceResponse<>("7013", "User can't return the loan because the status is not in progress");
+                throw new ApiException(ApiCode.LOAN_INVALID_RETURN_STATUS);
             }
             // Mettre à jour l'emprunt
             foundLoan.setStatus(Status.FINISHED);
@@ -191,7 +198,7 @@ public class LoanService {
 
         if (status == Status.CANCELED) {
             if (foundLoan.getStatus() != Status.WAITING) {
-                return new ServiceResponse<>("7014", "User can't cancel the loan because the status is not waiting");
+                throw new ApiException(ApiCode.LOAN_INVALID_CANCEL_STATUS);
             }
             foundLoan.setStatus(Status.CANCELED);
             foundLoan.setReturnDate(null);
@@ -212,22 +219,22 @@ public class LoanService {
         handleWaitingList(foundBook, foundInternalUser);
 
         if (status == Status.FINISHED) {
-            return new ServiceResponse<>("7010", "Book successfully returned", loanMapper.toResponse(savedLoan));
+            return new ServiceResponse<>(ApiCode.LOAN_RETURNED, loanMapper.toResponse(savedLoan));
         }
-        return new ServiceResponse<>("7015", "Loan successfully canceled",  loanMapper.toResponse(savedLoan));
+        return new ServiceResponse<>(ApiCode.LOAN_CANCELED,  loanMapper.toResponse(savedLoan));
     }
 
     public ServiceResponse<List<?>> getLoansByBookId(int bookId) {
         List<Loan> loans = loanRepository.findByBookId(bookId);
-        return new ServiceResponse<>("7000", "Loans successfully retrieved", loanMapper.toResponse(loans));
+        return new ServiceResponse<>(ApiCode.LOAN_CREATED, loanMapper.toResponse(loans));
     }
 
     public ServiceResponse<List<?>> getLoansByUserIdAndBookId(int userId, int bookId) {
         List<Loan> loans = loanRepository.findByUserIdAndBookId(userId, bookId);
         if (loans.isEmpty()) {
-            return new ServiceResponse<>("7040", "No loans found");
+            throw new ApiException(ApiCode.LOAN_NOT_FOUND);
         }
-        return new ServiceResponse<>("7041", "Loans found", loanMapper.toResponse(loans));
+        return new ServiceResponse<>(ApiCode.LOAN_VALIDATED, loanMapper.toResponse(loans));
     }
 
     private void handleWaitingList(Book book, User internalUser) {
@@ -237,7 +244,7 @@ public class LoanService {
         );
 
         if (!waitingLoans.isEmpty()) {
-            Loan oldestWaitingLoan = waitingLoans.get(0);
+            Loan oldestWaitingLoan = waitingLoans.getFirst();
             oldestWaitingLoan.setStatus(Status.IN_PROGRESS);
             oldestWaitingLoan.setDebutDate(LocalDateTime.now());
             oldestWaitingLoan.setEndDate(LocalDateTime.now().plusDays(14));
@@ -255,7 +262,7 @@ public class LoanService {
                     .findByBookIdAndStatusOrderByCreatedAtAsc(book.getId(), Status.WAITING);
 
             if (!waitingReservations.isEmpty()) {
-                Reservation oldestReservation = waitingReservations.get(0);
+                Reservation oldestReservation = waitingReservations.getFirst();
 
                 // Créer un emprunt depuis la réservation
                 Loan newLoan = new Loan();

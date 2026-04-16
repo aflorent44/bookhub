@@ -2,7 +2,9 @@ package fr.bookhub.controller;
 
 import fr.bookhub.dto.ReservationCreateRequest;
 import fr.bookhub.service.ReservationService;
-import fr.bookhub.service.ServiceResponse;
+import fr.bookhub.utility.ApiCode;
+import fr.bookhub.utility.ApiException;
+import fr.bookhub.utility.ServiceResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +20,7 @@ public class ReservationController {
     public ServiceResponse<?> reserveBook(@RequestBody ReservationCreateRequest req,
                                           Authentication authentication) {
         if (authentication == null) {
-            return new ServiceResponse<>("9401", "Unauthorized");
+            throw new ApiException(ApiCode.RESERVATION_UNAUTHORIZED);
         }
         String email = authentication.getName();
         return reservationService.createReservation(email, req);

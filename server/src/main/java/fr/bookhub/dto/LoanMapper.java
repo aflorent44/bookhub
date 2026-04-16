@@ -36,10 +36,7 @@ public class LoanMapper {
         dto.setLate(isLate);
 
         if (loan.getUpdatedBy() != null) {
-            dto.setUpdatedBy(loan.getUpdatedBy().getId());
-        }
-
-        if (loan.getUpdatedAt() != null) {
+            dto.setUpdatedBy(new UserBasicMapper().toResponse(loan.getUpdatedBy()));
             dto.setUpdatedAt(loan.getUpdatedAt());
         }
 

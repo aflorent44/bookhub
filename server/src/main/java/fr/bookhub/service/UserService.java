@@ -5,6 +5,7 @@ import fr.bookhub.dto.UpdateProfileRequest;
 import fr.bookhub.dto.UserRegistrationRequest;
 import fr.bookhub.dto.UserResponse;
 import fr.bookhub.entity.User;
+import fr.bookhub.utility.ServiceResponse;
 
 public interface UserService {
 
