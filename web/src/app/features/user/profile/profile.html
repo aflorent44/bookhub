@@ -217,7 +217,6 @@
       <!-- Bloc principal large -->
       <div class="profile-grid">
         <!-- Emprunts -->
-        <!-- SECTION EMPRUNTS - Remplace ton placeholder -->
         <section class="profile-section">
           <div class="section-header">
             <div class="section-icon">
@@ -231,7 +230,7 @@
             </div>
           </div>
 
-          @if (loadingLoans != null) {
+          @if (loadingLoans()) {
             <div class="reservations-empty">
               <p-progressSpinner strokeWidth="3" styleClass="reservation-spinner"></p-progressSpinner>
               <p>Chargement de vos emprunts...</p>
@@ -258,41 +257,41 @@
                     <i class="pi pi-clock"></i> En cours ({{ currentLoans().length }})
                   </h3>
                   <div class="reservations-list">
-                    @for (loan of currentLoans(); track loan.id) {
+                    @for (currentLoans of currentLoans(); track currentLoans.id) {
                       <div class="reservation-card">
                         <div class="reservation-header">
                           <p-tag
-                            [value]="getLoanStatus(loan.status)"
-                            [severity]="getLoanSeverity(loan.status)"
+                            [value]="getLoanStatus(currentLoans.status)"
+                            [severity]="getLoanSeverity(currentLoans.status)"
                             styleClass="status-tag">
                           </p-tag>
-                          @if (loan) {
+                          @if (currentLoans.late) {
                             <p-tag value="En retard" severity="danger" styleClass="late-tag"></p-tag>
                           }
                         </div>
 
                         <div class="reservation-book">
-<!--                          <div class="book-cover">-->
-<!--                            <img-->
-<!--                              [src]="loan.book.coverUrl || 'assets/images/book-placeholder.jpg'"-->
-<!--                              [alt]="'Couverture de ' + loan.book.title"-->
-<!--                              width="64"-->
-<!--                              height="96"-->
-<!--                              loading="lazy">-->
-<!--                          </div>-->
+                          <div class="book-cover">
+                            <img
+                              [src]="currentLoans.bookCoverUrl || 'assets/book_cover.jpg'"
+                              [alt]="'Couverture de ' + currentLoans.bookTitle"
+                              width="64"
+                              height="96"
+                              loading="lazy">
+                          </div>
 
                           <div class="book-info">
-                            <h4 class="book-title">{{ loan }}</h4>
-                            <p class="book-author">{{ loan }}</p>
+                            <h4 class="book-title">{{ currentLoans.bookTitle }}</h4>
+                            <p class="book-author">{{ currentLoans.bookAuthor }}</p>
 
                             <div class="reservation-dates">
                               <p class="reservation-date">
                                 <i class="pi pi-calendar"></i>
-                                Emprunté le {{ loan.debutDate | date:'dd/MM/yyyy' : '' : 'fr' }}
+                                Emprunté le {{ currentLoans.debutDate | date:'dd/MM/yyyy' : '' : 'fr' }}
                               </p>
                               <p class="reservation-date">
                                 <i class="pi pi-calendar-clock"></i>
-                                <strong>Retour prévu le {{ loan.endDate | date:'dd/MM/yyyy' : '' : 'fr' }}</strong>
+                                <strong>Retour prévu le {{ currentLoans.endDate | date:'dd/MM/yyyy' : '' : 'fr' }}</strong>
                               </p>
                             </div>
                           </div>
@@ -323,16 +322,16 @@
                         <div class="reservation-book">
                           <div class="book-cover">
                             <img
-                              [src]="loans || 'assets/images/book-placeholder.jpg'"
-                              [alt]="'Couverture de ' "
+                              [src]="loan.bookCoverUrl || 'assets/book_cover.jpg'"
+                              [alt]="'Couverture de ' + loan.bookTitle"
                               width="64"
                               height="96"
                               loading="lazy">
                           </div>
 
                           <div class="book-info">
-                            <h4 class="book-title">TODO</h4>
-                            <p class="book-author">TODO</p>
+                            <h4 class="book-title">{{ loan.bookTitle }}</h4>
+                            <p class="book-author">{{ loan.bookAuthor }}</p>
 
                             @if (loan.returnDate) {
                               <p class="reservation-date">
@@ -379,12 +378,15 @@
               <i class="pi pi-calendar-times empty-icon"></i>
               <h3>Aucune réservation</h3>
               <p>Réservez un livre dans le catalogue pour apparaître ici.</p>
-              <a routerLink="/catalogue" class="btn btn-primary">
+              <a routerLink="/catalog" class="btn btn-primary">
                 <i class="pi pi-plus"></i>
                 Réserver un livre
               </a>
             </div>
           } @else {
+            <h3 class="section-subtitle">
+              <i class="pi pi-history"></i> Réservation(s) en cours ({{ reservationCount().length }})
+            </h3>
             <div class="reservations-list">
               @for (reservation of reservations(); track reservation.id) {
                 <div class="reservation-card">
@@ -410,7 +412,7 @@
                   <div class="reservation-book">
                     <div class="book-cover">
                       <img
-                        [src]="reservation.book.coverUrl || 'assets/book_cover.jpg'"
+                        [src]="reservation.book.firstPageUrl || 'assets/book_cover.jpg'"
                         [alt]="'Couverture de ' + reservation.book.title"
                         width="64"
                         height="96"
@@ -419,7 +421,7 @@
 
                     <div class="book-info">
                       <h4 class="book-title">{{ reservation.book.title }}</h4>
-                      <p class="book-author">{{ reservation.book.author }}</p>
+                      <p class="book-author">{{ reservation.book.authorFirstName }} {{ reservation.book.authorLastName }} </p>
                       <p class="reservation-date">
                         <i class="pi pi-calendar"></i>
                         Réservé le {{ reservation.createdAt | date:'dd/MM/yyyy' : '' : 'fr' }}

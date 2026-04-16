@@ -72,6 +72,9 @@ export class Profile implements OnInit {
   loanHistory = computed(() =>
     this.loans().filter(loan => loan.status === 'FINISHED')
   );
+  reservationCount = computed(() =>
+    this.reservations().filter(reservation => reservation.status === 'WAITING')
+  );
 
   profileForm!: FormGroup<ProfileForm>;
   passwordForm!: FormGroup<PasswordForm>;

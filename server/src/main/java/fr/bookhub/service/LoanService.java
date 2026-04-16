@@ -1,13 +1,9 @@
 package fr.bookhub.service;
 
-import fr.bookhub.entity.*;
 import fr.bookhub.dto.LoanCreateRequest;
-import fr.bookhub.dto.LoanResponse;
 import fr.bookhub.dto.LoanMapper;
-import fr.bookhub.entity.Book;
-import fr.bookhub.entity.Loan;
-import fr.bookhub.entity.Status;
-import fr.bookhub.entity.User;
+import fr.bookhub.dto.LoanResponse;
+import fr.bookhub.entity.*;
 import fr.bookhub.repository.BookRepository;
 import fr.bookhub.repository.LoanRepository;
 import fr.bookhub.repository.ReservationRepository;
@@ -15,7 +11,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,17 +66,12 @@ public class LoanService {
         if (!userLoans.isEmpty()) {
             int totalLoansInProgress = 0;
 
+            // check sur les emprunts en cours et en attente de récupération
             for (Loan loan : userLoans) {
-                // Cas où l'emprunt n'a pas été retournée
-                LocalDateTime endDate = loan.getEndDate();
-
-                // Si la date de fin de l'emprunt était avant aujourd'hui et que le statut de l'emprunt est en cours :
-                if (endDate.isBefore(LocalDateTime.now()) && loan.getStatus() == Status.IN_PROGRESS) {
+                if (loan.getStatus() == Status.IN_PROGRESS && loan.getEndDate().isBefore(LocalDateTime.now())) {
                     return new ServiceResponse<>("7003", "One or more books are late");
                 }
-
-                // Si la date de fin est après aujourd'hui et que le statut de l'emprunt est en cours :
-                if (endDate.isAfter(LocalDateTime.now()) && loan.getStatus() == Status.IN_PROGRESS) {
+                if (loan.getStatus() == Status.IN_PROGRESS || loan.getStatus() == Status.WAITING) {
                     totalLoansInProgress++;
                 }
             }

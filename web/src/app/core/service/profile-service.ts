@@ -44,7 +44,7 @@ export class ProfileService {
 
   getMyLoans() {
     return this.http
-      .get<ServiceResponse<Loan[]>>(`${this.apiUrl}/loans/my`)
+      .get<ServiceResponse<Loan[]>>(`${this.apiUrl}/loan/my`)
       .pipe(map((res) => res.data ?? []));
   }
 }

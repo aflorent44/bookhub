@@ -1,13 +1,9 @@
+import { Book } from "./book";
 import {ReservationStates} from './reservation-states';
 
 export interface Reservation {
   id: number;
-  book: {
-    id: number;
-    title: string;
-    author: string;
-    coverUrl: string;
-  };
+  book: Book;
   queuePosition: number;
   status: ReservationStates;
   createdAt: string;

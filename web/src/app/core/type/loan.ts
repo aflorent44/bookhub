@@ -4,8 +4,12 @@ export interface Loan {
   endDate: string;
   returnDate?: string | null;
   status: LoanStatus;
+  late: boolean;
   userId: number;
   bookId: number;
+  bookTitle?: string;
+  bookAuthor?: string;
+  bookCoverUrl?: string;
   createdAt?: string;
   updatedAt?: string;
   updatedBy?: number;
