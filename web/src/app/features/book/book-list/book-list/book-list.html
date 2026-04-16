@@ -17,7 +17,7 @@
     type="text"
     placeholder="Recherche par nom"
     [(ngModel)]="filters.keyword"
-    (keyup.enter)="loadBooks()"
+    (keyup.enter)="onSearch()"
   />
 
   <!-- SORT COMPONENT -->
