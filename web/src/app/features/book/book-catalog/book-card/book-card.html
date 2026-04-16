@@ -1,0 +1,49 @@
+<article
+  class="book-card"
+  (click)="goToDetail()"
+  role="button"
+  tabindex="0"
+  (keyup.enter)="goToDetail()"
+  (keyup.space)="goToDetail()"
+  [attr.aria-label]="'Voir le détail de ' + book().title"
+>
+  <div class="book-card__cover">
+      <img
+        [src]="book().firstPageUrl! || 'assets/book_cover.jpg'"
+        [alt]="'Couverture de ' + book().title"
+        loading="lazy"
+        width="160"
+        height="220"
+      />
+  </div>
+
+  <div class="book-card__info">
+    <div class="book-card__top">
+      <h3 class="book-card__title">{{ book().title }}</h3>
+
+      @if (book().quantity > 0) {
+        <span class="book-card__badge book-card__badge--available">
+          Disponible
+        </span>
+      } @else {
+        <span class="book-card__badge book-card__badge--unavailable">
+          Indisponible
+        </span>
+      }
+    </div>
+
+    <p class="book-card__author">
+      {{ book().authorFirstName }} {{ book().authorLastName }}
+    </p>
+
+    <div class="book-card__meta">
+      @if (book().year) {
+        <span>{{ book().year }}</span>
+      }
+
+      @if (book().publisherName) {
+        <span>{{ book().publisherName }}</span>
+      }
+    </div>
+  </div>
+</article>
