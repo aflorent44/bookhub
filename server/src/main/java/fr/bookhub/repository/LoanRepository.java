@@ -14,4 +14,5 @@ public interface LoanRepository extends JpaRepository<Loan, Integer> {
     List<Loan> findByBookId(Integer bookId);
     List<Loan> findByBookIdAndStatusOrderByCreatedAtAsc(int bookId, Status status);
     List<Loan> findByUserIdAndBookId(int userId, int bookId);
+    List<Loan> findByUserIdOrderByCreatedAtDesc(Integer userId);
 }

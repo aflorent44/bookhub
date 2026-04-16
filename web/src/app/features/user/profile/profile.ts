@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   AbstractControl,
@@ -24,6 +24,7 @@ import { UserResponse } from '../../../core/type/user-response';
 import { ProfileService } from '../../../core/service/profile-service';
 import { Reservation } from "../../../core/type/reservation";
 import { ReservationStates } from "../../../core/type/reservation-states";
+import { Loan } from "../../../core/type/loan";
 
 function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
   const newPwd = control.get('newPassword')?.value;
@@ -63,6 +64,17 @@ export class Profile implements OnInit {
   savingPassword = signal(false);
   reservations = signal<Reservation[]>([]);
   loadingReservations = signal(false);
+  loans = signal<Loan[]>([]);
+  loadingLoans = signal(false);
+  currentLoans = computed(() =>
+    this.loans().filter(loan => loan.status === 'WAITING' || loan.status === 'IN_PROGRESS')
+  );
+  loanHistory = computed(() =>
+    this.loans().filter(loan => loan.status === 'FINISHED')
+  );
+  reservationCount = computed(() =>
+    this.reservations().filter(reservation => reservation.status === 'WAITING')
+  );
 
   profileForm!: FormGroup<ProfileForm>;
   passwordForm!: FormGroup<PasswordForm>;
@@ -71,6 +83,7 @@ export class Profile implements OnInit {
     this.initForms();
     this.loadData();
     this.loadReservations();
+    this.loadLoans();
   }
 
   private initForms(): void {
@@ -111,6 +124,22 @@ export class Profile implements OnInit {
         this.showError('Impossible de charger votre profil.');
         console.error('Profile load error:', err);
       },
+    });
+  }
+
+  private loadLoans(): void {
+    this.loadingLoans.set(true);
+
+    this.profileService.getMyLoans().subscribe({
+      next: (loans) => {
+        this.loans.set(loans);
+        this.loadingLoans.set(false);
+      },
+      error: (err) => {
+        this.loadingLoans.set(false);
+        this.showError('Impossible de charger vos emprunts.');
+        console.error('Loans load error:', err);
+      }
     });
   }
 
@@ -294,5 +323,24 @@ export class Profile implements OnInit {
     })
   }
 
+  getLoanStatus(status: Loan['status']): string {
+    const labels: Record<Loan['status'], string> = {
+      WAITING: 'En attente',
+      IN_PROGRESS: 'En cours',
+      FINISHED: 'Terminé',
+      LATE: 'En retard'
+    };
+    return labels[status] || status;
+  }
+
+  getLoanSeverity(status: Loan['status']): 'info' | 'success' | 'secondary'  {
+    const map: Record<Loan['status'], 'info' | 'success' | 'secondary'> = {
+      WAITING: 'info',
+      IN_PROGRESS: 'success',
+      FINISHED: 'secondary',
+      LATE: 'secondary'
+    };
+    return map[status] || 'info';
+  }
   protected readonly ReservationStates = ReservationStates;
 }

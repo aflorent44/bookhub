@@ -5,28 +5,27 @@
     <app-book-filter
       class="filters"
       [filters]="filters"
-      (filtersChange)="onFiltersChange($event)"
-    ></app-book-filter>
+      (filtersChange)="onFiltersChange($event)">
+    </app-book-filter>
 
     <!-- TOP RIGHT: Search -->
-<!-- TOP RIGHT: Search -->
-<div class="search-bar">
-  <i class="pi pi-search search-icon"></i>
+    <div class="search-bar">
+      <i class="pi pi-search search-icon"></i>
 
-  <input
-    type="text"
-    placeholder="Recherche par nom"
-    [(ngModel)]="filters.keyword"
-    (keyup.enter)="onSearch()"
-  />
+      <input
+        type="text"
+        placeholder="Recherche par nom"
+        [(ngModel)]="filters.keyword"
+        (keyup.enter)="onSearch()"
+      />
 
-  <!-- SORT COMPONENT -->
-<app-book-sort
-  [sortBy]="filters.sortBy"
-  [sortDirection]="filters.sortDirection"
-  ></app-book-sort>
-  <!--(sortChange)="onSortChange($event)"-->
-</div>
+      <!-- SORT COMPONENT -->
+      <app-book-sort
+        [sortBy]="filters.sortBy"
+        [sortDirection]="filters.sortDirection"
+        (sortChange)="onSortChange($event)">
+      </app-book-sort>
+    </div>
 
     <!-- BOTTOM RIGHT: Grid -->
     <app-book-grid
@@ -34,8 +33,9 @@
       [books]="books"
       [total]="total"
       [page]="filters.page"
-      (pageChange)="onPageChange($event)"
-    ></app-book-grid>
+      [size]="filters.size"
+      (pageChange)="onPageChange($event)">
+    </app-book-grid>
 
   </div>
 </div>
