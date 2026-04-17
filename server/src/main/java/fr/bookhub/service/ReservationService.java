@@ -112,7 +112,7 @@ public class ReservationService {
         List<Reservation> reservations = reservationRepository.findByBookId(bookId);
 
         if (reservations.isEmpty()) {
-            throw new ApiException(ApiCode.RESERVATION_NOT_FOUND);
+            return new ServiceResponse<>(ApiCode.RESERVATION_RETRIEVES);
         }
 
         return new ServiceResponse<>(
@@ -127,7 +127,7 @@ public class ReservationService {
         List<Reservation> reservations = reservationRepository.findByUserIdAndBookId(userId, bookId);
 
         if (reservations.isEmpty()) {
-            throw new ApiException(ApiCode.RESERVATION_NOT_FOUND);
+            return new ServiceResponse<>(ApiCode.RESERVATION_RETRIEVES);
         }
 
         return new ServiceResponse<>(

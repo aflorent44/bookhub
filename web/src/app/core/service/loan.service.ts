@@ -26,8 +26,6 @@ export class LoanService {
       bookId: bookId,
     };
 
-    console.log('loanBook() request =', request);
-
     return this.http.post<ServiceResponse<Loan>>(`${this.apiUrl}/loan`, request)
       .pipe(map(response => {
         if (response.code !== '7000') {
@@ -70,10 +68,7 @@ export class LoanService {
 
   getLoansByUserAndBook(userId: number, bookId: number): Observable<Loan[]> {
     return this.http.get<ServiceResponse<Loan[]>>(`${this.apiUrl}/loan/user/${userId}/book/${bookId}`)
-      .pipe(map(response => {
-        if (response.code !== '7041') return [];
-        return response.data;
-      }));
+      .pipe(map(response => response.data ?? []));
   }
 
   validateLoan(loanId: number): Observable<any> {

@@ -192,8 +192,6 @@ export class BookForm implements OnInit {
   onSubmit() {
     if (this.form.invalid) return;
 
-    console.log(this.currentUser()?.id);
-
     const book = {
       isbn:            this.form.value.isbn,
       title:           this.form.value.title,
@@ -207,8 +205,8 @@ export class BookForm implements OnInit {
       countryName:     this.form.value.language,
       genres:          this.form.value.genres,
       createdById:     this.currentUser()?.id,
-      updatedById:     this.currentUser()?.id,
-      bookId:          this.isEditMode() ? this.bookId() : null,  // ← ajout
+      updatedById:     this.isEditMode() ? this.currentUser()?.id : null,
+      bookId:          this.isEditMode() ? this.bookId() : null,
     };
 
     this.loading.set(true);

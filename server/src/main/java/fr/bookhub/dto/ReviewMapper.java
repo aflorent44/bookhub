@@ -19,10 +19,10 @@ public class ReviewMapper {
         dto.setRating(review.getRating());
         dto.setComment(review.getComment());
         dto.setIsHidden(review.getIsHidden());
-        dto.setHiddenBy(userMapper.toResponse(review.getHiddenBy()));
+        dto.setHiddenBy(review.getHiddenBy() != null ? userMapper.toResponse(review.getHiddenBy()) : null);
         dto.setCreatedAt(review.getCreatedAt());
         dto.setUpdatedAt(review.getUpdatedAt());
-        dto.setUpdatedBy(userMapper.toResponse(review.getUpdatedBy()));
+        dto.setUpdatedBy(review.getUpdatedBy() != null ? userMapper.toResponse(review.getUpdatedBy()) : null);
 
         return dto;
     }

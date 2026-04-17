@@ -21,11 +21,6 @@ export class BookService {
       .pipe(map(response => response.data));
   }
 
-  // getBooks(): Observable<Book[]> {
-  //   return this.http.get<ServiceResponse<Book[]>>(`${this.apiUrl}/books`)
-  //     .pipe(map((response: ServiceResponse<Book[]>) => response.data));
-  // }
-
   getBooks(filters: BookFilters): Observable<any> {
     return this.http.post<ServiceResponse<any>>(
       `${this.apiUrl}/books/search`, filters

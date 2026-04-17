@@ -1,0 +1,98 @@
+.reviews-summary {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--space-l);
+}
+
+.reviews-average {
+  display: flex;
+  align-items: center;
+  gap: var(--space-m);
+
+  .average-score {
+    font-family: var(--font-titles);
+    font-size: var(--font-size-xxl);
+    font-weight: 700;
+    color: var(--txt-primary);
+  }
+
+  .reviews-count {
+    font-size: var(--font-size-sm);
+    color: var(--txt-yellow);
+  }
+}
+
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+}
+
+.review-item {
+  background-color: var(--bg-white);
+  border-radius: var(--radius-l);
+  padding: var(--space-l);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.review-author-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-m);
+}
+
+.review-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background-color: var(--bg-pink);
+  color: var(--txt-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.review-author-name {
+  font-weight: 600;
+  font-size: var(--font-size-m);
+  color: var(--txt-primary);
+  margin: 0;
+}
+
+.review-date {
+  font-size: var(--font-size-sm);
+  color: var(--txt-yellow);
+  margin: 0;
+}
+
+.review-comment {
+  margin: 0;
+  line-height: 1.7;
+  color: var(--txt-primary);
+}
+
+.review-updated {
+  font-size: var(--font-size-sm);
+  font-style: italic;
+  color: var(--txt-green);
+  margin: 0;
+}
+
+.review-actions {
+  display: flex;
+  gap: var(--space-s);
+  justify-content: flex-end;
+  margin-top: var(--space-xs);
+}

@@ -28,6 +28,15 @@ public class ReviewService {
     private final ReviewMapper reviewMapper;
     private final LoanRepository loanRepository;
 
+    public ServiceResponse<?> getReviewsByBookId(int bookId) {
+        List<Review> reviews = reviewRepository.findByBookId(bookId);
+        return new ServiceResponse<>(ApiCode.REVIEWS_RETRIEVED,
+                reviews.stream()
+                        .map(reviewMapper::toResponse)
+                        .toList()
+        );
+    }
+
     public ServiceResponse<?> createOrUpdateReview(ReviewCreateRequest req, MethodType method) {
         // Vérifier si l'utilisateur existe :
         ServiceResponse<User> userResponse = userService.getUserById(req.getUserId());
@@ -64,6 +73,13 @@ public class ReviewService {
             }
         }
 
+        //Vérifier si l'utilisateur n'a pas déjà laissé un avis sur ce livre
+        if (method == MethodType.CREATE) {
+            Optional<Review> foundReviewForThisBook = reviewRepository.findByUserIdAndBookId(req.getUserId(), req.getBookId());
+            if (foundReviewForThisBook.isPresent()) {
+                throw new ApiException(ApiCode.REVIEW_ALREADY_EXISTS);
+            }
+        }
 
         // Vérification de la note : (doit être comprise entre 1 et 5) :
         if (req.getRating() <= 0 || req.getRating() > 5) {
