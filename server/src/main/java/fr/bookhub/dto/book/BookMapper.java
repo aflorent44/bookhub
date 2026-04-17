@@ -10,6 +10,10 @@ import java.util.stream.Collectors;
 public class BookMapper {
 
     public BookResponse toResponse(Book book) {
+        String authorFirstName = book.getAuthor().getFirstName() == null ? "" : book.getAuthor().getFirstName();
+        String authorLastName = book.getAuthor().getLastName() == null ? "" : book.getAuthor().getLastName();
+        String publisher = book.getPublisher() == null ? "" : book.getPublisher().getName();
+
         return new BookResponse(
                 book.getId(),
                 book.getIsbn(),
@@ -19,9 +23,9 @@ public class BookMapper {
                 book.getDescription(),
                 book.getFirstPageUrl(),
                 book.getCountry(),
-                book.getAuthor().getFirstName(),
-                book.getAuthor().getLastName(),
-                book.getPublisher().getName(),
+                authorFirstName,
+                authorLastName,
+                publisher,
                 book.getGenres().stream()
                         .map(g -> new GenreDTO(g.getId(), g.getLabel()))
                         .collect(Collectors.toSet()),
