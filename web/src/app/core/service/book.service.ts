@@ -1,11 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {catchError, Observable, throwError} from 'rxjs';
 import { map } from 'rxjs';
 import { Book } from '../type/book';
 import { ServiceResponse } from '../type/service-response';
 import { environment } from '../../../environments/environment.development';
-import { HttpHeaders } from '@angular/common/http';
 import { BookFilters } from "../type/book-filters";
 
 @Injectable({
@@ -29,13 +28,20 @@ export class BookService {
 
   createBook(book: any): Observable<Book> {
     return this.http.post<ServiceResponse<Book>>(`${this.apiUrl}/books`, book)
-      .pipe(map((response: ServiceResponse<Book>) => {
-        if (response.code !== '1030') {
-          throw new Error(response.code);
-        }
-        return response.data;
-      }));
+      .pipe(
+        map((response: ServiceResponse<Book>) => {
+          if (response.code !== '1030') {
+            throw new Error(response.code);
+          }
+          return response.data;
+        }),
+        catchError((err) => {
+          const code = err?.error?.code ?? err?.message ?? 'UNKNOWN';
+          return throwError(() => new Error(code));
+        })
+      );
   }
+
 
   updateBook(book: any): Observable<Book> {
     return this.http.post<ServiceResponse<Book>>(`${this.apiUrl}/books/update`, book)
@@ -49,5 +55,18 @@ export class BookService {
 
   getBookInfoFromGoogleByIsbn(isbn: string): Observable<any> {
     return this.http.get<any>(`${this.googleBooksApiUrl}?q=isbn:${isbn}`);
+  }
+
+  public getErrorMessage(err: any): string {
+    const code: string = err?.message ?? '';
+    const messages: Record<string, string> = {
+      '1021': 'Le titre est requis.',
+      '1022': 'L\'ISBN est requis.',
+      '1023': 'Au moins un genre est requis.',
+      '1031': 'Ce livre existe déjà (ISBN déjà enregistré).',
+      '1032': 'Utilisateur introuvable.',
+      '1011': 'Livre introuvable.',
+    };
+    return messages[code] ?? 'Erreur lors de la création du livre.';
   }
 }
