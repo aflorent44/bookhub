@@ -22,13 +22,14 @@ L’objectif est de remplacer un système manuel (papier) par une solution moder
 
 Avant de lancer le projet, assurez-vous d’avoir installé :
 
-* **Java** : version 17 ou supérieure
-* **Spring Boot** : version 3.2 ou supérieure
-* **Node.js** : version 18+
-* **Angular** : version 17+
-* **SQL Server** : 2019 ou supérieur
-* **Gradle**
-* **Git**
+- **Java** : version **25**
+- **Spring Boot** : version **4.0.5**
+- **Node.js** : version **24.14.1**
+- **Angular** : version **21**
+- **SQL Server** : version **2019** ou supérieure
+- **Gradle** : version 9.1.0 minimum
+- **Git**
+- **Prime NG**
 
 ---
 
@@ -54,7 +55,7 @@ CREATE DATABASE bookhub_db;
 * Configurer le fichier `application.properties` (backend) :
 
 ```properties
-spring.datasource.url=jdbc:sqlserver://localhost:1433;databaseName=bookhub_db
+spring.datasource.url=jdbc:sqlserver://localhost:1433;databaseName=BookHub_db
 spring.datasource.username=YOUR_USERNAME
 spring.datasource.password=YOUR_PASSWORD
 
@@ -110,31 +111,20 @@ L'application sera accessible sur :
 
 ## 👤 Comptes de test
 
-| Rôle      | Email                                           | Mot de passe |
-| --------- | ----------------------------------------------- | ------------ |
-| USER      | [user@test.com](mailto:user@test.com)           | Test123!     |
-| LIBRARIAN | [librarian@test.com](mailto:librarian@test.com) | Test123!     |
-| ADMIN     | [admin@test.com](mailto:admin@test.com)         | Test123!     |
+| Rôle      | Email                                           | Mot de passe   |
+| --------- | ----------------------------------------------- |----------------|
+| USER      | [user@test.com](mailto:user@test.com)           | Motdepasse123! |
+| LIBRARIAN | [librarian@test.com](mailto:librarian@test.com) | Motdepasse123!       |
+| ADMIN     | [admin@test.com](mailto:admin@test.com)         | Motdepasse123!      |
 
 ---
 
-## 📸 Captures d'écran
-
-### 🏠 Page d'accueil
-
-![alt text](web\public\assets\book_cover.jpg)
-
-### 📚 Catalogue de livres
-
-![alt text](web\public\assets\book_cover.jpg)
-
-### 📖 Détail d’un livre
-
-![alt text](doc/images/livre.png)
-
-### 📊 Dashboard utilisateur
-
-![alt text](doc/images/profil.png)
+## TODOs
+* Améliorations UX/UI
+* TESTS
+* FINIR LES DASHBOARDS
+* AMELIORER LA REPARTITIONS DES ROLES
+* ...
 
 
 ---
@@ -151,9 +141,8 @@ Toute la documentation du projet est disponible ci-dessous :
 
 * Notifications pour les réservations et retards
 * Système de recommandations
-* Dimention communautaires
+* Dimension communautaire
 * Déploiement Docker
-
 ---
 
 ## 👨‍💻 Équipe
