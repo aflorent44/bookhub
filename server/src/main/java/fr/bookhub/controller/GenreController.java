@@ -4,6 +4,7 @@ import fr.bookhub.dto.GenreDTO;
 import fr.bookhub.entity.Genre;
 import fr.bookhub.service.GenreService;
 import fr.bookhub.utility.ServiceResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public class GenreController {
     }
 
     @PostMapping
-    public ServiceResponse<Genre> createGenre(@RequestBody GenreDTO genreDTO) {
+    public ServiceResponse<Genre> createGenre(@RequestBody @Valid GenreDTO genreDTO) {
         return genreService.createGenre(genreDTO.getLabel());
     }
 }

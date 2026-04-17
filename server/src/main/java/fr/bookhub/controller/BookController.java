@@ -41,13 +41,13 @@ public class BookController {
     }
 
     // Supprimer un livre :
-    @GetMapping("/delete")
+    @DeleteMapping("/delete")
     public ServiceResponse<?> deleteBook(@RequestParam int id) {
         return bookService.delete(id);
     }
 
     // Modifier un livre :
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ServiceResponse<?> updateBook(@RequestBody BookCreateRequest bookRequest) {
         return bookService.createOrUpdateBook(bookRequest, MethodType.UPDATE);
     }

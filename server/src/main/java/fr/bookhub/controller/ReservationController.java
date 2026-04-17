@@ -5,6 +5,7 @@ import fr.bookhub.service.ReservationService;
 import fr.bookhub.utility.ApiCode;
 import fr.bookhub.utility.ApiException;
 import fr.bookhub.utility.ServiceResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @PostMapping
-    public ServiceResponse<?> reserveBook(@RequestBody ReservationCreateRequest req,
+    public ServiceResponse<?> reserveBook(@RequestBody @Valid ReservationCreateRequest req,
                                           Authentication authentication) {
         if (authentication == null) {
             throw new ApiException(ApiCode.RESERVATION_UNAUTHORIZED);
@@ -42,7 +43,7 @@ public class ReservationController {
     }
 
     @GetMapping("/user/{userId}/book/{bookId}")
-    public ServiceResponse<?> getReservationsByUserIdAndBookId(@PathVariable int userId, @PathVariable int bookId) {
+    public ServiceResponse<?> getReservationsByUserIdAndBookId(@Valid @PathVariable int userId, @PathVariable int bookId) {
         return reservationService.getReservationsByUserIdAndBookId(userId, bookId);
     }
 }

@@ -5,6 +5,7 @@ import fr.bookhub.entity.Status;
 import fr.bookhub.dto.LoanResponse;
 import fr.bookhub.service.LoanService;
 import fr.bookhub.utility.ServiceResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,12 +21,12 @@ public class LoanController {
     private final LoanService loanService;
 
     @PostMapping
-    public ServiceResponse<?> loanBook(@RequestBody LoanCreateRequest req) {
+    public ServiceResponse<?> loanBook(@RequestBody @Valid LoanCreateRequest req) {
         return loanService.createLoan(req);
     }
 
     @PostMapping("/return")
-    public ServiceResponse<?> returnBook(@RequestBody LoanCreateRequest req) {
+    public ServiceResponse<?> returnBook(@RequestBody @Valid LoanCreateRequest req) {
         return loanService.finishOrCancelLoan(req, Status.FINISHED);
     }
 
@@ -35,10 +36,10 @@ public class LoanController {
     }
 
     @PostMapping("/validate")
-    public ServiceResponse<?> validateLoan(@RequestBody LoanCreateRequest req) { return loanService.validate(req); }
+    public ServiceResponse<?> validateLoan(@RequestBody @Valid LoanCreateRequest req) { return loanService.validate(req); }
 
     @PostMapping("/cancel")
-    public ServiceResponse<?> cancelLoan(@RequestBody LoanCreateRequest req) {
+    public ServiceResponse<?> cancelLoan(@RequestBody @Valid LoanCreateRequest req) {
         return loanService.finishOrCancelLoan(req, Status.CANCELED);
     }
 

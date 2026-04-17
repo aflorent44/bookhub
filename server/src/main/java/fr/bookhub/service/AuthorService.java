@@ -7,6 +7,7 @@ import fr.bookhub.repository.CountryRepository;
 import fr.bookhub.utility.ApiCode;
 import fr.bookhub.utility.ApiException;
 import fr.bookhub.utility.ServiceResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ public class AuthorService {
     private final AuthorRepository authorRepository;
     private final CountryRepository countryRepository;
 
-    public ServiceResponse<Author> createAuthor(AuthorCreateRequest req) {
+    public ServiceResponse<Author> createAuthor(@Valid AuthorCreateRequest req) {
         if (req.getFirstName().isEmpty()) throw new ApiException(ApiCode.AUTHOR_FIRSTNAME_EMPTY);
         if (req.getLastName().isEmpty()) throw new ApiException(ApiCode.AUTHOR_LASTNAME_EMPTY);
         if (req.getCountry() == null) throw new ApiException(ApiCode.AUTHOR_COUNTRY_EMPTY);
