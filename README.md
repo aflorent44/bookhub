@@ -141,8 +141,10 @@ L'application sera accessible sur :
 
 ## 📚 Documentation
 
-- [Guide utilisateur](doc/Guide-utilisateur.md)
+Toute la documentation du projet est disponible ci-dessous :
 
+- 📘 [Guide utilisateur](doc/Guide-utilisateur.md)  
+- 🛠️ [Rapport technique](doc/Rapport-technique.md)
 ---
 
 ## 🚀 Améliorations possibles
