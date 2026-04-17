@@ -198,7 +198,7 @@ public class BookService {
 
         // 5. Result
         if (responsePage.isEmpty()) {
-            throw new ApiException(ApiCode.SEARCH_NO_RESULTS);
+            return new ServiceResponse<>(ApiCode.SEARCH_RESULTS_FOUND, responsePage);
         }
 
         return new ServiceResponse<>(ApiCode.SEARCH_RESULTS_FOUND, responsePage);
@@ -261,7 +261,7 @@ public class BookService {
                         : Sort.Direction.ASC;
 
         int page = Math.max(filter.getPage(), 0);
-        int size = filter.getSize() < 1 ? 21 : filter.getSize();
+        int size = Math.max(filter.getSize(), 0);
 
         return PageRequest.of(
                 page,
