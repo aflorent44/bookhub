@@ -37,24 +37,20 @@ public class LoanService {
         if (req.getBookId() == null) {
             throw new IllegalArgumentException("bookId is null");
         }
-        // Vérifier si l'utilisateur existe :
-        ServiceResponse<User> responseUser = userService.getUserById(req.getUserId());
 
+        // Vérifier si l'utilisateur existe
+        ServiceResponse<User> responseUser = userService.getUserById(req.getUserId());
         if (responseUser.getCode().equals("8001")) {
             return responseUser;
         }
-
         User foundUser = responseUser.getData();
 
         // Vérifier la disponibilité du livre
         Optional<Book> book = bookRepository.findById(req.getBookId());
         Book foundBook;
-
         if (book.isPresent()) {
             foundBook = book.get();
             int availableQuantities = foundBook.getQuantity();
-
-            // Le livre n'est pas disponible :
             if (availableQuantities <= 0) {
                 throw new ApiException(ApiCode.LOAN_NOT_FOUND);
             }
@@ -64,17 +60,10 @@ public class LoanService {
 
         // Vérifier si l'utilisateur a des emprunts en retard
         List<Loan> userLoans = loanRepository.findByUserId(req.getUserId());
-
-        // Cas où l'utilisateur a déjà fait des emprunts :
         if (!userLoans.isEmpty()) {
             int totalLoansInProgress = 0;
-
-            // check sur les emprunts en cours et en attente de récupération
             for (Loan loan : userLoans) {
-                // Cas où l'emprunt n'a pas été retournée
                 LocalDateTime endDate = loan.getEndDate();
-
-                // Si la date de fin de l'emprunt était avant aujourd'hui et que le statut de l'emprunt est en cours :
                 if (endDate.isBefore(LocalDateTime.now()) && loan.getStatus() == Status.IN_PROGRESS) {
                     throw new ApiException(ApiCode.LOAN_LATE_EXISTS);
                 }
@@ -82,17 +71,15 @@ public class LoanService {
                     totalLoansInProgress++;
                 }
             }
-
             if (totalLoansInProgress >= 3) {
                 throw new ApiException(ApiCode.LOAN_QUOTA_REACHED);
             }
         }
 
+        // Vérifier s'il y a déjà un emprunt actif pour ce livre
         List<Loan> existingLoans = loanRepository.findByUserIdAndBookId(req.getUserId(), req.getBookId());
-
         boolean hasActiveOrPendingLoan = existingLoans.stream()
                 .anyMatch(l -> l.getStatus() == Status.WAITING || l.getStatus() == Status.IN_PROGRESS);
-
         if (hasActiveOrPendingLoan) {
             throw new ApiException(ApiCode.LOAN_ALREADY_EXISTS_FOR_BOOK);
         }
@@ -107,91 +94,72 @@ public class LoanService {
         newLoan.setBook(foundBook);
         newLoan.setCreatedAt(LocalDateTime.now());
 
-        // Décrémenter la quantité du livre et sauvegarder :
+        // Décrémenter la quantité du livre
         foundBook.setQuantity(foundBook.getQuantity() - 1);
         bookRepository.save(foundBook);
 
         // Enregistrer l'emprunt
         Loan savedLoan = loanRepository.save(newLoan);
-
-        // Renvoyer la réponse avec l'emprunt sauvegardé
         return new ServiceResponse<>(ApiCode.LOAN_CREATED, loanMapper.toResponse(savedLoan));
     }
 
     public ServiceResponse<?> validate(LoanCreateRequest req) {
-        // Récupérer le userInternal
+        // Récupérer l'utilisateur interne
         ServiceResponse<User> responseInternalUser = userService.getUserById(req.getInternalUserId());
-
         if (responseInternalUser.getCode().equals("8001")) {
             return responseInternalUser;
         }
 
         // Récupérer l'emprunt
         Optional<Loan> loan = loanRepository.findById(req.getLoanId());
-        Loan foundLoan;
-
-        if (loan.isPresent()) {
-            foundLoan = loan.get();
-        } else {
+        if (loan.isEmpty()) {
             throw new ApiException(ApiCode.LOAN_VALIDATE_NOT_FOUND);
         }
+        Loan foundLoan = loan.get();
 
         // Passer le statut en IN_PROGRESS
         foundLoan.setStatus(Status.IN_PROGRESS);
         foundLoan.setEndDate(LocalDateTime.now().plusDays(14));
-
-        // Mettre à jour (updated_by, updated_at)
         foundLoan.setUpdatedAt(LocalDateTime.now());
         foundLoan.setUpdatedBy(responseInternalUser.getData());
 
         // Sauvegarder
         Loan savedLoan = loanRepository.save(foundLoan);
-
         return new ServiceResponse<>(ApiCode.LOAN_VALIDATED, loanMapper.toResponse(savedLoan));
     }
 
     public ServiceResponse<?> finishOrCancelLoan(LoanCreateRequest req, Status status) {
-        // Récupérer l'utilisateur "interne" (le bibliothéquaire) :
+        // Récupérer l'utilisateur interne (bibliothécaire)
         ServiceResponse<User> responseInternalUser = userService.getUserById(req.getInternalUserId());
-
         if (responseInternalUser.getCode().equals("8001")) {
             return responseInternalUser;
         }
-
         User foundInternalUser = responseInternalUser.getData();
 
-        // Vérifier si l'utilisateur existe :
+        // Vérifier l'utilisateur
         ServiceResponse<User> responseUser = userService.getUserById(req.getUserId());
-
         if (responseUser.getCode().equals("8001")) {
             return responseUser;
         }
 
-        // Rechercher le livre dans les emprunts :
+        // Rechercher l'emprunt
         Optional<Loan> loan = loanRepository.findById(req.getLoanId());
-        Loan foundLoan;
-
-        if (loan.isPresent()) {
-            foundLoan = loan.get();
-        } else {
+        if (loan.isEmpty()) {
             throw new ApiException(ApiCode.LOAN_NOT_FOUND);
         }
+        Loan foundLoan = loan.get();
 
-        // Mettre à jour le livre
+        // Rechercher le livre
         Optional<Book> book = bookRepository.findById(req.getBookId());
-        Book foundBook;
-
-        if (book.isPresent()) {
-            foundBook = book.get();
-        }  else {
+        if (book.isEmpty()) {
             throw new ApiException(ApiCode.LOAN_RETURN_BOOK_NOT_FOUND);
         }
+        Book foundBook = book.get();
 
         if (status == Status.FINISHED) {
             if (foundLoan.getStatus() != Status.IN_PROGRESS) {
                 throw new ApiException(ApiCode.LOAN_INVALID_RETURN_STATUS);
             }
-            // Mettre à jour l'emprunt
             foundLoan.setStatus(Status.FINISHED);
             foundLoan.setReturnDate(LocalDateTime.now());
         }
@@ -206,14 +174,13 @@ public class LoanService {
 
         foundLoan.setUpdatedAt(LocalDateTime.now());
         foundLoan.setUpdatedBy(foundInternalUser);
+
         foundBook.setQuantity(foundBook.getQuantity() + 1);
         foundBook.setUpdatedAt(LocalDateTime.now());
         foundBook.setUpdatedBy(foundInternalUser);
 
-        // Sauvegarder l'emprunt :
+        // Sauvegarder
         Loan savedLoan = loanRepository.save(foundLoan);
-
-        // Sauvegarder le livre :
         bookRepository.save(foundBook);
 
         handleWaitingList(foundBook, foundInternalUser);
@@ -221,7 +188,7 @@ public class LoanService {
         if (status == Status.FINISHED) {
             return new ServiceResponse<>(ApiCode.LOAN_RETURNED, loanMapper.toResponse(savedLoan));
         }
-        return new ServiceResponse<>(ApiCode.LOAN_CANCELED,  loanMapper.toResponse(savedLoan));
+        return new ServiceResponse<>(ApiCode.LOAN_CANCELED, loanMapper.toResponse(savedLoan));
     }
 
     public ServiceResponse<List<?>> getLoansByBookId(int bookId) {
@@ -238,45 +205,41 @@ public class LoanService {
     }
 
     private void handleWaitingList(Book book, User internalUser) {
-        // 1. Chercher l'emprunt en attente le plus ancien pour ce livre
+        // 1. Activer l'emprunt en attente le plus ancien
         List<Loan> waitingLoans = loanRepository.findByBookIdAndStatusOrderByCreatedAtAsc(
                 book.getId(), Status.WAITING
         );
-
         if (!waitingLoans.isEmpty()) {
-            Loan oldestWaitingLoan = waitingLoans.getFirst();
+            Loan oldestWaitingLoan = waitingLoans.get(0);
             oldestWaitingLoan.setStatus(Status.IN_PROGRESS);
             oldestWaitingLoan.setDebutDate(LocalDateTime.now());
             oldestWaitingLoan.setEndDate(LocalDateTime.now().plusDays(14));
             oldestWaitingLoan.setUpdatedAt(LocalDateTime.now());
             oldestWaitingLoan.setUpdatedBy(internalUser);
             loanRepository.save(oldestWaitingLoan);
-
             bookRepository.save(book);
-            return; // Un emprunt en attente a été activé, pas besoin de vérifier les réservations
+            return;
         }
 
-        // 2. Si pas d'emprunt en attente et quantité > 0, convertir la réservation la plus ancienne
+        // 2. Convertir la réservation la plus ancienne si quantité > 0
         if (book.getQuantity() > 0) {
             List<Reservation> waitingReservations = reservationRepository
                     .findByBookIdAndStatusOrderByCreatedAtAsc(book.getId(), Status.WAITING);
-
             if (!waitingReservations.isEmpty()) {
-                Reservation oldestReservation = waitingReservations.getFirst();
+                Reservation oldestReservation = waitingReservations.get(0);
 
                 // Créer un emprunt depuis la réservation
                 Loan newLoan = new Loan();
                 newLoan.setUser(oldestReservation.getUser());
                 newLoan.setBook(book);
-                newLoan.setStatus(Status.WAITING); // En attente que l'user vienne chercher le livre
+                newLoan.setStatus(Status.WAITING);
                 newLoan.setDebutDate(LocalDateTime.now());
                 newLoan.setEndDate(LocalDateTime.now().plusDays(14));
                 newLoan.setCreatedAt(LocalDateTime.now());
                 newLoan.setUpdatedAt(LocalDateTime.now());
                 newLoan.setUpdatedBy(internalUser);
-                loanRepository.save(newLoan);
 
-                // Supprimer la réservation
+                loanRepository.save(newLoan);
                 reservationRepository.deleteById(oldestReservation.getId());
 
                 // Décrémenter la quantité
@@ -286,14 +249,12 @@ public class LoanService {
         }
     }
 
-
     public ServiceResponse<List<LoanResponse>> getMyLoansWithHistory(String email) {
         User user = userService.findByEmail(email);
         List<Loan> loans = loanRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
         List<LoanResponse> loanResponseList = loans.stream()
                 .map(loanMapper::toResponse)
                 .toList();
-
-        return new ServiceResponse<>("7050", "Loans successfully retrieved", loanResponseList);
+        return new ServiceResponse<>(ApiCode.LOAN_VALIDATED, loanResponseList);
     }
 }

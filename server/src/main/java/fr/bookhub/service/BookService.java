@@ -8,17 +8,17 @@ import fr.bookhub.entity.*;
 import fr.bookhub.repository.*;
 import fr.bookhub.utility.ApiCode;
 import fr.bookhub.utility.ApiException;
+import fr.bookhub.service.filter.BookSearchFilter;
+import fr.bookhub.service.specification.BookSpecification;
 import fr.bookhub.utility.MethodType;
 import fr.bookhub.utility.ServiceResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import fr.bookhub.service.filter.BookSearchFilter;
-import fr.bookhub.service.specification.BookSpecification;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -112,19 +112,23 @@ public class BookService {
 
         book.setCountry(country);
 
-        book.setPublisher(
-                publisherRepository.findByName(req.getPublisherName())
-                        .orElseGet(() -> {
-                            ServiceResponse<Publisher> publisherResponses =
-                                    publisherService.createPublisher(req.getPublisherName());
+        if (req.getPublisherName() != null && !req.getPublisherName().isBlank()) {
+            book.setPublisher(
+                    publisherRepository.findByName(req.getPublisherName().trim())
+                            .orElseGet(() -> {
+                                ServiceResponse<Publisher> publisherResponse =
+                                        publisherService.createPublisher(req.getPublisherName().trim());
 
-                            if (!"2000".equals(publisherResponses.getCode()) || publisherResponses.getData() == null) {
-                                throw new RuntimeException("Publisher creation failed");
-                            }
+                                if (publisherResponse.getData() == null) {
+                                    throw new RuntimeException("Publisher creation failed");
+                                }
 
-                            return publisherResponses.getData();
-                        })
-        );
+                                return publisherResponse.getData();
+                            })
+            );
+        } else {
+            book.setPublisher(null);
+        }
 
         book.setAuthor(
                 authorRepository.findByLastName(req.getAuthorLastName())
@@ -133,8 +137,8 @@ public class BookService {
                                     authorService.createAuthor(
                                             new AuthorCreateRequest(req.getAuthorFirstName(), req.getAuthorLastName(), book.getCountry().getName()));
 
-                            if (!"3001".equals(authorResponse.getCode()) || authorResponse.getData() == null) {
-                                throw new RuntimeException("Author creation failed");
+                            if (authorResponse.getData() == null) {
+                                throw new RuntimeException("Author creation failed: " + authorResponse.getCode());
                             }
 
                             return authorResponse.getData();
@@ -148,15 +152,13 @@ public class BookService {
                             ServiceResponse<Genre> genreResponse =
                                     genreService.createGenre(genre.getLabel());
 
-                            if (!"2001".equals(genreResponse.getCode()) || genreResponse.getData() == null) {
+                            if (genreResponse.getData() == null) {
                                 throw new RuntimeException("Genre creation failed");
                             }
 
                             return genreResponse.getData();
                         }))
                 .collect(Collectors.toSet());
-
-        book.setGenres(genres);
 
         // 6. save
         Book saved = bookRepository.save(book);

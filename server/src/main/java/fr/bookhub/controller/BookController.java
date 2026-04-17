@@ -19,7 +19,7 @@ public class BookController {
     private final BookService bookService;
 
     // Catalogue : Liste de tous les livres
-    @GetMapping("")
+    @GetMapping
     public ServiceResponse<?> getCatalog() {
         return bookService.getBooks();
     }
@@ -31,7 +31,7 @@ public class BookController {
     }
 
     // Ajout d'un livre :
-    @PostMapping("")
+    @PostMapping
     public ServiceResponse<?> addBook(@RequestBody @Valid BookCreateRequest bookRequest) {
         return bookService.createOrUpdateBook(bookRequest, MethodType.CREATE);
     }
