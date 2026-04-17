@@ -18,7 +18,7 @@ public class GenreService {
     private final GenreRepository genreRepository;
 
     public ServiceResponse<Genre> createGenre(String label) {
-        if (label.isEmpty()) {
+        if (label == null || label.trim().isEmpty()) {
             throw new ApiException(ApiCode.GENRE_LABEL_EMPTY);
         }
 

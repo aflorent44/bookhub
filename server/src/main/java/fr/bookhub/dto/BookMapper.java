@@ -24,10 +24,14 @@ public class BookMapper {
         dto.setUpdatedBy(book.getUpdatedBy());
         dto.setCountry(book.getCountry());
 
-        dto.setAuthorFirstName(book.getAuthor().getFirstName());
-        dto.setAuthorLastName(book.getAuthor().getLastName());
+        if (book.getAuthor() != null) {
+            dto.setAuthorFirstName(book.getAuthor().getFirstName());
+            dto.setAuthorLastName(book.getAuthor().getLastName());
+        }
 
-        dto.setPublisherName(book.getPublisher().getName());
+        if (book.getPublisher() != null) {
+            dto.setPublisherName(book.getPublisher().getName());
+        }
 
         dto.setGenres(
                 book.getGenres().stream()
@@ -44,8 +48,12 @@ public class BookMapper {
         dto.setBookId(book.getId());
         dto.setIsbn(book.getIsbn());
         dto.setTitle(book.getTitle());
-        dto.setAuthorFirstName(book.getAuthor().getFirstName());
-        dto.setAuthorLastName(book.getAuthor().getLastName());
+
+        if (book.getAuthor() != null) {
+            dto.setAuthorFirstName(book.getAuthor().getFirstName());
+            dto.setAuthorLastName(book.getAuthor().getLastName());
+        }
+
         dto.setGenres(
                 book.getGenres().stream()
                         .map(g -> new GenreDTO(g.getId(), g.getLabel()))
@@ -53,6 +61,5 @@ public class BookMapper {
         );
 
         return dto;
-
     }
 }

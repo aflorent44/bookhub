@@ -5,6 +5,8 @@ import { map } from 'rxjs';
 import { Book } from '../type/book';
 import { ServiceResponse } from '../type/service-response';
 import { environment } from '../../../environments/environment.development';
+import { HttpHeaders } from '@angular/common/http';
+import { BookFilters } from "../type/book-filters";
 
 @Injectable({
   providedIn: 'root'
@@ -19,10 +21,9 @@ export class BookService {
       .pipe(map(response => response.data));
   }
 
-  getBooks(filters: any): Observable<any> {
+  getBooks(filters: BookFilters): Observable<any> {
     return this.http.post<ServiceResponse<any>>(
-      `${this.apiUrl}/books/search`,
-      filters
+      `${this.apiUrl}/books/search`, filters
     );
   }
 

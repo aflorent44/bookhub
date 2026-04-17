@@ -101,8 +101,6 @@ export class BookForm implements OnInit {
           quantity:        book.quantity,
           firstPageUrl:    book.firstPageUrl,
           language:        book.country?.language ?? '',
-          createdById:     book.createdBy,
-          updatedById:     book.updatedBy,
         });
       },
       error: () => this.error.set('Erreur lors du chargement du livre.')

@@ -62,7 +62,6 @@ public enum ApiCode {
     // LOAN (7000 - 7099)
     // =======================
     LOAN_CREATED("7000", "Loan successfully created", HttpStatus.CREATED),
-    LOANS_RETRIEVED("7050", "Loans successfully retrieved", HttpStatus.OK),
     LOAN_BOOK_NOT_AVAILABLE("7001", "Book not available", HttpStatus.CONFLICT),
     LOAN_BOOK_NOT_FOUND("7002", "Book not found", HttpStatus.NOT_FOUND),
     LOAN_LATE_EXISTS("7003", "One or more books are late", HttpStatus.CONFLICT),

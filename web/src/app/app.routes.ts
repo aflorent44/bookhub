@@ -34,7 +34,6 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   { path: 'catalog',
-    canActivate: [authGuard],
     loadComponent: () => import('./features/book/book-catalog/book-catalog').then(m => m.BookCatalog) },
 
   {
