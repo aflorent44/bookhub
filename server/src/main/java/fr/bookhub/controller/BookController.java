@@ -31,7 +31,7 @@ public class BookController {
     }
 
     // Ajout d'un livre :
-    @PostMapping("")
+    @PostMapping
     public ServiceResponse<?> addBook(@RequestBody @Valid BookCreateRequest bookRequest) {
         return bookService.createOrUpdateBook(bookRequest, MethodType.CREATE);
     }

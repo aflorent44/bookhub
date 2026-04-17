@@ -5,6 +5,7 @@ import fr.bookhub.service.CustomUserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -38,14 +39,12 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/auth/**",
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/api/genres/**",
-                                "/api/books/**"
-                        ).permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/genres/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/books", "/api/books/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/books/search").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/books").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/books/update").authenticated()
                         .requestMatchers("/api/reservation/**", "/api/loan/**").authenticated()
                         .anyRequest().authenticated()
                 )

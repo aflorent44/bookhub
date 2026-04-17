@@ -137,8 +137,8 @@ public class BookService {
                                     authorService.createAuthor(
                                             new AuthorCreateRequest(req.getAuthorFirstName(), req.getAuthorLastName(), book.getCountry().getName()));
 
-                            if (!"3001".equals(authorResponse.getCode()) || authorResponse.getData() == null) {
-                                throw new RuntimeException("Author creation failed");
+                            if (authorResponse.getData() == null) {
+                                throw new RuntimeException("Author creation failed: " + authorResponse.getCode());
                             }
 
                             return authorResponse.getData();
