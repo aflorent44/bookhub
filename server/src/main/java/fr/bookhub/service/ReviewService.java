@@ -30,7 +30,7 @@ public class ReviewService {
 
     public ServiceResponse<?> getReviewsByBookId(int bookId) {
         List<Review> reviews = reviewRepository.findByBookId(bookId);
-        return new ServiceResponse<>("10000", "Reviews successfully retrieved",
+        return new ServiceResponse<>(ApiCode.REVIEWS_RETRIEVED,
                 reviews.stream()
                         .map(reviewMapper::toResponse)
                         .toList()
@@ -77,7 +77,7 @@ public class ReviewService {
         if (method == MethodType.CREATE) {
             Optional<Review> foundReviewForThisBook = reviewRepository.findByUserIdAndBookId(req.getUserId(), req.getBookId());
             if (foundReviewForThisBook.isPresent()) {
-                return new ServiceResponse<>("10006", "User unauthorized to review");
+                throw new ApiException(ApiCode.REVIEW_ALREADY_EXISTS);
             }
         }
 

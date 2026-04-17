@@ -294,6 +294,6 @@ public class LoanService {
                 .map(loanMapper::toResponse)
                 .toList();
 
-        return new ServiceResponse<>("7050", "Loans successfully retrieved", loanResponseList);
+        return new ServiceResponse<>(ApiCode.LOANS_RETRIEVED, loanResponseList);
     }
 }

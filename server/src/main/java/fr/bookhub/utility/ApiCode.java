@@ -62,6 +62,7 @@ public enum ApiCode {
     // LOAN (7000 - 7099)
     // =======================
     LOAN_CREATED("7000", "Loan successfully created", HttpStatus.CREATED),
+    LOANS_RETRIEVED("7050", "Loans successfully retrieved", HttpStatus.OK),
     LOAN_BOOK_NOT_AVAILABLE("7001", "Book not available", HttpStatus.CONFLICT),
     LOAN_BOOK_NOT_FOUND("7002", "Book not found", HttpStatus.NOT_FOUND),
     LOAN_LATE_EXISTS("7003", "One or more books are late", HttpStatus.CONFLICT),
@@ -104,6 +105,7 @@ public enum ApiCode {
     // REVIEW (10000 - 10099)
     // =======================
     REVIEW_CREATED("10000", "Review successfully created", HttpStatus.CREATED),
+    REVIEWS_RETRIEVED("10012", "Reviews successfully retrieved", HttpStatus.OK),
     REVIEW_BOOK_NOT_FOUND("10001", "Book not found", HttpStatus.NOT_FOUND),
     REVIEW_INVALID_RATING("10002", "Invalid rating", HttpStatus.BAD_REQUEST),
     REVIEW_NOT_FOUND("10003", "Review not found", HttpStatus.NOT_FOUND),
