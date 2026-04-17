@@ -1,0 +1,207 @@
+.book-catalog {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-l) var(--space-huge);
+  background: var(--bg-green);
+  min-height: 100vh;
+}
+
+/* Toolbar */
+.catalog-toolbar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-m);
+  align-items: center;
+  background: var(--bg-blue);
+  border-radius: var(--radius-xl);
+  padding: var(--space-m);
+  margin-bottom: var(--space-xxl);
+  box-shadow: 0 12px 30px rgba(27, 67, 83, 0.10);
+}
+
+.toolbar-search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-m);
+  min-width: 0;
+}
+
+.search-input-wrapper {
+  position: relative;
+  flex: 1;
+  max-width: 560px;
+
+  i {
+    position: absolute;
+    left: var(--space-m);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--txt-yellow);
+    font-size: 0.95rem;
+    pointer-events: none;
+  }
+
+  input[pInputText] {
+    width: 100%;
+    height: 48px;
+    padding: 0 var(--space-m) 0 2.6rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-full);
+    background: var(--bg-white);
+    color: var(--txt-primary);
+    font-family: var(--font-body);
+    font-size: var(--font-size-m);
+    box-shadow: inset 0 0 0 1px rgba(27, 67, 83, 0.06);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+    &::placeholder {
+      color: rgba(27, 67, 83, 0.5);
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow:
+        inset 0 0 0 1px var(--btn-yellow),
+        0 0 0 4px rgba(255, 198, 50, 0.18);
+    }
+  }
+}
+
+/* bouton filtres */
+:host ::ng-deep .catalog-toolbar .p-button {
+  border-radius: var(--radius-m);
+  min-width: 48px;
+  height: 48px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.18);
+  color: var(--bg-white);
+  backdrop-filter: blur(6px);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.28);
+  }
+}
+
+:host ::ng-deep .catalog-toolbar .p-badge {
+  background: var(--btn-yellow);
+  color: var(--txt-primary);
+  font-weight: 700;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.10);
+}
+
+/* select tri */
+:host ::ng-deep .catalog-toolbar .p-select {
+  min-width: 230px;
+  border-radius: var(--radius-m);
+  background: var(--bg-white);
+  border: none;
+  box-shadow: 0 6px 18px rgba(27, 67, 83, 0.08);
+}
+
+:host ::ng-deep .catalog-toolbar .p-select-label {
+  padding: 0.9rem 1rem;
+  color: var(--txt-primary);
+  font-family: var(--font-body);
+}
+
+:host ::ng-deep .catalog-toolbar .p-select-trigger {
+  color: var(--txt-primary);
+}
+
+/* Grid */
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-xl);
+  align-items: stretch;
+}
+
+/* Empty / loading */
+.catalog-spinner,
+.catalog-empty {
+  min-height: 40vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.catalog-empty {
+  flex-direction: column;
+  gap: var(--space-m);
+  color: var(--txt-primary);
+
+  i {
+    font-size: 3rem;
+    color: var(--txt-yellow);
+  }
+
+  p {
+    margin: 0;
+    font-size: var(--font-size-l);
+  }
+}
+
+/* paginator */
+:host ::ng-deep .p-paginator {
+  margin-top: var(--space-xxl);
+  border: none;
+  background: rgba(255, 255, 255, 0.65);
+  border-radius: var(--radius-xl);
+  padding: var(--space-s);
+  backdrop-filter: blur(6px);
+}
+
+:host ::ng-deep .p-paginator .p-paginator-page,
+:host ::ng-deep .p-paginator .p-paginator-next,
+:host ::ng-deep .p-paginator .p-paginator-prev,
+:host ::ng-deep .p-paginator .p-paginator-first,
+:host ::ng-deep .p-paginator .p-paginator-last {
+  min-width: 2.2rem;
+  height: 2.2rem;
+  border-radius: var(--radius-full);
+  color: var(--txt-primary);
+}
+
+:host ::ng-deep .p-paginator .p-paginator-page.p-highlight {
+  background: #e6f4eb;
+  color: var(--txt-primary);
+  font-weight: 700;
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+  .catalog-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .toolbar-search {
+    flex-wrap: wrap;
+  }
+
+  :host ::ng-deep .catalog-toolbar .p-select {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .book-catalog {
+    padding: var(--space-m) var(--space-m) var(--space-xxl);
+  }
+
+  .catalog-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-m);
+  }
+
+  .search-input-wrapper {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .catalog-grid {
+    grid-template-columns: 1fr;
+  }
+}

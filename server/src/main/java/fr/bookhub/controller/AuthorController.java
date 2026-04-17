@@ -2,7 +2,7 @@ package fr.bookhub.controller;
 
 import fr.bookhub.dto.AuthorCreateRequest;
 import fr.bookhub.service.AuthorService;
-import fr.bookhub.service.ServiceResponse;
+import fr.bookhub.utility.ServiceResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

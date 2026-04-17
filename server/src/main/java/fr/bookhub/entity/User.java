@@ -1,5 +1,6 @@
 package fr.bookhub.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -56,6 +57,7 @@ public class User {
     @JoinColumn(name = "created_by")
     private User createdBy;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "updated_by")
     private User updatedBy;

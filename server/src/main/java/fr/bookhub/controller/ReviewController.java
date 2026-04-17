@@ -3,7 +3,7 @@ package fr.bookhub.controller;
 import fr.bookhub.utility.MethodType;
 import fr.bookhub.dto.ReviewCreateRequest;
 import fr.bookhub.service.ReviewService;
-import fr.bookhub.service.ServiceResponse;
+import fr.bookhub.utility.ServiceResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

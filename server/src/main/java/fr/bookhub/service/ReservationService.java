@@ -11,6 +11,9 @@ import fr.bookhub.entity.User;
 import fr.bookhub.repository.BookRepository;
 import fr.bookhub.repository.LoanRepository;
 import fr.bookhub.repository.ReservationRepository;
+import fr.bookhub.utility.ApiCode;
+import fr.bookhub.utility.ApiException;
+import fr.bookhub.utility.ServiceResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -34,13 +37,13 @@ public class ReservationService {
         // Max 5 réservations / utilisateur
         List<Reservation> userReservations = reservationRepository.findByUserId(foundUser.getId());
         if (userReservations.size() >= 5) {
-            return new ServiceResponse<>("9001", "Reservation quota reached");
+            throw new ApiException(ApiCode.RESERVATION_QUOTA_REACHED);
         }
 
         // Récupérer le livre :
         Optional<Book> book = bookRepository.findById(req.getBookId());
         if (book.isEmpty()) {
-            return new ServiceResponse<>("9002", "Book not found");
+            throw new ApiException(ApiCode.RESERVATION_BOOK_NOT_FOUND);
         }
 
         List<Reservation> existingReservations = reservationRepository.findByUserIdAndBookId(foundUser.getId(), req.getBookId());
@@ -49,7 +52,7 @@ public class ReservationService {
                 .anyMatch(r -> r.getStatus() == Status.WAITING);
 
         if (hasActiveReservation) {
-            return new ServiceResponse<>("9003", "User already has a pending reservation for this book");
+            throw new ApiException(ApiCode.RESERVATION_ALREADY_EXISTS);
         }
 
         List<Loan> existingLoans = loanRepository.findByUserIdAndBookId(foundUser.getId(), req.getBookId());
@@ -58,7 +61,7 @@ public class ReservationService {
                 .anyMatch(l -> l.getStatus() == Status.WAITING || l.getStatus() == Status.IN_PROGRESS);
 
         if (hasActiveLoan) {
-            return new ServiceResponse<>("9004", "User already has an active loan for this book");
+            throw new ApiException(ApiCode.RESERVATION_LOAN_CONFLICT);
         }
 
         // Création de la réservation :
@@ -73,11 +76,7 @@ public class ReservationService {
 
         Reservation savedReservation = reservationRepository.save(reservation);
 
-        return new ServiceResponse<>(
-                "9000",
-                "Reservation successfully created",
-                toResponse(savedReservation)
-        );
+        return new ServiceResponse<>(ApiCode.RESERVATION_CREATED, toResponse(savedReservation));
     }
 
     public ServiceResponse<?> getMyReservations(String email) {
@@ -89,7 +88,7 @@ public class ReservationService {
                 .map(this::toResponse)
                 .toList();
 
-        return new ServiceResponse<>("9020", "Reservations retrieved successfully", responses);
+        return new ServiceResponse<>(ApiCode.RESERVATION_RETRIEVES, responses);
     }
 
     public ServiceResponse<?> deleteReservation(int reservationId) {
@@ -97,28 +96,27 @@ public class ReservationService {
         Optional<Reservation> reservation = reservationRepository.findById(reservationId);
 
         if (reservation.isEmpty()) {
-            return new ServiceResponse<>("9011", "Reservation not found");
+            throw new ApiException(ApiCode.RESERVATION_NOT_FOUND);
         }
 
         if (reservation.get().getStatus() != Status.WAITING) {
-            return new ServiceResponse<>("9012", "Only reservation with a waiting status can be deleted");
+            throw new ApiException(ApiCode.RESERVATION_INVALID_STATUS);
         }
 
         reservationRepository.deleteById(reservationId);
 
-        return new ServiceResponse<>("9010", "Reservation successfully deleted");
+        return new ServiceResponse<>(ApiCode.RESERVATION_DELETED);
     }
 
     public ServiceResponse<List<?>> getReservationsByBookId(int bookId) {
         List<Reservation> reservations = reservationRepository.findByBookId(bookId);
 
         if (reservations.isEmpty()) {
-            return new ServiceResponse<>("9020", "No reservations found");
+            throw new ApiException(ApiCode.RESERVATION_NOT_FOUND);
         }
 
         return new ServiceResponse<>(
-                "9021",
-                "Reservations successfully retrieved",
+                ApiCode.RESERVATION_RETRIEVES,
                 reservations.stream()
                         .map(this::toResponse)
                         .toList()
@@ -129,12 +127,11 @@ public class ReservationService {
         List<Reservation> reservations = reservationRepository.findByUserIdAndBookId(userId, bookId);
 
         if (reservations.isEmpty()) {
-            return new ServiceResponse<>("9030", "No reservations found");
+            throw new ApiException(ApiCode.RESERVATION_NOT_FOUND);
         }
 
         return new ServiceResponse<>(
-                "9031",
-                "Reservations found",
+                ApiCode.RESERVATION_RETRIEVES,
                 reservations.stream()
                         .map(this::toResponse)
                         .toList()

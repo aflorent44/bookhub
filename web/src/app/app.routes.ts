@@ -35,10 +35,8 @@ export const routes: Routes = [
   },
   { path: 'catalog',
     canActivate: [authGuard],
-    loadComponent: () => import('./features/book/book-list/book-list/book-list').then(m => m.BookList) },
-  { path: 'books',
-    canActivate: [authGuard],
-    loadComponent: () => import('./features/book/book-form/book-form').then(m => m.BookForm) },
+    loadComponent: () => import('./features/book/book-catalog/book-catalog').then(m => m.BookCatalog) },
+
   {
     path: 'books/:id/edit',
     canActivate: [authGuard],

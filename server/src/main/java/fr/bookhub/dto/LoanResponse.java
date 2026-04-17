@@ -25,6 +25,6 @@ public class LoanResponse {
     private String bookAuthor;
     private String bookCoverUrl;
     private LocalDateTime createdAt;
-    private Integer updatedBy;
     private LocalDateTime updatedAt;
+    private UserBasicResponse updatedBy;
 }

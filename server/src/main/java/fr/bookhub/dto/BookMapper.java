@@ -37,4 +37,22 @@ public class BookMapper {
 
         return dto;
     }
+
+    public BookResponse toBasicResponse(Book book) {
+        BookResponse dto = new BookResponse();
+
+        dto.setBookId(book.getId());
+        dto.setIsbn(book.getIsbn());
+        dto.setTitle(book.getTitle());
+        dto.setAuthorFirstName(book.getAuthor().getFirstName());
+        dto.setAuthorLastName(book.getAuthor().getLastName());
+        dto.setGenres(
+                book.getGenres().stream()
+                        .map(g -> new GenreDTO(g.getId(), g.getLabel()))
+                        .collect(Collectors.toSet())
+        );
+
+        return dto;
+
+    }
 }

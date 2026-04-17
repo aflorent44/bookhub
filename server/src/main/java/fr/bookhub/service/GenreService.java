@@ -3,6 +3,9 @@ package fr.bookhub.service;
 import fr.bookhub.dto.GenreDTO;
 import fr.bookhub.entity.Genre;
 import fr.bookhub.repository.GenreRepository;
+import fr.bookhub.utility.ApiCode;
+import fr.bookhub.utility.ApiException;
+import fr.bookhub.utility.ServiceResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +19,7 @@ public class GenreService {
 
     public ServiceResponse<Genre> createGenre(String label) {
         if (label.isEmpty()) {
-            return new ServiceResponse<>("4001", "Label cannot be empty");
+            throw new ApiException(ApiCode.GENRE_LABEL_EMPTY);
         }
 
         Genre genre = new Genre();
@@ -24,12 +27,12 @@ public class GenreService {
 
         genreRepository.save(genre);
 
-        return new ServiceResponse<>("4000", "Genre successfully created", genre);
+        return new ServiceResponse<>(ApiCode.GENRE_CREATED, genre);
     }
 
     public ServiceResponse<List<GenreDTO>> getGenres() {
         if (genreRepository.findAll().isEmpty()) {
-            return new ServiceResponse<>("4003", "No genres found");
+            throw new ApiException(ApiCode.NO_GENRES_FOUND);
         }
 
         List<GenreDTO> genres = genreRepository.findAll()
@@ -37,6 +40,6 @@ public class GenreService {
                 .map(genre -> new GenreDTO(genre.getId(), genre.getLabel()))
                 .toList();
 
-        return new ServiceResponse<List<GenreDTO>>("4002", "Genres successfully found", genres);
+        return new ServiceResponse<>(ApiCode.GENRES_FOUND, genres);
     }
 }

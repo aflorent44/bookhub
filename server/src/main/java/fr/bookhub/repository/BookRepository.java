@@ -13,6 +13,6 @@ import java.util.Optional;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Integer>, JpaSpecificationExecutor<Book> {
     Optional<Book> findBookByIsbn(String isbn);
-
     Page<Book> findAll(Specification<Book> spec, Pageable pageable);
+    long count();
 }

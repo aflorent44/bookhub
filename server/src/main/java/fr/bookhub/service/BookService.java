@@ -6,7 +6,10 @@ import fr.bookhub.dto.BookMapper;
 import fr.bookhub.dto.BookResponse;
 import fr.bookhub.entity.*;
 import fr.bookhub.repository.*;
+import fr.bookhub.utility.ApiCode;
+import fr.bookhub.utility.ApiException;
 import fr.bookhub.utility.MethodType;
+import fr.bookhub.utility.ServiceResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,40 +49,35 @@ public class BookService {
                 .toList();
 
         if (books.isEmpty()) {
-            return new ServiceResponse<>("1001", "Books not found");
+            throw new ApiException(ApiCode.BOOKS_NOT_FOUND);
         }
 
-        return new ServiceResponse<>("1000", "Books found",  books);
+        return new ServiceResponse<>(ApiCode.BOOKS_FOUND, books);
     }
 
     public ServiceResponse<BookResponse> getBookById(Integer id) {
         return bookRepository.findById(id)
                 .map(book -> {
                     BookResponse response = bookMapper.toResponse(book);
-                    return new ServiceResponse<>("1010", "Book found", response);
+                    return new ServiceResponse<>(ApiCode.BOOK_FOUND, response);
                 })
-                .orElseGet(() ->
-                        new ServiceResponse<>("1011", "Book not found")
-                );
+                .orElseThrow(() -> new ApiException(ApiCode.BOOK_NOT_FOUND));
     }
 
     // Création ou modification d'un livre :
     public ServiceResponse<BookResponse> createOrUpdateBook(BookCreateRequest req, MethodType method) {
         // 1. validation simple
-        ServiceResponse<BookCreateRequest> validation = validate(req);
-        if (!"1020".equals(validation.getCode())) {
-            return new ServiceResponse<>(validation.getCode(), validation.getMessage());
-        }
+        validate(req);
 
         // 2. check ISBN
         if (bookRepository.findBookByIsbn(req.getIsbn()).isPresent() && method == MethodType.CREATE) {
-            return new ServiceResponse<>("1031", "Book already exists");
+            throw new ApiException(ApiCode.BOOK_ALREADY_EXISTS);
         }
 
         User internalUser = userService.getUserById(req.getCreatedById()).getData();
 
         if (internalUser == null) {
-            return new ServiceResponse<>("1032", "Internal user not found");
+            throw new ApiException(ApiCode.INTERNAL_USER_NOT_FOUND);
         }
 
         // 3. entity
@@ -163,24 +161,24 @@ public class BookService {
         // 6. save
         Book saved = bookRepository.save(book);
 
-        if (method == MethodType.CREATE) return new ServiceResponse<>("1030", "Book saved", bookMapper.toResponse(saved)); // Succeed
-        return new ServiceResponse<>("1033", "Book successfully updated", bookMapper.toResponse(saved));
+        if (method == MethodType.CREATE) return new ServiceResponse<>(ApiCode.BOOK_CREATED, bookMapper.toResponse(saved)); // Succeed
+        return new ServiceResponse<>(ApiCode.BOOK_UPDATED, bookMapper.toResponse(saved));
     }
 
     private ServiceResponse<BookCreateRequest> validate(BookCreateRequest req) {
         if (req.getTitle() == null || req.getTitle().isBlank()) {
-            return new ServiceResponse<>("1021", "Title is required");
+            throw new ApiException(ApiCode.TITLE_REQUIRED);
         }
 
         if (req.getIsbn() == null) {
-            return new ServiceResponse<>("1022", "Isbn is required");
+            throw new ApiException(ApiCode.ISBN_REQUIRED);
         }
 
         if (req.getGenres() == null || req.getGenres().isEmpty()) {
-            return new ServiceResponse<>("1023", "Genres is required");
+            throw new ApiException(ApiCode.GENRES_REQUIRED);
         }
 
-        return new ServiceResponse<>("1020", "All required fields are present");
+        return new ServiceResponse<>(ApiCode.ALL_FIELDS_VALID);
     }
 
     // Recherche avancée avec filtre(s) :
@@ -200,10 +198,10 @@ public class BookService {
 
         // 5. Result
         if (responsePage.isEmpty()) {
-            return new ServiceResponse<>("5001", "No result for this search");
+            throw new ApiException(ApiCode.SEARCH_NO_RESULTS);
         }
 
-        return new ServiceResponse<>("5000", "Books found", responsePage);
+        return new ServiceResponse<>(ApiCode.SEARCH_RESULTS_FOUND, responsePage);
     }
 
     private Specification<Book> buildSpecification(BookSearchFilter filter) {
@@ -276,7 +274,7 @@ public class BookService {
         Book book = bookRepository.findById(id).orElse(null);
 
         if (book == null) {
-            return new ServiceResponse<>("6001", "Book not found");
+            throw new ApiException(ApiCode.BOOK_DELETE_NOT_FOUND);
         }
 
         // Vérifier s'il y a des emprunts sur le livre :
@@ -284,10 +282,10 @@ public class BookService {
 
         for (Loan loan : loans) {
             if (loan.getStatus() == Status.IN_PROGRESS || loan.getStatus() == Status.WAITING) {
-                return new ServiceResponse<>("6002", "A loan is in progress or a user is waiting to loan this book");
+                throw new ApiException(ApiCode.BOOK_DELETE_CONFLICT);
             }
         }
 
-        return new ServiceResponse<>("6000", "Book successfully deleted", book);
+        return new ServiceResponse<>(ApiCode.BOOK_DELETED, book);
     }
 }
