@@ -6,10 +6,10 @@ import fr.bookhub.dto.BookMapper;
 import fr.bookhub.dto.BookResponse;
 import fr.bookhub.entity.*;
 import fr.bookhub.repository.*;
-import fr.bookhub.utility.ApiCode;
-import fr.bookhub.utility.ApiException;
 import fr.bookhub.service.filter.BookSearchFilter;
 import fr.bookhub.service.specification.BookSpecification;
+import fr.bookhub.utility.ApiCode;
+import fr.bookhub.utility.ApiException;
 import fr.bookhub.utility.MethodType;
 import fr.bookhub.utility.ServiceResponse;
 import lombok.AllArgsConstructor;
@@ -21,7 +21,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -183,27 +185,42 @@ public class BookService {
         return new ServiceResponse<>(ApiCode.ALL_FIELDS_VALID);
     }
 
-    // Recherche avancée avec filtre(s) :
-    public ServiceResponse<Page<BookResponse>> search(BookSearchFilter filter) {
+//    // Recherche avancée avec filtre(s) :
+//    public ServiceResponse<Page<BookResponse>> search(BookSearchFilter filter) {
+//
+//        // 1. Build specification
+//        Specification<Book> spec = buildSpecification(filter);
+//
+//        // 2. Pagination + tri
+//        Pageable pageable = buildPageable(filter);
+//
+//        // 3. Query DB
+//        Page<Book> booksPage = bookRepository.findAll(spec, pageable);
+//
+//        // 4. Mapping
+//        Page<BookResponse> responsePage = booksPage.map(bookMapper::toResponse);
+//
+//        // 5. Result
+//        if (responsePage.isEmpty()) {
+//            return new ServiceResponse<>(ApiCode.SEARCH_RESULTS_FOUND, responsePage);
+//            }
+//
+//        return new ServiceResponse<>(ApiCode.SEARCH_RESULTS_FOUND, responsePage);
+//    }
 
-        // 1. Build specification
+    public ServiceResponse<?> search(BookSearchFilter filter) {
         Specification<Book> spec = buildSpecification(filter);
-
-        // 2. Pagination + tri
         Pageable pageable = buildPageable(filter);
-
-        // 3. Query DB
         Page<Book> booksPage = bookRepository.findAll(spec, pageable);
 
-        // 4. Mapping
-        Page<BookResponse> responsePage = booksPage.map(bookMapper::toResponse);
+        Map<String, Object> result = new HashMap<>();
+        result.put("content", booksPage.getContent().stream().map(bookMapper::toResponse).toList());
+        result.put("totalElements", booksPage.getTotalElements());
+        result.put("totalPages", booksPage.getTotalPages());
+        result.put("size", booksPage.getSize());
+        result.put("number", booksPage.getNumber());
 
-        // 5. Result
-        if (responsePage.isEmpty()) {
-            return new ServiceResponse<>(ApiCode.SEARCH_RESULTS_FOUND, responsePage);
-            }
-
-        return new ServiceResponse<>(ApiCode.SEARCH_RESULTS_FOUND, responsePage);
+        return new ServiceResponse<>(ApiCode.SEARCH_RESULTS_FOUND, result);
     }
 
     private Specification<Book> buildSpecification(BookSearchFilter filter) {

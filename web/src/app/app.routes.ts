@@ -17,7 +17,7 @@ export const routes: Routes = [
 
   // Routes protégées
   {
-    path: 'add-books',
+    path: 'add-book',
     canActivate: [authGuard],
     loadComponent: () => import('./features/book/book-form/book-form').then((m) => m.BookForm),
   },

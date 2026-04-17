@@ -19,7 +19,7 @@ const publicGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
 
   if (authService.currentUser$() || authService.getToken()) {
-    router.navigate(['/books']);
+    router.navigate(['/catalog']);
     return false;
   }
 

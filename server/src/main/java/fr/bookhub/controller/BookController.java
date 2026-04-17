@@ -1,14 +1,12 @@
 package fr.bookhub.controller;
 
 import fr.bookhub.dto.BookCreateRequest;
-import fr.bookhub.dto.BookResponse;
-import fr.bookhub.service.*;
+import fr.bookhub.service.BookService;
 import fr.bookhub.service.filter.BookSearchFilter;
 import fr.bookhub.utility.MethodType;
 import fr.bookhub.utility.ServiceResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -38,7 +36,7 @@ public class BookController {
 
     // Recherche :
     @PostMapping("/search")
-    public ServiceResponse<Page<BookResponse>> search(@RequestBody BookSearchFilter filter) {
+    public ServiceResponse<?> search(@RequestBody BookSearchFilter filter) {
         return bookService.search(filter);
     }
 
