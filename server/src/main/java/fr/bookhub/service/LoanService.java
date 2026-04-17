@@ -52,7 +52,7 @@ public class LoanService {
             foundBook = book.get();
             int availableQuantities = foundBook.getQuantity();
             if (availableQuantities <= 0) {
-                throw new ApiException(ApiCode.LOAN_NOT_FOUND);
+                throw new ApiException(ApiCode.LOAN_BOOK_NOT_AVAILABLE);
             }
         } else {
             throw new ApiException(ApiCode.LOAN_BOOK_NOT_FOUND);
@@ -195,7 +195,7 @@ public class LoanService {
 
     public ServiceResponse<List<?>> getLoansByBookId(int bookId) {
         List<Loan> loans = loanRepository.findByBookId(bookId);
-        return new ServiceResponse<>(ApiCode.LOAN_CREATED, loanMapper.toResponse(loans));
+        return new ServiceResponse<>(ApiCode.LOANS_RETRIEVED, loanMapper.toResponse(loans));
     }
 
     public ServiceResponse<List<?>> getLoansByUserIdAndBookId(int userId, int bookId) {
@@ -203,7 +203,7 @@ public class LoanService {
         if (loans.isEmpty()) {
             throw new ApiException(ApiCode.LOAN_NOT_FOUND);
         }
-        return new ServiceResponse<>(ApiCode.LOAN_VALIDATED, loanMapper.toResponse(loans));
+        return new ServiceResponse<>(ApiCode.LOANS_RETRIEVED, loanMapper.toResponse(loans));
     }
 
     private void handleWaitingList(Book book, User internalUser) {
@@ -258,6 +258,6 @@ public class LoanService {
                 .map(loanMapper::toResponse)
                 .toList();
 
-        return new ServiceResponse<>(ApiCode.LOAN_VALIDATED, loanResponseList);
+        return new ServiceResponse<>(ApiCode.LOANS_RETRIEVED, loanResponseList);
     }
 }

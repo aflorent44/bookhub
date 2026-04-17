@@ -67,6 +67,7 @@ public enum ApiCode {
     LOAN_LATE_EXISTS("7003", "One or more books are late", HttpStatus.CONFLICT),
     LOAN_QUOTA_REACHED("7004", "Loan quota reached", HttpStatus.CONFLICT),
     LOAN_ALREADY_EXISTS_FOR_BOOK("7005", "Loan quota reached for this book", HttpStatus.CONFLICT),
+    LOANS_RETRIEVED("7050", "Loans successfully retrieved", HttpStatus.OK),
 
     LOAN_RETURNED("7010", "Book successfully returned", HttpStatus.OK),
     LOAN_NOT_FOUND("7011", "Loan not found", HttpStatus.NOT_FOUND),

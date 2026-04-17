@@ -338,7 +338,7 @@ export class Profile implements OnInit {
       WAITING: 'info',
       IN_PROGRESS: 'success',
       FINISHED: 'secondary',
-      LATE: 'secondary'
+      LATE: 'secondary',
     };
     return map[status] || 'info';
   }
