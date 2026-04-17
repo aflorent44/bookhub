@@ -1,8 +1,8 @@
 package fr.bookhub.service;
 
-import fr.bookhub.dto.LoanCreateRequest;
-import fr.bookhub.dto.LoanMapper;
-import fr.bookhub.dto.LoanResponse;
+import fr.bookhub.dto.loan.LoanCreateRequest;
+import fr.bookhub.dto.loan.LoanMapper;
+import fr.bookhub.dto.loan.LoanResponse;
 import fr.bookhub.entity.*;
 import fr.bookhub.repository.BookRepository;
 import fr.bookhub.repository.LoanRepository;
@@ -31,14 +31,14 @@ public class LoanService {
         if (req == null) {
             throw new IllegalArgumentException("request is null");
         }
-        if (req.getUserId() == null) {
+        if (req.userId() == null) {
             throw new IllegalArgumentException("userId is null");
         }
-        if (req.getBookId() == null) {
+        if (req.bookId() == null) {
             throw new IllegalArgumentException("bookId is null");
         }
         // Vérifier si l'utilisateur existe :
-        ServiceResponse<User> responseUser = userService.getUserById(req.getUserId());
+        ServiceResponse<User> responseUser = userService.getUserById(req.userId());
 
         if (responseUser.getCode().equals("8001")) {
             return responseUser;
@@ -47,7 +47,7 @@ public class LoanService {
         User foundUser = responseUser.getData();
 
         // Vérifier la disponibilité du livre
-        Optional<Book> book = bookRepository.findById(req.getBookId());
+        Optional<Book> book = bookRepository.findById(req.bookId());
         Book foundBook;
 
         if (book.isPresent()) {
@@ -63,7 +63,7 @@ public class LoanService {
         }
 
         // Vérifier si l'utilisateur a des emprunts en retard
-        List<Loan> userLoans = loanRepository.findByUserId(req.getUserId());
+        List<Loan> userLoans = loanRepository.findByUserId(req.userId());
 
         // Cas où l'utilisateur a déjà fait des emprunts :
         if (!userLoans.isEmpty()) {
@@ -88,7 +88,7 @@ public class LoanService {
             }
         }
 
-        List<Loan> existingLoans = loanRepository.findByUserIdAndBookId(req.getUserId(), req.getBookId());
+        List<Loan> existingLoans = loanRepository.findByUserIdAndBookId(req.userId(), req.bookId());
 
         boolean hasActiveOrPendingLoan = existingLoans.stream()
                 .anyMatch(l -> l.getStatus() == Status.WAITING || l.getStatus() == Status.IN_PROGRESS);
@@ -120,14 +120,14 @@ public class LoanService {
 
     public ServiceResponse<?> validate(LoanCreateRequest req) {
         // Récupérer le userInternal
-        ServiceResponse<User> responseInternalUser = userService.getUserById(req.getInternalUserId());
+        ServiceResponse<User> responseInternalUser = userService.getUserById(req.internalUserId());
 
         if (responseInternalUser.getCode().equals("8001")) {
             return responseInternalUser;
         }
 
         // Récupérer l'emprunt
-        Optional<Loan> loan = loanRepository.findById(req.getLoanId());
+        Optional<Loan> loan = loanRepository.findById(req.loanId());
         Loan foundLoan;
 
         if (loan.isPresent()) {
@@ -152,7 +152,7 @@ public class LoanService {
 
     public ServiceResponse<?> finishOrCancelLoan(LoanCreateRequest req, Status status) {
         // Récupérer l'utilisateur "interne" (le bibliothéquaire) :
-        ServiceResponse<User> responseInternalUser = userService.getUserById(req.getInternalUserId());
+        ServiceResponse<User> responseInternalUser = userService.getUserById(req.internalUserId());
 
         if (responseInternalUser.getCode().equals("8001")) {
             return responseInternalUser;
@@ -161,14 +161,14 @@ public class LoanService {
         User foundInternalUser = responseInternalUser.getData();
 
         // Vérifier si l'utilisateur existe :
-        ServiceResponse<User> responseUser = userService.getUserById(req.getUserId());
+        ServiceResponse<User> responseUser = userService.getUserById(req.userId());
 
         if (responseUser.getCode().equals("8001")) {
             return responseUser;
         }
 
         // Rechercher le livre dans les emprunts :
-        Optional<Loan> loan = loanRepository.findById(req.getLoanId());
+        Optional<Loan> loan = loanRepository.findById(req.loanId());
         Loan foundLoan;
 
         if (loan.isPresent()) {
@@ -178,7 +178,7 @@ public class LoanService {
         }
 
         // Mettre à jour le livre
-        Optional<Book> book = bookRepository.findById(req.getBookId());
+        Optional<Book> book = bookRepository.findById(req.bookId());
         Book foundBook;
 
         if (book.isPresent()) {
@@ -294,6 +294,6 @@ public class LoanService {
                 .map(loanMapper::toResponse)
                 .toList();
 
-        return new ServiceResponse<>("7050", "Loans successfully retrieved", loanResponseList);
+        return new ServiceResponse<>(ApiCode.LOAN_VALIDATED, loanResponseList);
     }
 }

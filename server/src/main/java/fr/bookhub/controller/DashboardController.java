@@ -1,8 +1,8 @@
 package fr.bookhub.controller;
 
-import fr.bookhub.dto.DashboardResponse;
-import fr.bookhub.dto.RoleCreateRequest;
-import fr.bookhub.dto.UserBasicResponse;
+import fr.bookhub.dto.dashboard.DashboardResponse;
+import fr.bookhub.dto.dashboard.RoleCreateRequest;
+import fr.bookhub.dto.user.UserBasicResponse;
 import fr.bookhub.service.DashboardService;
 import fr.bookhub.utility.ServiceResponse;
 import lombok.AllArgsConstructor;

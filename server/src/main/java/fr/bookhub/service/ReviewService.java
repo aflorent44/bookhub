@@ -1,7 +1,7 @@
 package fr.bookhub.service;
 
-import fr.bookhub.dto.ReviewCreateRequest;
-import fr.bookhub.dto.ReviewMapper;
+import fr.bookhub.dto.review.ReviewCreateRequest;
+import fr.bookhub.dto.review.ReviewMapper;
 import fr.bookhub.entity.*;
 import fr.bookhub.repository.BookRepository;
 import fr.bookhub.repository.LoanRepository;
@@ -30,26 +30,26 @@ public class ReviewService {
 
     public ServiceResponse<?> createOrUpdateReview(ReviewCreateRequest req, MethodType method) {
         // Vérifier si l'utilisateur existe :
-        ServiceResponse<User> userResponse = userService.getUserById(req.getUserId());
+        ServiceResponse<User> userResponse = userService.getUserById(req.userId());
         if (userResponse.getCode().equals("8001")) {
             return userResponse;
         }
 
         // Vérifier si l'internalUser existe :
-        ServiceResponse<User> internalUserResponse = userService.getUserById(req.getInternalUserId());
+        ServiceResponse<User> internalUserResponse = userService.getUserById(req.internalUserId());
         if (internalUserResponse.getCode().equals("8001")) {
             return internalUserResponse;
         }
 
         // Vérifier si le livre existe :
-        Optional<Book> foundBook = bookRepository.findById(req.getBookId());
+        Optional<Book> foundBook = bookRepository.findById(req.bookId());
         if (foundBook.isEmpty()) {
             throw new ApiException(ApiCode.REVIEW_BOOK_NOT_FOUND);
         }
 
         // Vérifier si l'utilisateur à emprunter ce livre :
         if (method == MethodType.CREATE) {
-            List<Loan> loans = loanRepository.findByUserIdAndBookId(req.getUserId(), req.getBookId());
+            List<Loan> loans = loanRepository.findByUserIdAndBookId(req.userId(), req.bookId());
 
             if (loans.isEmpty()) {
                 throw new ApiException(ApiCode.REVIEW_USER_UNAUTHORIZED);
@@ -66,7 +66,7 @@ public class ReviewService {
 
 
         // Vérification de la note : (doit être comprise entre 1 et 5) :
-        if (req.getRating() <= 0 || req.getRating() > 5) {
+        if (req.rating() <= 0 || req.rating() > 5) {
             throw new ApiException(ApiCode.REVIEW_INVALID_RATING);
         }
 
@@ -78,7 +78,7 @@ public class ReviewService {
             review.setHiddenBy(null);
             review.setCreatedAt(LocalDateTime.now());
         } else {
-            Optional<Review> foundReview = reviewRepository.findById(req.getReviewId());
+            Optional<Review> foundReview = reviewRepository.findById(req.reviewId());
 
             if (foundReview.isEmpty()) {
                 throw new ApiException(ApiCode.REVIEW_NOT_FOUND);
@@ -86,7 +86,7 @@ public class ReviewService {
 
             review = foundReview.get();
 
-            review.setIsHidden(req.getIsHidden());
+            review.setIsHidden(req.isHidden());
             review.setHiddenBy(internalUserResponse.getData());
             review.setUpdatedBy(internalUserResponse.getData());
             review.setUpdatedAt(LocalDateTime.now());
@@ -94,8 +94,8 @@ public class ReviewService {
 
         review.setBook(foundBook.get());
         review.setUser(userResponse.getData());
-        review.setRating(req.getRating());
-        review.setComment(req.getComment());
+        review.setRating(req.rating());
+        review.setComment(req.comment());
 
         Review savedReview = reviewRepository.save(review);
 

@@ -1,8 +1,8 @@
 package fr.bookhub.controller;
 
-import fr.bookhub.dto.LoanCreateRequest;
+import fr.bookhub.dto.loan.LoanCreateRequest;
 import fr.bookhub.entity.Status;
-import fr.bookhub.dto.LoanResponse;
+import fr.bookhub.dto.loan.LoanResponse;
 import fr.bookhub.service.LoanService;
 import fr.bookhub.utility.ServiceResponse;
 import lombok.AllArgsConstructor;

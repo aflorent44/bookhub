@@ -1,9 +1,9 @@
 package fr.bookhub.service;
 
-import fr.bookhub.dto.AuthorCreateRequest;
-import fr.bookhub.dto.BookCreateRequest;
-import fr.bookhub.dto.BookMapper;
-import fr.bookhub.dto.BookResponse;
+import fr.bookhub.dto.author.AuthorCreateRequest;
+import fr.bookhub.dto.book.BookCreateRequest;
+import fr.bookhub.dto.book.BookMapper;
+import fr.bookhub.dto.book.BookResponse;
 import fr.bookhub.entity.*;
 import fr.bookhub.repository.*;
 import fr.bookhub.utility.ApiCode;
@@ -70,11 +70,11 @@ public class BookService {
         validate(req);
 
         // 2. check ISBN
-        if (bookRepository.findBookByIsbn(req.getIsbn()).isPresent() && method == MethodType.CREATE) {
+        if (bookRepository.findBookByIsbn(req.isbn()).isPresent() && method == MethodType.CREATE) {
             throw new ApiException(ApiCode.BOOK_ALREADY_EXISTS);
         }
 
-        User internalUser = userService.getUserById(req.getCreatedById()).getData();
+        User internalUser = userService.getUserById(req.createdById()).getData();
 
         if (internalUser == null) {
             throw new ApiException(ApiCode.INTERNAL_USER_NOT_FOUND);
@@ -88,21 +88,21 @@ public class BookService {
             book.setCreatedAt(LocalDateTime.now());
             book.setCreatedBy(internalUser);
         } else {
-            book = bookRepository.findBookByIsbn(req.getIsbn()).get();
+            book = bookRepository.findBookByIsbn(req.isbn()).get();
             book.setUpdatedAt(LocalDateTime.now());
             book.setUpdatedBy(internalUser);
         }
 
-        book.setTitle(req.getTitle());
-        book.setIsbn(req.getIsbn());
-        book.setYear(req.getYear());
-        book.setQuantity(req.getQuantity());
-        book.setDescription(req.getDescription());
-        book.setFirstPageUrl(req.getFirstPageUrl());
+        book.setTitle(req.title());
+        book.setIsbn(req.isbn());
+        book.setYear(req.year());
+        book.setQuantity(req.quantity());
+        book.setDescription(req.description());
+        book.setFirstPageUrl(req.firstPageUrl());
 
         // 4. relations
-        Country country = (req.getCountryName() != null)
-                ? countryRepository.findByLanguageIgnoreCase(req.getCountryName())
+        Country country = (req.countryName() != null)
+                ? countryRepository.findByLanguageIgnoreCase(req.countryName())
                 .orElseGet(() ->
                         countryRepository.findByCode("USA")
                                 .orElseThrow(() -> new RuntimeException("Default country USA not found"))
@@ -113,10 +113,10 @@ public class BookService {
         book.setCountry(country);
 
         book.setPublisher(
-                publisherRepository.findByName(req.getPublisherName())
+                publisherRepository.findByName(req.publisherName())
                         .orElseGet(() -> {
                             ServiceResponse<Publisher> publisherResponses =
-                                    publisherService.createPublisher(req.getPublisherName());
+                                    publisherService.createPublisher(req.publisherName());
 
                             if (!"2000".equals(publisherResponses.getCode()) || publisherResponses.getData() == null) {
                                 throw new RuntimeException("Publisher creation failed");
@@ -127,11 +127,11 @@ public class BookService {
         );
 
         book.setAuthor(
-                authorRepository.findByLastName(req.getAuthorLastName())
+                authorRepository.findByLastName(req.authorLastName())
                         .orElseGet(() -> {
                             ServiceResponse<Author> authorResponse =
                                     authorService.createAuthor(
-                                            new AuthorCreateRequest(req.getAuthorFirstName(), req.getAuthorLastName(), book.getCountry().getName()));
+                                            new AuthorCreateRequest(req.authorFirstName(), req.authorLastName(), book.getCountry().getName()));
 
                             if (!"3001".equals(authorResponse.getCode()) || authorResponse.getData() == null) {
                                 throw new RuntimeException("Author creation failed");
@@ -142,7 +142,7 @@ public class BookService {
         );
 
         // 5. genres
-        Set<Genre> genres = req.getGenres().stream()
+        Set<Genre> genres = req.genres().stream()
                 .map(genre -> genreRepository.findByLabel(genre.getLabel())
                         .orElseGet(() -> {
                             ServiceResponse<Genre> genreResponse =
@@ -166,15 +166,15 @@ public class BookService {
     }
 
     private ServiceResponse<BookCreateRequest> validate(BookCreateRequest req) {
-        if (req.getTitle() == null || req.getTitle().isBlank()) {
+        if (req.title() == null || req.title().isBlank()) {
             throw new ApiException(ApiCode.TITLE_REQUIRED);
         }
 
-        if (req.getIsbn() == null) {
+        if (req.isbn() == null) {
             throw new ApiException(ApiCode.ISBN_REQUIRED);
         }
 
-        if (req.getGenres() == null || req.getGenres().isEmpty()) {
+        if (req.genres() == null || req.genres().isEmpty()) {
             throw new ApiException(ApiCode.GENRES_REQUIRED);
         }
 
@@ -198,7 +198,7 @@ public class BookService {
 
         // 5. Result
         if (responsePage.isEmpty()) {
-            throw new ApiException(ApiCode.SEARCH_NO_RESULTS);
+            return new ServiceResponse<>(ApiCode.SEARCH_RESULTS_FOUND, responsePage);
         }
 
         return new ServiceResponse<>(ApiCode.SEARCH_RESULTS_FOUND, responsePage);
@@ -261,7 +261,7 @@ public class BookService {
                         : Sort.Direction.ASC;
 
         int page = Math.max(filter.getPage(), 0);
-        int size = filter.getSize() < 1 ? 21 : filter.getSize();
+        int size = Math.max(filter.getSize(), 0);
 
         return PageRequest.of(
                 page,

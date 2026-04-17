@@ -1,8 +1,8 @@
 package fr.bookhub.controller;
 
-import fr.bookhub.dto.ChangePasswordRequest;
-import fr.bookhub.dto.UpdateProfileRequest;
-import fr.bookhub.dto.UserResponse;
+import fr.bookhub.dto.auth.ChangePasswordRequest;
+import fr.bookhub.dto.user.UpdateProfileRequest;
+import fr.bookhub.dto.user.UserResponse;
 import fr.bookhub.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

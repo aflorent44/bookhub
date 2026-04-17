@@ -1,6 +1,6 @@
 package fr.bookhub.service;
 
-import fr.bookhub.dto.GenreDTO;
+import fr.bookhub.dto.genre.GenreDTO;
 import fr.bookhub.entity.Genre;
 import fr.bookhub.repository.GenreRepository;
 import fr.bookhub.utility.ApiCode;

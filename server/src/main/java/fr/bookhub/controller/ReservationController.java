@@ -1,6 +1,6 @@
 package fr.bookhub.controller;
 
-import fr.bookhub.dto.ReservationCreateRequest;
+import fr.bookhub.dto.reservation.ReservationCreateRequest;
 import fr.bookhub.service.ReservationService;
 import fr.bookhub.utility.ApiCode;
 import fr.bookhub.utility.ApiException;

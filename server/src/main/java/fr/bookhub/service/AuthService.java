@@ -1,8 +1,8 @@
 package fr.bookhub.service;
 
-import fr.bookhub.dto.AuthResponse;
-import fr.bookhub.dto.LoginRequest;
-import fr.bookhub.dto.UserResponse; // N'oublie pas l'import
+import fr.bookhub.dto.auth.AuthResponse;
+import fr.bookhub.dto.auth.LoginRequest;
+import fr.bookhub.dto.user.UserResponse; // N'oublie pas l'import
 import fr.bookhub.entity.User;
 import fr.bookhub.repository.UserRepository;
 import fr.bookhub.security.JwtService;
