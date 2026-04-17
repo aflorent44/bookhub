@@ -4,6 +4,7 @@ import fr.bookhub.utility.MethodType;
 import fr.bookhub.dto.ReviewCreateRequest;
 import fr.bookhub.service.ReviewService;
 import fr.bookhub.utility.ServiceResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,12 +21,12 @@ public class ReviewController {
     }
 
     @PostMapping("")
-    public ServiceResponse<?> createReview(@RequestBody ReviewCreateRequest req) {
+    public ServiceResponse<?> createReview(@RequestBody @Valid ReviewCreateRequest req) {
         return reviewService.createOrUpdateReview(req, MethodType.CREATE);
     }
 
     @PutMapping("/update")
-    public ServiceResponse<?> updateReview(@RequestBody ReviewCreateRequest req) {
+    public ServiceResponse<?> updateReview(@RequestBody @Valid ReviewCreateRequest req) {
         return reviewService.createOrUpdateReview(req, MethodType.UPDATE);
     }
 
