@@ -111,11 +111,11 @@ L'application sera accessible sur :
 
 ## 👤 Comptes de test
 
-| Rôle      | Email                                           | Mot de passe   |
-| --------- | ----------------------------------------------- |----------------|
-| USER      | [user@test.com](mailto:user@test.com)           | Motdepasse123! |
-| LIBRARIAN | [librarian@test.com](mailto:librarian@test.com) | Motdepasse123!       |
-| ADMIN     | [admin@test.com](mailto:admin@test.com)         | Motdepasse123!      |
+| Rôle      | Email                                           |
+| --------- | ----------------------------------------------- |
+| USER      | [user@test.com](mailto:user@test.com)           |
+| LIBRARIAN | [librarian@test.com](mailto:librarian@test.com) |
+| ADMIN     | [admin@test.com](mailto:admin@test.com)         |
 
 ---
 
