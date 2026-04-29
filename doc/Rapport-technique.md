@@ -6,8 +6,8 @@
 
 Nous avons choisi une **architecture en couches (n-tier)** avec séparation claire :
 
-- **Frontend :** Angular 25 (SPA)
-- **Backend :** Spring Boot (API REST)
+- **Frontend :** TypeScript Angular 21 (SPA)
+- **Backend :** Java 25 Spring Boot (API REST)
 - **Base de données :** SQL Server
 
 ### Justifications
@@ -115,9 +115,10 @@ Nous avons choisi une **architecture en couches (n-tier)** avec séparation clai
 
 ### 🔹 Techniques
 
-- Mise en place de **tests automatisés plus complets**
+- Mise en place de **tests automatisés complets**
 - Passage à une **architecture microservices** (si montée en charge)
 - Ajout de **Docker** pour faciliter le déploiement
+- refacto multi sujets (couplage faible, micro composants...)
 
 ---
 
@@ -133,6 +134,7 @@ Nous avons choisi une **architecture en couches (n-tier)** avec séparation clai
 - Amélioration de l’accessibilité (RGAA)
 - Mode sombre
 - Expérience mobile optimisée
+- responsivité
 
 ---
 
